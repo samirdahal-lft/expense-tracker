@@ -7,18 +7,21 @@
 - Runtime: Python 3.11+ (backend) · Node 20+ (frontend tooling)
 - Language: Python (backend) · TypeScript (frontend)
 - Framework: FastAPI (backend) · React 18 + Vite (frontend)
+- Styling / UI: Tailwind CSS + shadcn/ui component primitives (frontend)
+- Charts: Recharts (frontend) — used for the category donut chart
 - DB: SQLite (single file, single-user)
 - Test runner: pytest (backend, root `backend/`) · Vitest (frontend, root `frontend/`)
 
 ## Conventions
 1. Backend request flow is `router → service → repository → SQLite` — NOT: SQL or business logic inside route handlers.
-2. Money is stored and computed as integer minor units (cents) — NOT: floats for currency amounts.
+2. Money is whole Nepalese Rupees (NPR), stored and computed as integer rupees (no paisa/sub-rupee precision) — NOT: floats for currency amounts.
 3. API request/response bodies are Pydantic models; the DB layer uses its own models — NOT: passing raw dicts or ORM rows across the API boundary.
 4. Frontend server state goes through a typed API client module; components consume hooks — NOT: raw `fetch` calls scattered in components.
 5. Dates/timestamps are stored as ISO-8601 UTC — NOT: locale-formatted date strings in the DB.
 
 ## Hard Rules
-- Never store currency as a floating-point number — rounding drift corrupts totals.
+- Never store currency as a floating-point number — money is integer whole NPR; rounding drift corrupts totals.
+- Frontend styling goes through Tailwind utility classes + shadcn/ui primitives — NOT: ad-hoc CSS files or a second component library.
 - Always route DB access through the repository layer — keeps SQL in one place and testable.
 - Never commit the SQLite database file or `.env` — data and secrets stay out of git.
 - Always validate/serialize at the API boundary with Pydantic — no unvalidated input reaches services.
