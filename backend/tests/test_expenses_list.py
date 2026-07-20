@@ -28,3 +28,11 @@ def test_list_returns_expenses_newest_first_with_all_fields(client):
     assert first["date"] == "2026-07-02"
     assert first["note"] == "taxi"
     assert set(first) >= {"id", "amount", "category", "date", "note", "created_at"}
+
+
+def test_list_empty_store_returns_empty_array(client):
+    # B-2: empty store → 200 with an empty collection (not a 404/500).
+    resp = client.get("/api/expenses")
+
+    assert resp.status_code == 200
+    assert resp.json() == []
