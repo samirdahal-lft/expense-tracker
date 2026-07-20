@@ -1,9 +1,12 @@
-"""Shared test fixtures: a hermetic temp SQLite DB and a TestClient bound to it.
+"""Shared pytest fixtures: a hermetic temp SQLite DB and a TestClient bound to it.
+
+Kept OUT of conftest.py on purpose: LANE's runner probe globs `*test*.py`, and
+"conftest" matches that substring, so a bare conftest (0 tests) would be probed
+first and look like a broken runner. Test modules import these fixtures
+explicitly instead — pytest resolves them by name once they're in scope.
 
 The DB path is injected via EXPENSE_DB_PATH (per-test temp file), so tests never
-share state and replay cleanly in a fresh worktree. `init_db` / `get_connection`
-are imported lazily inside fixtures so unrelated tests (e.g. the scaffold smoke)
-don't fail to collect before those symbols exist.
+share state and replay cleanly in a fresh worktree.
 """
 import os
 import tempfile
