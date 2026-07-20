@@ -18,6 +18,14 @@ build
 coverage
 target
 
+# SQLite database — data stays out of git (lives on a Docker volume at runtime)
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+
 # Environment / secrets (lane green refuses untracked secret files regardless)
 .env
 .env.*
