@@ -1,6 +1,5 @@
 """B-1: GET /api/expenses returns all expenses, most recent first, with all fields."""
 from app.db import get_connection
-from tests.fixtures import client, temp_db  # noqa: F401  (pytest fixtures, resolved by name)
 
 
 def _seed(amount, category, date, note, created_at):

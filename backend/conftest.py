@@ -1,9 +1,9 @@
 """Shared pytest fixtures: a hermetic temp SQLite DB and a TestClient bound to it.
 
-Kept OUT of conftest.py on purpose: LANE's runner probe globs `*test*.py`, and
-"conftest" matches that substring, so a bare conftest (0 tests) would be probed
-first and look like a broken runner. Test modules import these fixtures
-explicitly instead — pytest resolves them by name once they're in scope.
+Lives at the backend ROOT (not tests/) on purpose: pytest auto-loads a root
+conftest for fixtures with no imports, and keeping it out of tests/ means LANE's
+runner probe (which picks the alphabetically-first file in the test dir) always
+lands on a real `test_*.py`, not a fixture-only module with zero tests.
 
 The DB path is injected via EXPENSE_DB_PATH (per-test temp file), so tests never
 share state and replay cleanly in a fresh worktree.
