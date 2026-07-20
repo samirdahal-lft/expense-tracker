@@ -1,11 +1,16 @@
-## Task T-001 — <title>
-**Parent:** story S-0001-master-mvp.nn · feature 0001-master-mvp (docs/features/0001-master-mvp-*/ — its PRD + TSD)
-**Slice:** a complete observable behavior end-to-end + tests (full vertical — a disconnected layer = smell)
-**Acceptance criteria:** (tag each `behavior`/`invariant`/`non-functional`/`e2e`; behavior ACs = observable outcome through an interface — NO "calls X / saves to table Y / uses lib Z")
-- [ ] AC-1 [behavior]: <observable outcome through interface>
-**End-to-end AC:** AC-<n> [e2e] — reachable through the running app (required: green component/unit ≠ reachable)
-**Tests:** AC-1  ← ordered; first = tracer bullet
-<!-- exception: Tests: N/A — reason: config | scaffolding | spike | refactor | tooling | integration -->
-**Test scope:** tests/T-001/   ← documentation: where this task's OWN tests live. Scope is NOT configured — red/green scope to the changed test files and `verify` derives it from the RED commits (ADR-0002); `review` runs the FULL suite. This line is a human pointer only.
-<!-- approval: written by `lane approve` as frontmatter (approved_by/at/sha256) after a human confirms — never hand-edit -->
-**Done =** reviewable PR, all tests pass, links to chain. One PR per task (default).
+---
+approved_by: "samir dahal"
+approved_at: "2026-07-20"
+approved_sha256: "b8b7c6f50ed10b6bcc65344c13a388921ac3b81bf53fe250dd0ab176c0d0acb8"
+---
+## Task T-001 — Project scaffold & toolchain
+**Parent:** story S-0001.06 · feature 0001-master-mvp (docs/features/0001-master-mvp-*/ — its PRD + TSD)
+**Slice:** foundational scaffold — stands up both harnesses so later feature tasks can red-green. No product behavior of its own.
+**Acceptance criteria:** (scaffolding task — deliverables, not behavioral ACs)
+- [ ] AC-1 [non-functional]: `backend/` holds a runnable FastAPI app skeleton (router→service→repository layering, `app/db.py` SQLite connection bootstrap) with `pytest` installed and collecting.
+- [ ] AC-2 [non-functional]: `frontend/` holds a runnable React 18 + Vite + TypeScript app with Tailwind CSS + shadcn/ui + Recharts wired, a typed API-client module stub, and `vitest` runnable.
+- [ ] AC-3 [invariant]: `.gitignore` excludes the SQLite DB file, `.env`, `.venv/`, and `node_modules/` (CONSTITUTION hard rule — data/secrets/deps out of git).
+**End-to-end AC:** N/A — no user-reachable behavior; enables the tasks that have it.
+**Tests:** N/A — scaffolding: stands up the toolchain both runners replay against; a test here asserts the tools, not the product.
+**Test scope:** n/a — no ledger; audit trail is the approved plan + stamped verification report.
+**Done =** reviewable PR: both apps boot, both runners run, deps ignored by git. Landed first so T-002+ fork from a base carrying the runner. One PR per task.
