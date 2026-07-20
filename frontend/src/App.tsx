@@ -1,11 +1,15 @@
+import { ExpenseList } from "@/features/expenses/ExpenseList";
+import { useExpenses } from "@/hooks/useExpenses";
 import { cn } from "@/lib/utils";
 
 /**
- * Application shell. Feature tasks mount the add-expense form, the expense
- * list, and the category summary here; the theme toggle arrives with T-006.
- * This scaffold renders a titled, card-based frame so the app boots visibly.
+ * Application shell. The add-expense form, delete, and category summary mount
+ * here in later tasks; the theme toggle arrives with T-006. This task renders
+ * the expense list (with loading + empty states).
  */
 export default function App() {
+  const { expenses, loading, error } = useExpenses();
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="container max-w-5xl py-10">
@@ -15,13 +19,9 @@ export default function App() {
             Track what you spend, in NPR.
           </p>
         </header>
-        <main
-          className={cn(
-            "rounded-lg border bg-card p-8 shadow-sm",
-            "text-card-foreground",
-          )}
-        >
-          <p className="text-muted-foreground">Setup complete — features coming next.</p>
+        <main className={cn("rounded-lg border bg-card p-6 shadow-sm", "text-card-foreground")}>
+          <h2 className="mb-2 text-lg font-medium">Expenses</h2>
+          <ExpenseList expenses={expenses} loading={loading} error={error} />
         </main>
       </div>
     </div>

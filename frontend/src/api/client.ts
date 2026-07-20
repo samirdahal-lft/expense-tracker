@@ -32,3 +32,8 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
   }
   return (await resp.json()) as T;
 }
+
+/** Fetch all expenses, most recent first. */
+export function listExpenses(): Promise<Expense[]> {
+  return apiFetch<Expense[]>("/expenses");
+}
