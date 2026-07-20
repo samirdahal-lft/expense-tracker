@@ -44,7 +44,7 @@ graph TD
 - All database access goes through the repository layer; services and routers never issue SQL directly.
 - Business/domain logic lives in the service layer — not in routers (thin) and not in repositories (SQL only).
 - All I/O crossing the API boundary is validated/serialized with Pydantic models.
-- Currency amounts cross every boundary as integer minor units (cents), never floats.
+- Currency amounts cross every boundary as integer whole Nepalese Rupees (NPR), never floats.
 
 ## Governing ADRs
 - [ADR-0001 — Record architecture decisions](../adr/0001-record-architecture-decisions.md)
