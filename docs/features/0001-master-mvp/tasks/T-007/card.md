@@ -1,11 +1,15 @@
-## Task T-007 — <title>
-**Parent:** story S-0001-master-mvp.nn · feature 0001-master-mvp (docs/features/0001-master-mvp-*/ — its PRD + TSD)
-**Slice:** a complete observable behavior end-to-end + tests (full vertical — a disconnected layer = smell)
-**Acceptance criteria:** (tag each `behavior`/`invariant`/`non-functional`/`e2e`; behavior ACs = observable outcome through an interface — NO "calls X / saves to table Y / uses lib Z")
-- [ ] AC-1 [behavior]: <observable outcome through interface>
-**End-to-end AC:** AC-<n> [e2e] — reachable through the running app (required: green component/unit ≠ reachable)
-**Tests:** AC-1  ← ordered; first = tracer bullet
-<!-- exception: Tests: N/A — reason: config | scaffolding | spike | refactor | tooling | integration -->
-**Test scope:** tests/T-007/   ← documentation: where this task's OWN tests live. Scope is NOT configured — red/green scope to the changed test files and `verify` derives it from the RED commits (ADR-0002); `review` runs the FULL suite. This line is a human pointer only.
-<!-- approval: written by `lane approve` as frontmatter (approved_by/at/sha256) after a human confirms — never hand-edit -->
-**Done =** reviewable PR, all tests pass, links to chain. One PR per task (default).
+---
+approved_by: "samir dahal"
+approved_at: "2026-07-20"
+approved_sha256: "ab3de6e802394e3c3171b4447606bb93ecf0a50c12973699c4d58fd1c31591ea"
+---
+## Task T-007 — One-command Dockerized run
+**Parent:** story S-0001.06 · feature 0001-master-mvp (docs/features/0001-master-mvp-*/ — its PRD + TSD)
+**Slice:** deployment integration — compose brings up frontend + backend + SQLite; data persists on a named volume across restarts.
+**Acceptance criteria:** (tag each `behavior`/`invariant`/`non-functional`/`e2e`)
+- [ ] AC-1 [e2e]: `docker compose up` from a clean state starts frontend + backend and the app is reachable in a browser; a user can add, list, and delete expenses end-to-end.
+- [ ] AC-2 [invariant]: The SQLite DB file lives on a named volume — data recorded before `docker compose down` is present after a subsequent `up`; the DB file is never baked into an image or committed to git.
+**End-to-end AC:** AC-1 [e2e] — reachable through the running compose stack.
+**Tests:** N/A — integration: the acceptance check is a docker-compose smoke (up → add expense → down → up → confirm persistence) requiring a Docker daemon and full container lifecycle; it is not a hermetic pytest/vitest unit that could replay in a fresh worktree. Smoke procedure documented in the exec-plan; human verifies at review.
+**Test scope:** n/a — no ledger; audit trail is the approved plan + stamped verification report + the recorded smoke run.
+**Done =** reviewable PR: `docker compose up` runs the whole stack, volume-backed data persists across restarts. One PR per task (default).
