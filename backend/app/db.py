@@ -19,3 +19,25 @@ def get_connection() -> sqlite3.Connection:
     conn = sqlite3.connect(get_db_path())
     conn.row_factory = sqlite3.Row
     return conn
+
+
+SCHEMA = """
+CREATE TABLE IF NOT EXISTS expenses (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    amount     INTEGER NOT NULL,
+    category   TEXT    NOT NULL,
+    date       TEXT    NOT NULL,
+    note       TEXT,
+    created_at TEXT    NOT NULL
+);
+"""
+
+
+def init_db() -> None:
+    """Create the expenses table if absent. Idempotent; safe to call on every boot."""
+    conn = get_connection()
+    try:
+        conn.executescript(SCHEMA)
+        conn.commit()
+    finally:
+        conn.close()
