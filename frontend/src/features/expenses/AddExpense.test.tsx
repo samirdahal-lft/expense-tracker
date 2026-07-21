@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import App from "@/App";
 
@@ -34,7 +34,9 @@ describe("B-3: add an expense through the running app", () => {
     fireEvent.change(screen.getByLabelText(/date/i), { target: { value: "2026-07-06" } });
     fireEvent.click(screen.getByRole("button", { name: /add expense/i }));
 
-    expect(await screen.findByText("Transport")).toBeInTheDocument();
-    expect(screen.getByText(/Rs\s?1,500/)).toBeInTheDocument();
+    // the new expense appears in the list (scope past the form's category options)
+    const list = within(await screen.findByRole("list"));
+    expect(list.getByText("Transport")).toBeInTheDocument();
+    expect(list.getByText(/Rs\s?1,500/)).toBeInTheDocument();
   });
 });

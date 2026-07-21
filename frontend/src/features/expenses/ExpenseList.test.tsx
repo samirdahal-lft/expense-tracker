@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import App from "@/App";
 
@@ -24,11 +24,13 @@ describe("B-3: expense list in the running app", () => {
     stubFetchResolving(SAMPLE);
     render(<App />);
 
-    expect(await screen.findByText("Transport")).toBeInTheDocument();
-    expect(screen.getByText("Food")).toBeInTheDocument();
-    expect(screen.getByText(/Rs\s?2,500/)).toBeInTheDocument();
-    expect(screen.getByText("taxi")).toBeInTheDocument();
-    expect(screen.getByText("2026-07-02")).toBeInTheDocument();
+    // scope to the list — category names also appear as options in the add form
+    const list = within(await screen.findByRole("list"));
+    expect(list.getByText("Transport")).toBeInTheDocument();
+    expect(list.getByText("Food")).toBeInTheDocument();
+    expect(list.getByText(/Rs\s?2,500/)).toBeInTheDocument();
+    expect(list.getByText("taxi")).toBeInTheDocument();
+    expect(list.getByText("2026-07-02")).toBeInTheDocument();
   });
 
   it("shows a loading state while the request is pending (AC-3)", () => {
