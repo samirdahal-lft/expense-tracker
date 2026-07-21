@@ -19,3 +19,7 @@ def create_expense(data: ExpenseCreate) -> dict:
         note=data.note,
         created_at=created_at,
     )
+
+
+def delete_expense(expense_id: int) -> None:
+    repo.delete_expense(expense_id)

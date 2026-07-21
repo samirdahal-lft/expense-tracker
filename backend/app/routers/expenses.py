@@ -15,3 +15,8 @@ def list_expenses() -> list[dict]:
 @router.post("/expenses", response_model=ExpenseOut, status_code=status.HTTP_201_CREATED)
 def create_expense(payload: ExpenseCreate) -> dict:
     return service.create_expense(payload)
+
+
+@router.delete("/expenses/{expense_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_expense(expense_id: int) -> None:
+    service.delete_expense(expense_id)

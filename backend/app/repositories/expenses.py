@@ -35,3 +35,14 @@ def add_expense(
         return dict(row)
     finally:
         conn.close()
+
+
+def delete_expense(expense_id: int) -> int:
+    """Delete the expense with this id. Returns the number of rows removed (0 if absent)."""
+    conn = get_connection()
+    try:
+        cur = conn.execute("DELETE FROM expenses WHERE id = ?", (expense_id,))
+        conn.commit()
+        return cur.rowcount
+    finally:
+        conn.close()
