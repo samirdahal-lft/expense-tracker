@@ -1,0 +1,17 @@
+services:
+  backend:
+    build: ./backend
+    volumes:
+      - db-data:/data
+    environment:
+      - EXPENSE_DB_PATH=/data/expenses.db
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8090:80"
+    depends_on:
+      - backend
+
+volumes:
+  db-data:
