@@ -37,3 +37,19 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
 export function listExpenses(): Promise<Expense[]> {
   return apiFetch<Expense[]>("/expenses");
 }
+
+/** Payload to create an expense. Amount is an integer number of whole NPR. */
+export interface ExpenseInput {
+  amount: number;
+  category: Category;
+  date: string;
+  note?: string;
+}
+
+/** Create an expense; resolves to the created resource. */
+export function createExpense(input: ExpenseInput): Promise<Expense> {
+  return apiFetch<Expense>("/expenses", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
