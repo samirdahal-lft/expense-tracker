@@ -1,20 +1,28 @@
 import { deleteExpense } from "@/api/client";
 import { AddExpenseForm } from "@/features/expenses/AddExpenseForm";
 import { ExpenseList } from "@/features/expenses/ExpenseList";
+import { CategorySummary } from "@/features/summary/CategorySummary";
 import { useExpenses } from "@/hooks/useExpenses";
+import { useSummary } from "@/hooks/useSummary";
 import { cn } from "@/lib/utils";
 
 /**
- * Application shell. The category summary + theme toggle mount here in later
- * tasks. This task adds the add-expense form on top of the list (T-002); the
- * list refreshes on a successful create without a page reload.
+ * Application shell. The theme toggle mounts here in T-006. This task adds the
+ * category summary; add/delete refresh both the list and the summary without a
+ * page reload.
  */
 export default function App() {
   const { expenses, loading, error, reload } = useExpenses();
+  const { summary, loading: summaryLoading, error: summaryError, reload: reloadSummary } = useSummary();
+
+  function refreshAll() {
+    reload();
+    reloadSummary();
+  }
 
   async function handleDelete(id: number) {
     await deleteExpense(id);
-    reload();
+    refreshAll();
   }
 
   return (
@@ -29,8 +37,12 @@ export default function App() {
 
         <section className={cn("mb-6 rounded-lg border bg-card p-6 shadow-sm text-card-foreground")}>
           <h2 className="mb-4 text-lg font-medium">Add an expense</h2>
-          <AddExpenseForm onCreated={reload} />
+          <AddExpenseForm onCreated={refreshAll} />
         </section>
+
+        <div className="mb-6">
+          <CategorySummary summary={summary} loading={summaryLoading} error={summaryError} />
+        </div>
 
         <main className={cn("rounded-lg border bg-card p-6 shadow-sm text-card-foreground")}>
           <h2 className="mb-2 text-lg font-medium">Expenses</h2>

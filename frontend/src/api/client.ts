@@ -58,3 +58,18 @@ export function createExpense(input: ExpenseInput): Promise<Expense> {
 export function deleteExpense(id: number): Promise<void> {
   return apiFetch<void>(`/expenses/${id}`, { method: "DELETE" });
 }
+
+export interface CategoryTotal {
+  category: Category;
+  total: number; // whole NPR
+}
+
+export interface Summary {
+  total: number; // whole NPR
+  by_category: CategoryTotal[];
+}
+
+/** Fetch the per-category spend summary. */
+export function getSummary(): Promise<Summary> {
+  return apiFetch<Summary>("/summary");
+}
