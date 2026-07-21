@@ -13,3 +13,25 @@ def list_expenses() -> list[dict]:
         return [dict(row) for row in rows]
     finally:
         conn.close()
+
+
+def add_expense(
+    amount: int, category: str, date: str, note: str | None, created_at: str
+) -> dict:
+    """Insert one expense and return the created row (including its new id)."""
+    conn = get_connection()
+    try:
+        cur = conn.execute(
+            "INSERT INTO expenses (amount, category, date, note, created_at) "
+            "VALUES (?, ?, ?, ?, ?)",
+            (amount, category, date, note, created_at),
+        )
+        conn.commit()
+        row = conn.execute(
+            "SELECT id, amount, category, date, note, created_at "
+            "FROM expenses WHERE id = ?",
+            (cur.lastrowid,),
+        ).fetchone()
+        return dict(row)
+    finally:
+        conn.close()
