@@ -25,3 +25,13 @@ def test_delete_existing_removes_it(client):
 
     assert resp.status_code == 204
     assert client.get("/api/expenses").json() == []
+
+
+def test_delete_unknown_id_is_not_found_and_changes_nothing(client):
+    # B-2: deleting an unknown id → 404, store unchanged.
+    _seed(1000, "Food", "2026-07-01", "lunch", "2026-07-01T10:00:00Z")
+
+    resp = client.delete("/api/expenses/99999")
+
+    assert resp.status_code == 404
+    assert len(client.get("/api/expenses").json()) == 1  # nothing removed
