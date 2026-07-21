@@ -1,7 +1,7 @@
 """Expense service — business/domain logic for expenses."""
 from datetime import datetime, timezone
 
-from app.models.expense import ExpenseCreate
+from app.models.expense import CATEGORIES, ExpenseCreate
 from app.repositories import expenses as repo
 
 
@@ -24,3 +24,11 @@ def create_expense(data: ExpenseCreate) -> dict:
 def delete_expense(expense_id: int) -> bool:
     """Delete an expense. Returns True if a row was removed, False if the id was absent."""
     return repo.delete_expense(expense_id) > 0
+
+
+def get_summary() -> dict:
+    """Spend by category over all expenses. Every fixed category is present (0 if none);
+    per-category totals sum to the grand total."""
+    totals = repo.category_totals()
+    by_category = [{"category": c, "total": totals.get(c, 0)} for c in CATEGORIES]
+    return {"total": sum(item["total"] for item in by_category), "by_category": by_category}

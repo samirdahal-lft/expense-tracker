@@ -8,6 +8,7 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
+CATEGORIES: tuple[str, ...] = ("Food", "Transport", "Bills", "Other")
 Category = Literal["Food", "Transport", "Bills", "Other"]
 
 
@@ -34,3 +35,13 @@ class ExpenseOut(BaseModel):
     date: str
     note: Optional[str] = None
     created_at: str
+
+
+class CategoryTotal(BaseModel):
+    category: Category
+    total: int
+
+
+class Summary(BaseModel):
+    total: int
+    by_category: list[CategoryTotal]

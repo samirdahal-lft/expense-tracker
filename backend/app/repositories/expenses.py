@@ -46,3 +46,15 @@ def delete_expense(expense_id: int) -> int:
         return cur.rowcount
     finally:
         conn.close()
+
+
+def category_totals() -> dict[str, int]:
+    """Return summed amount per category present in the store (categories with rows only)."""
+    conn = get_connection()
+    try:
+        rows = conn.execute(
+            "SELECT category, SUM(amount) AS total FROM expenses GROUP BY category"
+        ).fetchall()
+        return {row["category"]: int(row["total"]) for row in rows}
+    finally:
+        conn.close()
