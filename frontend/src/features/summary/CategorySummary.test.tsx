@@ -30,8 +30,9 @@ describe("B-2: category summary in the running app", () => {
     });
     render(<App />);
 
-    const summary = within(await screen.findByRole("region", { name: /spending by category/i }));
-    expect(summary.getByText("Food")).toBeInTheDocument();
+    const region = await screen.findByRole("region", { name: /spending by category/i });
+    const summary = within(region);
+    expect(await summary.findByText("Food")).toBeInTheDocument();
     expect(summary.getByText(/Rs\s?1,500/)).toBeInTheDocument();
     expect(summary.getByText("Transport")).toBeInTheDocument();
     expect(summary.getByText(/Rs\s?2,500/)).toBeInTheDocument();
@@ -49,7 +50,7 @@ describe("B-2: category summary in the running app", () => {
     });
     render(<App />);
 
-    const summary = within(await screen.findByRole("region", { name: /spending by category/i }));
-    expect(summary.getByText(/nothing to summarize yet/i)).toBeInTheDocument();
+    const region = await screen.findByRole("region", { name: /spending by category/i });
+    expect(await within(region).findByText(/nothing to summarize yet/i)).toBeInTheDocument();
   });
 });

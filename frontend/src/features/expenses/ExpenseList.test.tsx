@@ -37,7 +37,7 @@ describe("B-3: expense list in the running app", () => {
     vi.stubGlobal("fetch", vi.fn(() => new Promise(() => {}))); // never resolves
     render(<App />);
 
-    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    expect(screen.getByText(/loading expenses/i)).toBeInTheDocument();
   });
 
   it("shows a deliberate empty state when there are no expenses (AC-3)", async () => {

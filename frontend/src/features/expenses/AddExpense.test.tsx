@@ -30,7 +30,7 @@ describe("B-3: add an expense through the running app", () => {
     expect(await screen.findByText(/no expenses yet/i)).toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText(/amount/i), { target: { value: "1500" } });
-    fireEvent.change(screen.getByLabelText(/category/i), { target: { value: "Transport" } });
+    fireEvent.change(screen.getByLabelText("Category"), { target: { value: "Transport" } });
     fireEvent.change(screen.getByLabelText(/date/i), { target: { value: "2026-07-06" } });
     fireEvent.click(screen.getByRole("button", { name: /add expense/i }));
 
