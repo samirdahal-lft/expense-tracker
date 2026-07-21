@@ -2,18 +2,21 @@ import { deleteExpense } from "@/api/client";
 import { AddExpenseForm } from "@/features/expenses/AddExpenseForm";
 import { ExpenseList } from "@/features/expenses/ExpenseList";
 import { CategorySummary } from "@/features/summary/CategorySummary";
+import { ThemeToggle } from "@/features/theme/ThemeToggle";
 import { useExpenses } from "@/hooks/useExpenses";
 import { useSummary } from "@/hooks/useSummary";
+import { useTheme } from "@/hooks/useTheme";
 import { cn } from "@/lib/utils";
 
 /**
- * Application shell. The theme toggle mounts here in T-006. This task adds the
- * category summary; add/delete refresh both the list and the summary without a
- * page reload.
+ * Application shell: add form, category summary (donut), expense list, and a
+ * light/dark theme toggle. Add/delete refresh both the list and the summary
+ * without a page reload.
  */
 export default function App() {
   const { expenses, loading, error, reload } = useExpenses();
   const { summary, loading: summaryLoading, error: summaryError, reload: reloadSummary } = useSummary();
+  const { theme, toggle } = useTheme();
 
   function refreshAll() {
     reload();
@@ -28,11 +31,14 @@ export default function App() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="container max-w-5xl py-10">
-        <header className="mb-8">
-          <h1 className="text-3xl font-semibold tracking-tight">Expense Tracker</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Track what you spend, in NPR.
-          </p>
+        <header className="mb-8 flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-semibold tracking-tight">Expense Tracker</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Track what you spend, in NPR.
+            </p>
+          </div>
+          <ThemeToggle theme={theme} onToggle={toggle} />
         </header>
 
         <section className={cn("mb-6 rounded-lg border bg-card p-6 shadow-sm text-card-foreground")}>
