@@ -53,3 +53,8 @@ export function createExpense(input: ExpenseInput): Promise<Expense> {
     body: JSON.stringify(input),
   });
 }
+
+/** Delete an expense by id. */
+export function deleteExpense(id: number): Promise<void> {
+  return apiFetch<void>(`/expenses/${id}`, { method: "DELETE" });
+}

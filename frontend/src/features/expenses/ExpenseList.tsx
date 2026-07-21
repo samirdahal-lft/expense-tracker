@@ -5,10 +5,11 @@ interface ExpenseListProps {
   expenses: Expense[];
   loading: boolean;
   error: string | null;
+  onDelete: (id: number) => void;
 }
 
 /** Renders the expense list with deliberate loading and empty states. */
-export function ExpenseList({ expenses, loading, error }: ExpenseListProps) {
+export function ExpenseList({ expenses, loading, error, onDelete }: ExpenseListProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16 text-muted-foreground">
@@ -47,7 +48,17 @@ export function ExpenseList({ expenses, loading, error }: ExpenseListProps) {
             </div>
             {e.note ? <p className="mt-1 truncate text-sm text-foreground/80">{e.note}</p> : null}
           </div>
-          <span className="shrink-0 font-semibold tabular-nums">{formatNpr(e.amount)}</span>
+          <div className="flex shrink-0 items-center gap-3">
+            <span className="font-semibold tabular-nums">{formatNpr(e.amount)}</span>
+            <button
+              type="button"
+              aria-label={`Delete ${e.category} expense of ${formatNpr(e.amount)}`}
+              onClick={() => onDelete(e.id)}
+              className="rounded-md px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+            >
+              Delete
+            </button>
+          </div>
         </li>
       ))}
     </ul>

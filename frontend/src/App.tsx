@@ -1,3 +1,4 @@
+import { deleteExpense } from "@/api/client";
 import { AddExpenseForm } from "@/features/expenses/AddExpenseForm";
 import { ExpenseList } from "@/features/expenses/ExpenseList";
 import { useExpenses } from "@/hooks/useExpenses";
@@ -10,6 +11,11 @@ import { cn } from "@/lib/utils";
  */
 export default function App() {
   const { expenses, loading, error, reload } = useExpenses();
+
+  async function handleDelete(id: number) {
+    await deleteExpense(id);
+    reload();
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -28,7 +34,7 @@ export default function App() {
 
         <main className={cn("rounded-lg border bg-card p-6 shadow-sm text-card-foreground")}>
           <h2 className="mb-2 text-lg font-medium">Expenses</h2>
-          <ExpenseList expenses={expenses} loading={loading} error={error} />
+          <ExpenseList expenses={expenses} loading={loading} error={error} onDelete={handleDelete} />
         </main>
       </div>
     </div>
