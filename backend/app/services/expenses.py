@@ -21,5 +21,6 @@ def create_expense(data: ExpenseCreate) -> dict:
     )
 
 
-def delete_expense(expense_id: int) -> None:
-    repo.delete_expense(expense_id)
+def delete_expense(expense_id: int) -> bool:
+    """Delete an expense. Returns True if a row was removed, False if the id was absent."""
+    return repo.delete_expense(expense_id) > 0

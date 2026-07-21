@@ -1,5 +1,5 @@
 """Expense HTTP routes. Thin — validation/serialization via Pydantic, logic in the service."""
-from fastapi import APIRouter, status
+from fastapi import APIRouter, HTTPException, status
 
 from app.models.expense import ExpenseCreate, ExpenseOut
 from app.services import expenses as service
@@ -19,4 +19,5 @@ def create_expense(payload: ExpenseCreate) -> dict:
 
 @router.delete("/expenses/{expense_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_expense(expense_id: int) -> None:
-    service.delete_expense(expense_id)
+    if not service.delete_expense(expense_id):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Expense not found")
