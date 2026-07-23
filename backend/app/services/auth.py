@@ -1,18 +1,17 @@
 """Auth service — registration, password hashing, session issuance logic.
 
-Password verifier: PBKDF2-HMAC-SHA256 with a per-user random salt (stdlib only).
-Stored as ``pbkdf2_sha256$<iterations>$<salt_hex>$<hash_hex>`` — one-way; the
-plaintext is never stored or returned.
+Password verifier: bcrypt via ``passlib`` (CONSTITUTION: password hashing via
+``passlib[bcrypt]``) — one-way and per-hash salted; the plaintext is never
+stored or returned.
 """
-import hashlib
-import hmac
-import secrets
 from datetime import datetime, timezone
+
+from passlib.context import CryptContext
 
 from app.models.user import RegisterRequest
 from app.repositories import users as repo
 
-_PBKDF2_ITERATIONS = 240_000
+_pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 class EmailTakenError(Exception):
@@ -20,20 +19,14 @@ class EmailTakenError(Exception):
 
 
 def hash_password(password: str) -> str:
-    salt = secrets.token_bytes(16)
-    dk = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, _PBKDF2_ITERATIONS)
-    return f"pbkdf2_sha256${_PBKDF2_ITERATIONS}${salt.hex()}${dk.hex()}"
+    return _pwd_context.hash(password)
 
 
 def verify_password(password: str, stored: str) -> bool:
     try:
-        _algo, iters_s, salt_hex, hash_hex = stored.split("$")
-        iterations = int(iters_s)
-        salt = bytes.fromhex(salt_hex)
-    except (ValueError, AttributeError):
+        return _pwd_context.verify(password, stored)
+    except (ValueError, TypeError):
         return False
-    dk = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, iterations)
-    return hmac.compare_digest(dk.hex(), hash_hex)
 
 
 def register(data: RegisterRequest) -> dict:

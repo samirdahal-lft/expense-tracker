@@ -1,9 +1,12 @@
 # Fully pinned (lockfile) so a fresh worktree/container install is reproducible —
 # LANE replays RED/GREEN in a clean checkout, and an unpinned transitive dep
 # (e.g. starlette) can resolve to an incompatible version there. Direct deps:
-# fastapi, uvicorn[standard], pydantic, pytest, httpx — the rest are transitive.
+# fastapi, uvicorn[standard], pydantic, pytest, httpx, passlib[bcrypt],
+# itsdangerous — the rest are transitive. (Auth per CONSTITUTION: password
+# hashing via passlib[bcrypt]; session signing via itsdangerous.)
 annotated-types==0.7.0
 anyio==4.14.2
+bcrypt==4.1.3
 certifi==2026.6.17
 click==8.4.2
 dnspython==2.8.0
@@ -13,6 +16,7 @@ fastapi-cli==0.0.32
 h11==0.16.0
 httpcore==1.0.9
 httptools==0.8.0
+itsdangerous==2.2.0
 httpx==0.27.0
 idna==3.18
 iniconfig==2.3.0
@@ -22,6 +26,7 @@ MarkupSafe==3.0.3
 mdurl==0.1.2
 orjson==3.11.9
 packaging==26.2
+passlib==1.7.4
 pluggy==1.6.0
 pydantic==2.7.4
 pydantic_core==2.18.4
