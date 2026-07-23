@@ -30,11 +30,19 @@ CREATE TABLE IF NOT EXISTS expenses (
     note       TEXT,
     created_at TEXT    NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS users (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    name          TEXT    NOT NULL,
+    email         TEXT    NOT NULL UNIQUE,
+    password_hash TEXT    NOT NULL,
+    created_at    TEXT    NOT NULL
+);
 """
 
 
 def init_db() -> None:
-    """Create the expenses table if absent. Idempotent; safe to call on every boot."""
+    """Create the expenses and users tables if absent. Idempotent; safe to call on every boot."""
     conn = get_connection()
     try:
         conn.executescript(SCHEMA)
