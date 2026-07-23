@@ -28,6 +28,11 @@
 - When: `GET /api/auth/me` is called (a) reusing that session cookie, (b) with no cookie, and (c) with a tampered/invalid cookie.
 - Then: (a) returns 200 with the same account's public identity (id, name, email); (b) and (c) are rejected as unauthenticated (401), never returning an account.
 
+## B-5: (surfaced at review) AC-4 / TSD Boundaries — the signing secret is injected, not hard-coded: session signing fails closed when SESSION_SECRET is absent.
+- Given: `SESSION_SECRET` is unset in the environment.
+- When: the app attempts to issue a session token, or to verify a token that carries a cookie value.
+- Then: it raises rather than signing/verifying with a guessable default key (no forged sessions possible); an absent/empty cookie still short-circuits to unauthenticated (None) without touching the secret.
+
 ## Invariants & non-functional ACs (NOT RED→GREEN cycles)
 > Not standalone behaviors to drive. An invariant usually holds as a property of a
 > behavior above (state which) or is locked by a guard test recorded off-ledger with

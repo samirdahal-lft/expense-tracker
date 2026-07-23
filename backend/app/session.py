@@ -11,11 +11,18 @@ import time
 
 COOKIE_NAME = "session"
 DEFAULT_MAX_AGE = 60 * 60 * 24 * 7  # 7 days, in seconds
-_DEV_SECRET = "dev-insecure-secret-change-me"
 
 
 def _secret() -> bytes:
-    return os.environ.get("SESSION_SECRET", _DEV_SECRET).encode()
+    """The injected signing secret. Fails closed if unset — never sign with a
+    guessable default key (that would let anyone forge a session cookie)."""
+    secret = os.environ.get("SESSION_SECRET")
+    if not secret:
+        raise RuntimeError(
+            "SESSION_SECRET is not set — refusing to sign or verify sessions "
+            "with a default key"
+        )
+    return secret.encode()
 
 
 def _now(now: float | None) -> int:
