@@ -1,7 +1,7 @@
 ---
 adr-baseline: 1
-version: 2
-last-updated: 2026-07-20
+version: 3
+last-updated: 2026-07-21
 ---
 
 # Architecture — Expense Tracker
@@ -11,17 +11,21 @@ last-updated: 2026-07-20
 ## System Context
 ```mermaid
 graph TD
-  user[Single user] --> web[React + Vite SPA]
-  web -->|HTTP/JSON| api[FastAPI backend]
+  user[Registered user] -->|register / login| web[React + Vite SPA]
+  web -->|HTTP/JSON + session cookie| api[FastAPI backend]
+  api -->|verifies session, scopes by user_id| api
   api -->|SQL| db[(SQLite file)]
 ```
 
 ## Containers
 - **Web SPA** — React 18 + TypeScript, built with Vite. Renders the UI and calls the backend
-  over HTTP/JSON through a typed API client. No direct DB access.
+  over HTTP/JSON through a typed API client. No direct DB access. Shows Register/Login when
+  unauthenticated; the expense app only once a session exists.
 - **API backend** — FastAPI (Python). Exposes a REST/JSON API. Layered internally as
-  `router → service → repository`. Owns all business rules and the only path to the database.
-- **Database** — SQLite, a single local file. Accessed exclusively by the backend's repository layer.
+  `router → service → repository`. Owns all business rules, session verification, and the
+  only path to the database.
+- **Database** — SQLite, a single local file. Accessed exclusively by the backend's repository
+  layer. Every user-owned row (expenses, ...) carries a `user_id`; every query is scoped to it.
 
 ## Deployment Topology
 ```mermaid
@@ -45,6 +49,11 @@ graph TD
 - Business/domain logic lives in the service layer — not in routers (thin) and not in repositories (SQL only).
 - All I/O crossing the API boundary is validated/serialized with Pydantic models.
 - Currency amounts cross every boundary as integer whole Nepalese Rupees (NPR), never floats.
+- Every `/api/expenses*` and `/api/summary` route requires an authenticated session (an httpOnly
+  signed cookie); the backend is the only place that verifies it and the only place a `user_id`
+  is derived from it — never trust a client-supplied user id.
+- A user's expenses are reachable only through their own authenticated session — no route,
+  query, or aggregate may return or act on another user's rows.
 
 ## Governing ADRs
 - [ADR-0001 — Record architecture decisions](../adr/0001-record-architecture-decisions.md)

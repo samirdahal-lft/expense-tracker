@@ -1,0 +1,86 @@
+/* Bridged to the real app's theme (frontend/src/index.css + tailwind.config.ts,
+   Tailwind v3) — colors defined here as complete hsl(...) values so proto's
+   Tailwind v4 @theme inline can alias them directly. Update both this file and
+   src/index.css together if the real palette changes. */
+@import 'tailwindcss';
+
+:root {
+  --background: hsl(210 40% 98%);
+  --foreground: hsl(222 47% 11%);
+
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(222 47% 11%);
+
+  --primary: hsl(160 84% 39%);
+  --primary-foreground: hsl(0 0% 100%);
+
+  --secondary: hsl(210 40% 96%);
+  --secondary-foreground: hsl(222 47% 11%);
+
+  --muted: hsl(210 40% 96%);
+  --muted-foreground: hsl(215 16% 47%);
+
+  --accent: hsl(160 84% 39%);
+  --accent-foreground: hsl(0 0% 100%);
+
+  --destructive: hsl(0 72% 51%);
+  --destructive-foreground: hsl(0 0% 100%);
+
+  --border: hsl(214 32% 91%);
+  --input: hsl(214 32% 91%);
+  --ring: hsl(160 84% 39%);
+
+  --radius: 0.85rem;
+}
+
+.dark {
+  --background: hsl(222 47% 8%);
+  --foreground: hsl(210 40% 96%);
+
+  --card: hsl(222 40% 12%);
+  --card-foreground: hsl(210 40% 96%);
+
+  --primary: hsl(158 74% 46%);
+  --primary-foreground: hsl(222 47% 8%);
+
+  --secondary: hsl(217 33% 18%);
+  --secondary-foreground: hsl(210 40% 96%);
+
+  --muted: hsl(217 33% 18%);
+  --muted-foreground: hsl(215 20% 65%);
+
+  --accent: hsl(158 74% 46%);
+  --accent-foreground: hsl(222 47% 8%);
+
+  --destructive: hsl(0 63% 51%);
+  --destructive-foreground: hsl(0 0% 100%);
+
+  --border: hsl(217 33% 20%);
+  --input: hsl(217 33% 20%);
+  --ring: hsl(158 74% 46%);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+@source '../src/**/*.{ts,tsx}';

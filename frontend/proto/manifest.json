@@ -1,0 +1,198 @@
+{
+  "$generated": "proto manifest",
+  "entry": "@/proto-vocab",
+  "components": [
+    {
+      "name": "Button",
+      "import": "import { Button } from \"@/proto-vocab\"",
+      "props": [
+        {
+          "name": "variant",
+          "type": "\"primary\" | \"ghost\"",
+          "required": false
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "type",
+          "type": "\"submit\" | \"reset\" | \"button\"",
+          "required": false
+        },
+        {
+          "name": "value",
+          "type": "string | readonly string[] | number",
+          "required": false
+        },
+        {
+          "name": "defaultChecked",
+          "type": "boolean",
+          "required": false
+        },
+        {
+          "name": "defaultValue",
+          "type": "string | number | readonly string[]",
+          "required": false
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "acceptsChildren": true,
+      "example": "<Button>Label</Button>",
+      "exampleProps": {}
+    },
+    {
+      "name": "Card",
+      "import": "import { Card } from \"@/proto-vocab\"",
+      "props": [],
+      "acceptsChildren": true,
+      "example": "<Card>Label</Card>",
+      "exampleProps": {}
+    },
+    {
+      "name": "ErrorText",
+      "import": "import { ErrorText } from \"@/proto-vocab\"",
+      "props": [],
+      "acceptsChildren": true,
+      "example": "<ErrorText>Label</ErrorText>",
+      "exampleProps": {}
+    },
+    {
+      "name": "PageHeader",
+      "import": "import { PageHeader } from \"@/proto-vocab\"",
+      "props": [
+        {
+          "name": "title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "subtitle",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "acceptsChildren": false,
+      "example": "<PageHeader title=\"…\" />",
+      "exampleProps": {
+        "title": "…"
+      }
+    },
+    {
+      "name": "TextInput",
+      "import": "import { TextInput } from \"@/proto-vocab\"",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "alt",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "checked",
+          "type": "boolean",
+          "required": false
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false
+        },
+        {
+          "name": "max",
+          "type": "number | string",
+          "required": false
+        },
+        {
+          "name": "maxLength",
+          "type": "number",
+          "required": false
+        },
+        {
+          "name": "min",
+          "type": "number | string",
+          "required": false
+        },
+        {
+          "name": "multiple",
+          "type": "boolean",
+          "required": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "required": false
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "required": false
+        },
+        {
+          "name": "src",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "step",
+          "type": "number | string",
+          "required": false
+        },
+        {
+          "name": "type",
+          "type": "HTMLInputTypeAttribute",
+          "required": false
+        },
+        {
+          "name": "value",
+          "type": "string | readonly string[] | number",
+          "required": false
+        },
+        {
+          "name": "defaultChecked",
+          "type": "boolean",
+          "required": false
+        },
+        {
+          "name": "defaultValue",
+          "type": "string | number | readonly string[]",
+          "required": false
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "acceptsChildren": true,
+      "example": "<TextInput label=\"…\">Label</TextInput>",
+      "exampleProps": {
+        "label": "…"
+      }
+    }
+  ]
+}
