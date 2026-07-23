@@ -2,7 +2,7 @@
 approved_by: "samir dahal"
 approved_at: "2026-07-23"
 planned_behaviors: 5
-approved_sha256: "6a0e6547b163fa82eb700d1052920de8fe4425dc32c2a52b2e16889e3d2cfd54"
+approved_sha256: "324e0ade797cd1218a41825fb244f9e2b847da6e7c6ca7f0f17a7baf212c8942"
 ---
 ## Exec Plan — Task T-008
 > Authored during planning, before any code. ★GATE: DEV/SA approve via `lane approve` BEFORE any code (lane writes the stamp). Resolve all ambiguities first.
@@ -16,14 +16,15 @@ approved_sha256: "6a0e6547b163fa82eb700d1052920de8fe4425dc32c2a52b2e16889e3d2cfd
 
 **Approach:** high-level only — NOT implementation prescription
 - Follow the existing `router → service → repository` layering and the env-injected seam style (`EXPENSE_DB_PATH`). Add a parallel slice: `models/user.py` (request/response models), `repositories/users.py` (only SQL for `users`), `services/auth.py` (register + credential/session logic), `routers/auth.py` (`/api/auth/*`), and a small `app/session.py` (cookie issue/verify).
-- Password hashing and session signing use the **Python standard library only** — `hashlib.pbkdf2_hmac` with a per-user random salt from `secrets` for the verifier; `hmac` + `secrets` to sign a session token carrying the `user_id` and an expiry. No new dependency is added; `requirements.txt` stays as pinned.
+- Password hashing uses **`passlib[bcrypt]`** and session signing uses **`itsdangerous`**, per CONSTITUTION (Stack → Auth; Hard Rules). The verifier is bcrypt (one-way, per-hash salted); the session cookie is an `itsdangerous` signed, timestamped token carrying the `user_id` with an age check on verify. These are added as pinned deps in `requirements.txt` (`passlib==1.7.4`, `bcrypt==4.1.3`, `itsdangerous==2.2.0`).
+  - **Correction (post-review):** the plan originally proposed a stdlib-only implementation (`pbkdf2_hmac` + hand-rolled `hmac`). That diverged from CONSTITUTION's mandated `passlib[bcrypt]` + `itsdangerous` — a grounding miss caught at verification. Corrected to conform; behavior/ACs and all tests are unchanged (they assert properties, not the algorithm). See AMENDMENTS.md A-0002-01.
 - The session cookie is `httpOnly` and `SameSite=Lax`. That satisfies the SameSite half of the TSD CSRF contract for the cookie register issues; the CSRF **token** check on already-authenticated, state-changing routes (logout, expense create/delete) is T-009's scope — register carries no session cookie to forge.
 - `users` table added to `app/db.py`'s idempotent schema (`init_db`), consistent with how `expenses` is created. Public identity returned = id, name, email — never the verifier.
 
 **Boundaries & mocks:** (from TSD Boundaries) what's FAKED vs REAL. Each fake = an injected port.
 - **Clock** (session issued-at / expiry) — REAL by default (`datetime.now(timezone.utc)`), exposed as an injectable seam so unit/integration tests can pin "now" and assert expiry behavior. Faked in tests.
-- **Secret** used to sign the session cookie — injected via a `SESSION_SECRET` env var, mirroring the existing `EXPENSE_DB_PATH` pattern; the test fixture sets a fixed value so replay is deterministic. Faked in tests.
-- **Randomness** (per-user salt) — REAL `secrets`; not injected. Tests assert the *property* (verify true for the right password, false otherwise; plaintext absent from the stored row), never an exact hash value.
+- **Secret** used to sign the session cookie (the `itsdangerous` signer key) — injected via a `SESSION_SECRET` env var, mirroring the existing `EXPENSE_DB_PATH` pattern; the test fixture sets a fixed value so replay is deterministic. Fails closed (raises) when unset — no guessable default. Faked in tests.
+- **Randomness** (bcrypt's per-hash salt) — REAL, internal to `passlib[bcrypt]`; not injected. Tests assert the *property* (verify true for the right password, false otherwise; two hashes of the same password differ; plaintext absent from the stored row), never an exact hash value.
 - **SQLite file** — owned by the repository layer, not an external dep. Real, on the per-test temp DB via `temp_db`.
 - Boundaries non-empty ⇒ smoke AC that hits the real ones: **AC-5 (B-4)** exercises the real clock + real secret + real SQLite through the running app (register → `/api/auth/me` with the issued cookie).
 
@@ -35,8 +36,8 @@ approved_sha256: "6a0e6547b163fa82eb700d1052920de8fe4425dc32c2a52b2e16889e3d2cfd
 
 **PR will contain:**
 - `app/models/user.py`, `app/repositories/users.py`, `app/services/auth.py`, `app/routers/auth.py`, `app/session.py`; `users` schema in `app/db.py`; router registration in `app/main.py`.
-- Tests under `tests/` (e.g. `test_auth_register_*.py`, `test_auth_me.py`) covering B-1…B-4 and the AC-4 stored-verifier property; a `session_secret`/clock fixture addition to the root `conftest.py`.
-- No `requirements.txt` change (stdlib only).
+- Tests under `tests/` (e.g. `test_auth_register_*.py`, `test_auth_me.py`, `test_auth_session_secret.py`) covering B-1…B-5 and the AC-2/AC-4 guards; a `_session_secret` fixture addition to the root `conftest.py`.
+- `requirements.txt` gains pinned `passlib==1.7.4`, `bcrypt==4.1.3`, `itsdangerous==2.2.0`.
 
 **Open questions / ambiguities:** (MUST be resolved before execution)
 - None blocking. Pre-auth expense rows keep no `user_id` yet — the TSD resolved pre-auth data as disposable, and expense/session gating is T-009; this task does not migrate or scope expense rows.
