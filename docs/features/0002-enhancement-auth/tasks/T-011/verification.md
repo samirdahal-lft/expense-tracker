@@ -1,3 +1,8 @@
+---
+approved_by: "Samir dahal"
+approved_at: "2026-07-24"
+approved_sha256: "32ad4bbacd0c4ab3633bb16e3e0f183b184db855a2e1ea56b11ee1ab9f78b44a"
+---
 ## Verification — Task T-011 — 2026-07-24
 > Critic anchored to TSD (external spec), NOT to the code. ★GATE: owner confirms/dismisses every flag.
 > Critic run with fresh context (given only snapshot-TSD.md + card + behavior-spec + the frontend diff; no build reasoning).
