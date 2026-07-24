@@ -1,10 +1,15 @@
 services:
   backend:
     build: ./backend
+    ports:
+      - "8000:8000"
     volumes:
       - db-data:/data
     environment:
       - EXPENSE_DB_PATH=/data/expenses.db
+      # Session cookie signing key — the app fails closed if unset. Supplied from
+      # the gitignored .env file (compose substitutes it); never hardcode a secret here.
+      - SESSION_SECRET=${SESSION_SECRET:?SESSION_SECRET must be set (see .env)}
 
   frontend:
     build: ./frontend
