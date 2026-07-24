@@ -40,3 +40,36 @@ def client(temp_db):
     from app.main import create_app
 
     return TestClient(create_app())
+
+
+@pytest.fixture()
+def make_auth_client(temp_db):
+    """Factory: a TestClient registered + logged in as a distinct account, with the
+    CSRF header pre-set (double-submit) so state-changing requests pass the CSRF check.
+    Multiple calls → independent accounts sharing the same temp DB (for isolation tests)."""
+    from fastapi.testclient import TestClient
+
+    from app.main import create_app
+    from app.session import CSRF_COOKIE_NAME, CSRF_HEADER_NAME
+
+    app = create_app()
+
+    def _make(email: str = "ada@example.com", name: str = "Ada", password: str = "hunter2pw"):
+        c = TestClient(app)
+        resp = c.post(
+            "/api/auth/register",
+            json={"name": name, "email": email, "password": password, "confirm_password": password},
+        )
+        assert resp.status_code == 201, resp.text
+        token = c.cookies.get(CSRF_COOKIE_NAME)
+        if token:
+            c.headers[CSRF_HEADER_NAME] = token
+        return c
+
+    return _make
+
+
+@pytest.fixture()
+def auth_client(make_auth_client):
+    """A single authenticated client (account 'ada@example.com')."""
+    return make_auth_client()

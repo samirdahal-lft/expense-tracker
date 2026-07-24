@@ -1,10 +1,12 @@
 """Expense HTTP routes. Thin — validation/serialization via Pydantic, logic in the service."""
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 
+from app.dependencies import require_user
 from app.models.expense import ExpenseCreate, ExpenseOut, Summary
 from app.services import expenses as service
 
-router = APIRouter(prefix="/api", tags=["expenses"])
+# Every expense/summary route requires an authenticated session (BLUEPRINT boundary rule).
+router = APIRouter(prefix="/api", tags=["expenses"], dependencies=[Depends(require_user)])
 
 
 @router.get("/expenses", response_model=list[ExpenseOut])

@@ -13,11 +13,11 @@ def _seed(amount, category, date, note, created_at):
     conn.close()
 
 
-def test_list_returns_expenses_newest_first_with_all_fields(client):
+def test_list_returns_expenses_newest_first_with_all_fields(auth_client):
     _seed(1000, "Food", "2026-07-01", "lunch", "2026-07-01T10:00:00Z")
     _seed(2500, "Transport", "2026-07-02", "taxi", "2026-07-02T09:00:00Z")
 
-    resp = client.get("/api/expenses")
+    resp = auth_client.get("/api/expenses")
 
     assert resp.status_code == 200
     data = resp.json()
@@ -30,9 +30,9 @@ def test_list_returns_expenses_newest_first_with_all_fields(client):
     assert set(first) >= {"id", "amount", "category", "date", "note", "created_at"}
 
 
-def test_list_empty_store_returns_empty_array(client):
+def test_list_empty_store_returns_empty_array(auth_client):
     # B-2: empty store → 200 with an empty collection (not a 404/500).
-    resp = client.get("/api/expenses")
+    resp = auth_client.get("/api/expenses")
 
     assert resp.status_code == 200
     assert resp.json() == []

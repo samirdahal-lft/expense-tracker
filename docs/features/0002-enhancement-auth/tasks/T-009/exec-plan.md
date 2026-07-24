@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-07-24"
-planned_behaviors: 7
+planned_behaviors: 6
 approved_sha256: "b6e97603d746c720fedddbeb622ba9f83ebb653d39d9c4cdc496481ad789833d"
 ---
 ## Exec Plan — Task T-009

@@ -15,12 +15,12 @@ def _seed(amount, category, date="2026-07-01", note=None, created_at="2026-07-01
         conn.close()
 
 
-def test_summary_totals_and_all_categories_present(client):
+def test_summary_totals_and_all_categories_present(auth_client):
     _seed(1000, "Food")
     _seed(500, "Food")
     _seed(2500, "Transport")
 
-    resp = client.get("/api/summary")
+    resp = auth_client.get("/api/summary")
 
     assert resp.status_code == 200
     body = resp.json()
@@ -32,8 +32,8 @@ def test_summary_totals_and_all_categories_present(client):
     assert sum(by_cat.values()) == body["total"]
 
 
-def test_summary_empty_store_is_all_zero(client):
-    resp = client.get("/api/summary")
+def test_summary_empty_store_is_all_zero(auth_client):
+    resp = auth_client.get("/api/summary")
 
     assert resp.status_code == 200
     body = resp.json()

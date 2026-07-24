@@ -13,9 +13,9 @@ import pytest
     ],
     ids=["zero", "negative", "non-integer", "unknown-category", "bad-date"],
 )
-def test_create_rejects_invalid_input(client, bad_payload):
-    resp = client.post("/api/expenses", json=bad_payload)
+def test_create_rejects_invalid_input(auth_client, bad_payload):
+    resp = auth_client.post("/api/expenses", json=bad_payload)
 
     assert resp.status_code == 422
     # nothing persisted
-    assert client.get("/api/expenses").json() == []
+    assert auth_client.get("/api/expenses").json() == []

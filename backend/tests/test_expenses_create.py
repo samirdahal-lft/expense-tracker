@@ -1,7 +1,7 @@
 """B-1: POST /api/expenses creates an expense and returns it with a server-assigned id."""
 
 
-def test_create_expense_returns_created_with_server_fields(client):
+def test_create_expense_returns_created_with_server_fields(auth_client):
     payload = {
         "amount": 1200,
         "category": "Food",
@@ -9,7 +9,7 @@ def test_create_expense_returns_created_with_server_fields(client):
         "note": "groceries",
     }
 
-    resp = client.post("/api/expenses", json=payload)
+    resp = auth_client.post("/api/expenses", json=payload)
 
     assert resp.status_code == 201
     body = resp.json()
@@ -21,7 +21,7 @@ def test_create_expense_returns_created_with_server_fields(client):
     assert body["note"] == "groceries"
 
     # persisted: a subsequent list includes exactly this expense
-    listed = client.get("/api/expenses").json()
+    listed = auth_client.get("/api/expenses").json()
     assert len(listed) == 1
     assert listed[0]["id"] == body["id"]
     assert listed[0]["amount"] == 1200
