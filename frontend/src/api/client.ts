@@ -73,3 +73,68 @@ export interface Summary {
 export function getSummary(): Promise<Summary> {
   return apiFetch<Summary>("/summary");
 }
+
+// ── Auth ──────────────────────────────────────────────────────────────────
+
+/** The current account's public identity (never the password/verifier). */
+export interface AuthUser {
+  id: number;
+  name: string;
+  email: string;
+}
+
+export interface RegisterInput {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+/** Pull a human-readable message out of a FastAPI error response body. */
+async function errorDetail(resp: Response): Promise<string> {
+  try {
+    const body = (await resp.json()) as { detail?: unknown };
+    const d = body?.detail;
+    if (typeof d === "string") return d;
+    if (Array.isArray(d) && typeof (d[0] as { msg?: unknown })?.msg === "string") {
+      return (d[0] as { msg: string }).msg;
+    }
+  } catch {
+    /* non-JSON body */
+  }
+  return `Request failed (${resp.status})`;
+}
+
+/**
+ * Register a new account. On success the backend sets the session cookie and
+ * returns the account. On failure (e.g. duplicate email) throws an Error whose
+ * message is the server's detail, so the form can surface it.
+ */
+export async function register(input: RegisterInput): Promise<AuthUser> {
+  const resp = await fetch(`${API_BASE}/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: input.name,
+      email: input.email,
+      password: input.password,
+      confirm_password: input.confirmPassword,
+    }),
+  });
+  if (!resp.ok) {
+    throw new Error(await errorDetail(resp));
+  }
+  return (await resp.json()) as AuthUser;
+}
+
+/** The currently-authenticated account, or null if there is no valid session. */
+export async function getCurrentUser(): Promise<AuthUser | null> {
+  const resp = await fetch(`${API_BASE}/auth/me`);
+  if (resp.status === 401) {
+    return null;
+  }
+  if (!resp.ok) {
+    throw new Error(`auth/me failed: ${resp.status}`);
+  }
+  return (await resp.json()) as AuthUser;
+}
