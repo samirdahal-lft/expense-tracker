@@ -25,6 +25,11 @@ class RegisterRequest(BaseModel):
         return self
 
 
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+
 class UserOut(BaseModel):
     id: int
     name: str

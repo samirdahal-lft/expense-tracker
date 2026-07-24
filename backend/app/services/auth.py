@@ -29,6 +29,22 @@ def verify_password(password: str, stored: str) -> bool:
         return False
 
 
+# A precomputed hash to verify against when no account matches, so an unknown
+# email and a wrong password take the same work — no timing signal (AC-2).
+_DUMMY_HASH = _pwd_context.hash("verify-against-me-when-user-absent")
+
+
+def authenticate(email: str, password: str) -> dict | None:
+    """Return the account for valid credentials, else None (no unknown/wrong distinction)."""
+    user = repo.get_user_by_email(email)
+    if user is None:
+        verify_password(password, _DUMMY_HASH)  # equalize timing
+        return None
+    if not verify_password(password, user["password_hash"]):
+        return None
+    return user
+
+
 def register(data: RegisterRequest) -> dict:
     """Create an account and return its row. Raises EmailTakenError on a duplicate email."""
     created_at = datetime.now(timezone.utc).isoformat()

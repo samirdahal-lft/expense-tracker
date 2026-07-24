@@ -7,12 +7,20 @@ is checked on verify so a session expires. Fails closed if the secret is unset â
 never sign or verify with a guessable default key.
 """
 import os
+import secrets
 
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 
 COOKIE_NAME = "session"
+CSRF_COOKIE_NAME = "csrf_token"
+CSRF_HEADER_NAME = "X-CSRF-Token"
 DEFAULT_MAX_AGE = 60 * 60 * 24 * 7  # 7 days, in seconds
 _SALT = "expense-tracker.session"
+
+
+def issue_csrf_token() -> str:
+    """A fresh random CSRF token for the double-submit-cookie scheme."""
+    return secrets.token_urlsafe(32)
 
 
 def _serializer() -> URLSafeTimedSerializer:
