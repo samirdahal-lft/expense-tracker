@@ -6,7 +6,7 @@ SQLite path is resolved from EXPENSE_DB_PATH (see app.db).
 from fastapi import FastAPI
 
 from app.db import init_db
-from app.routers import expenses
+from app.routers import auth, expenses
 
 
 def create_app() -> FastAPI:
@@ -19,6 +19,7 @@ def create_app() -> FastAPI:
         return {"status": "ok"}
 
     app.include_router(expenses.router)
+    app.include_router(auth.router)
 
     return app
 

@@ -14,6 +14,13 @@ import tempfile
 import pytest
 
 
+@pytest.fixture(autouse=True)
+def _session_secret(monkeypatch):
+    """Deterministic session-signing secret so cookie issue/verify replays cleanly
+    in a fresh worktree (mirrors the EXPENSE_DB_PATH env seam)."""
+    monkeypatch.setenv("SESSION_SECRET", "test-session-secret-fixed")
+
+
 @pytest.fixture()
 def temp_db(monkeypatch):
     fd, path = tempfile.mkstemp(suffix=".db")
