@@ -1,6 +1,7 @@
 """Auth HTTP routes. Thin — validation/serialization via Pydantic, logic in the service."""
-from fastapi import APIRouter, HTTPException, Request, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 
+from app.dependencies import require_csrf, require_user
 from app.models.user import LoginRequest, RegisterRequest, UserOut
 from app.repositories import users as users_repo
 from app.services import auth as service
@@ -60,6 +61,18 @@ def login(payload: LoginRequest, response: Response) -> dict:
         )
     _establish_session(response, user["id"])
     return user
+
+
+@router.post(
+    "/logout",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_user), Depends(require_csrf)],
+)
+def logout(response: Response) -> dict:
+    """End the current session immediately (no confirmation): clear both cookies."""
+    response.delete_cookie(COOKIE_NAME, path="/")
+    response.delete_cookie(CSRF_COOKIE_NAME, path="/")
+    return {"status": "logged out"}
 
 
 @router.get("/me", response_model=UserOut)
