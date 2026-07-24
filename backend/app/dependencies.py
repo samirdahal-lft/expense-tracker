@@ -1,7 +1,7 @@
 """Shared FastAPI dependencies for authenticated, CSRF-protected routes."""
 import hmac
 
-from fastapi import HTTPException, Request, status
+from fastapi import Depends, HTTPException, Request, status
 
 from app.session import COOKIE_NAME, CSRF_COOKIE_NAME, CSRF_HEADER_NAME, verify_token
 
@@ -16,10 +16,12 @@ def require_user(request: Request) -> int:
     return user_id
 
 
-def require_csrf(request: Request) -> None:
+def require_csrf(request: Request, _user_id: int = Depends(require_user)) -> None:
     """Double-submit CSRF check: the X-CSRF-Token header must match the CSRF cookie.
 
-    For cookie-authenticated state-changing (non-GET) routes. Absent/mismatched → 403."""
+    Depends on require_user so an unauthenticated request fails with 401 (auth) before
+    the CSRF check — CSRF only guards already-authenticated state-changing requests.
+    Absent/mismatched token → 403."""
     cookie = request.cookies.get(CSRF_COOKIE_NAME)
     header = request.headers.get(CSRF_HEADER_NAME)
     if not cookie or not header or not hmac.compare_digest(cookie, header):

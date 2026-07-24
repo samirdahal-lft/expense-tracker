@@ -61,6 +61,7 @@ def make_auth_client(temp_db):
             json={"name": name, "email": email, "password": password, "confirm_password": password},
         )
         assert resp.status_code == 201, resp.text
+        c.user_id = resp.json()["id"]  # convenience for tests that seed owned rows
         token = c.cookies.get(CSRF_COOKIE_NAME)
         if token:
             c.headers[CSRF_HEADER_NAME] = token

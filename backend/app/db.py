@@ -22,21 +22,22 @@ def get_connection() -> sqlite3.Connection:
 
 
 SCHEMA = """
-CREATE TABLE IF NOT EXISTS expenses (
-    id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    amount     INTEGER NOT NULL,
-    category   TEXT    NOT NULL,
-    date       TEXT    NOT NULL,
-    note       TEXT,
-    created_at TEXT    NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS users (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
     name          TEXT    NOT NULL,
     email         TEXT    NOT NULL UNIQUE,
     password_hash TEXT    NOT NULL,
     created_at    TEXT    NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS expenses (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id    INTEGER NOT NULL REFERENCES users(id),
+    amount     INTEGER NOT NULL,
+    category   TEXT    NOT NULL,
+    date       TEXT    NOT NULL,
+    note       TEXT,
+    created_at TEXT    NOT NULL
 );
 """
 

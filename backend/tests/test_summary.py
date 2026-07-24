@@ -2,13 +2,13 @@
 from app.db import get_connection
 
 
-def _seed(amount, category, date="2026-07-01", note=None, created_at="2026-07-01T10:00:00Z"):
+def _seed(user_id, amount, category, date="2026-07-01", note=None, created_at="2026-07-01T10:00:00Z"):
     conn = get_connection()
     try:
         conn.execute(
-            "INSERT INTO expenses (amount, category, date, note, created_at) "
-            "VALUES (?, ?, ?, ?, ?)",
-            (amount, category, date, note, created_at),
+            "INSERT INTO expenses (user_id, amount, category, date, note, created_at) "
+            "VALUES (?, ?, ?, ?, ?, ?)",
+            (user_id, amount, category, date, note, created_at),
         )
         conn.commit()
     finally:
@@ -16,9 +16,9 @@ def _seed(amount, category, date="2026-07-01", note=None, created_at="2026-07-01
 
 
 def test_summary_totals_and_all_categories_present(auth_client):
-    _seed(1000, "Food")
-    _seed(500, "Food")
-    _seed(2500, "Transport")
+    _seed(auth_client.user_id, 1000, "Food")
+    _seed(auth_client.user_id, 500, "Food")
+    _seed(auth_client.user_id, 2500, "Transport")
 
     resp = auth_client.get("/api/summary")
 
