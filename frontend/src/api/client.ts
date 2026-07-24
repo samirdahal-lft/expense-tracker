@@ -19,10 +19,31 @@ export interface Expense {
 
 const API_BASE = "/api";
 
+/**
+ * Read the readable (non-httpOnly) CSRF cookie the backend sets on login/register.
+ * State-changing requests echo it in the X-CSRF-Token header (double-submit-cookie
+ * scheme); the backend rejects a mismatch/absence with 403.
+ */
+function csrfToken(): string | null {
+  const match = document.cookie.match(/(?:^|;\s*)csrf_token=([^;]+)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+/** Attach the CSRF header to any state-changing (non-GET/HEAD) request. */
+function withCsrf(init?: RequestInit): HeadersInit {
+  const method = (init?.method ?? "GET").toUpperCase();
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (method !== "GET" && method !== "HEAD") {
+    const token = csrfToken();
+    if (token) headers["X-CSRF-Token"] = token;
+  }
+  return { ...headers, ...(init?.headers as Record<string, string> | undefined) };
+}
+
 export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const resp = await fetch(`${API_BASE}${path}`, {
-    headers: { "Content-Type": "application/json" },
     ...init,
+    headers: withCsrf(init),
   });
   if (!resp.ok) {
     throw new Error(`API ${init?.method ?? "GET"} ${path} failed: ${resp.status}`);
@@ -161,9 +182,12 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
   return (await resp.json()) as AuthUser;
 }
 
-/** Log out the current session. */
+/** Log out the current session. Logout is CSRF-protected, so echo the token. */
 export async function logout(): Promise<void> {
-  const resp = await fetch(`${API_BASE}/auth/logout`, { method: "POST" });
+  const resp = await fetch(`${API_BASE}/auth/logout`, {
+    method: "POST",
+    headers: withCsrf({ method: "POST" }),
+  });
   if (!resp.ok) {
     throw new Error(`logout failed: ${resp.status}`);
   }
