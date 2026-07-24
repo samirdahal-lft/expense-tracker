@@ -127,6 +127,28 @@ export async function register(input: RegisterInput): Promise<AuthUser> {
   return (await resp.json()) as AuthUser;
 }
 
+export interface LoginInput {
+  email: string;
+  password: string;
+}
+
+/**
+ * Log in with email and password. On success the backend sets the session cookie
+ * and returns the account. On failure (e.g. invalid credentials) throws an Error
+ * whose message is the server's detail, so the form can surface it.
+ */
+export async function login(input: LoginInput): Promise<AuthUser> {
+  const resp = await fetch(`${API_BASE}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (!resp.ok) {
+    throw new Error(await errorDetail(resp));
+  }
+  return (await resp.json()) as AuthUser;
+}
+
 /** The currently-authenticated account, or null if there is no valid session. */
 export async function getCurrentUser(): Promise<AuthUser | null> {
   const resp = await fetch(`${API_BASE}/auth/me`);
@@ -137,4 +159,12 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
     throw new Error(`auth/me failed: ${resp.status}`);
   }
   return (await resp.json()) as AuthUser;
+}
+
+/** Log out the current session. */
+export async function logout(): Promise<void> {
+  const resp = await fetch(`${API_BASE}/auth/logout`, { method: "POST" });
+  if (!resp.ok) {
+    throw new Error(`logout failed: ${resp.status}`);
+  }
 }

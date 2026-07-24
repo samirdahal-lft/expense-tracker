@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { type AuthUser, getCurrentUser } from "@/api/client";
+import { type AuthUser, type LoginInput, getCurrentUser, login as apiLogin, logout as apiLogout } from "@/api/client";
 
 /**
  * Auth-state seam. On mount it bootstraps the current session via the
  * current-user endpoint; `user` is the account or null, `bootstrapping` guards
- * the initial check. `setUser` lets a successful register/login promote the
- * session. Login/logout are layered on by T-011.
+ * the initial check. Exposes login/logout/register methods (all set user on success).
  */
 export function useAuth() {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -28,5 +27,16 @@ export function useAuth() {
     };
   }, []);
 
-  return { user, bootstrapping, setUser };
+  const login = async (input: LoginInput): Promise<AuthUser> => {
+    const u = await apiLogin(input);
+    setUser(u);
+    return u;
+  };
+
+  const logout = async (): Promise<void> => {
+    await apiLogout();
+    setUser(null);
+  };
+
+  return { user, bootstrapping, setUser, login, logout };
 }

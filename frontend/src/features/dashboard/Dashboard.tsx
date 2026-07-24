@@ -7,13 +7,20 @@ import { useExpenses } from "@/hooks/useExpenses";
 import { useSummary } from "@/hooks/useSummary";
 import { useTheme } from "@/hooks/useTheme";
 import { cn } from "@/lib/utils";
+import { Button } from "@/proto-vocab";
+
+interface DashboardProps {
+  /** Ends the session and returns to the unauthenticated view. */
+  onLogout?: () => void | Promise<void>;
+}
 
 /**
  * The authenticated dashboard: add form, category summary (donut), expense list,
- * and a light/dark theme toggle. Mounted only when a session exists, so its data
- * hooks (which hit the session-gated API) never run unauthenticated.
+ * a light/dark theme toggle, and a sign-out affordance. Mounted only when a
+ * session exists, so its data hooks (which hit the session-gated API) never run
+ * unauthenticated.
  */
-export function Dashboard() {
+export function Dashboard({ onLogout }: DashboardProps) {
   const { expenses, loading, error, reload } = useExpenses();
   const { summary, loading: summaryLoading, error: summaryError, reload: reloadSummary } = useSummary();
   const { theme, toggle } = useTheme();
@@ -35,7 +42,14 @@ export function Dashboard() {
           <h1 className="text-3xl font-semibold tracking-tight">Expense Tracker</h1>
           <p className="mt-1 text-sm text-muted-foreground">Track what you spend, in NPR.</p>
         </div>
-        <ThemeToggle theme={theme} onToggle={toggle} />
+        <div className="flex items-center gap-2">
+          <ThemeToggle theme={theme} onToggle={toggle} />
+          {onLogout ? (
+            <Button type="button" variant="ghost" onClick={() => void onLogout()}>
+              Sign out
+            </Button>
+          ) : null}
+        </div>
       </header>
 
       <section className={cn("mb-6 rounded-lg border bg-card p-6 shadow-sm text-card-foreground")}>

@@ -9,9 +9,9 @@
 > non-functional ACs are not RED→GREEN cycles — any are listed in their own section.
 
 ## B-1 (tracer bullet): AC-1 [behavior]: submitting the Login form with valid credentials transitions the app from the unauthenticated view (Login/Register) to the authenticated dashboard.
-- Given:
-- When:
-- Then:
+- Given: the app is loaded and the user is unauthenticated (no session cookie)
+- When: the user enters valid email + password in the Login form and submits
+- Then: the login API call succeeds, the session is established, and the app transitions to the authenticated dashboard view
 
 ## B-2: AC-2 [behavior]: a failed login surfaces the generic invalid-credentials error on the form; the app stays on the Login screen.
 - Given:
