@@ -1,7 +1,7 @@
 ---
-approved_by: "samir dahal"
-approved_at: "2026-07-23"
-approved_sha256: "66d337ae30d27a23086f8021ba4d1f59389480f516a3d677a1225428ce16074f"
+approved_by: "Samir dahal"
+approved_at: "2026-07-24"
+approved_sha256: "4fdad494d59f7cfe46b9ad912025c66ae8af159c73c54a9d14444a22ff170fd4"
 ---
 # TSD 0002 — Account registration and login
 > Behavior + contracts ONLY. Never name the library/method/pattern (over-spec = defeats spec-first).
