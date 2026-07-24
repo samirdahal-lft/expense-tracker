@@ -1,56 +1,60 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import App from "@/App";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import App from "../../src/App";
 
 /**
- * B-1: Submitting the Login form with valid credentials transitions the app
- * from the unauthenticated view (Login/Register) to the authenticated dashboard.
+ * B-1 (tracer bullet): submitting the Login form with valid credentials
+ * transitions the app from the unauthenticated view (Login/Register) to the
+ * authenticated dashboard.
+ *
+ * Uses the codebase's fetch-stub pattern (see src/App.test.tsx): the real
+ * useAuth hook drives the session, and fetch is stubbed so /auth/me starts
+ * unauthenticated, /auth/login succeeds, and the dashboard's data endpoints
+ * return empty once mounted.
  */
 describe("B-1: Login transition to dashboard", () => {
-  beforeEach(() => {
+  afterEach(() => {
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
   it("submitting the Login form with valid credentials shows the dashboard", async () => {
-    // Mock the login API to succeed
-    const mockFetch = vi.fn((_url: string, init?: RequestInit) => {
-      const method = init?.method ?? "GET";
-      if (_url.includes("/api/auth/login") && method === "POST") {
-        // Successful login response sets session cookie
-        return Promise.resolve({
-          ok: true,
-          status: 200,
-          json: () =>
-            Promise.resolve({
-              user_id: "user-123",
-              email: "test@example.com",
-              name: "Test User",
-            }),
-        });
-      }
-      return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve([]) });
-    });
-    vi.stubGlobal("fetch", mockFetch);
+    const user = { id: 1, name: "Ada", email: "ada@example.com" };
+
+    // Session starts unauthenticated (/auth/me → 401); login succeeds and
+    // establishes the session; dashboard data endpoints return empty.
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((url: string, init?: RequestInit) => {
+        const method = init?.method ?? "GET";
+        if (url === "/api/auth/me") {
+          return Promise.resolve({ ok: false, status: 401, json: () => Promise.resolve(null) });
+        }
+        if (url === "/api/auth/login" && method === "POST") {
+          return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(user) });
+        }
+        if (url.endsWith("/summary")) {
+          return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ total: 0, by_category: [] }) });
+        }
+        return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve([]) });
+      }),
+    );
 
     render(<App />);
 
-    // Initially, the unauthenticated view (Login screen) is shown
-    const loginScreen = await screen.findByRole("heading", { name: /sign in/i });
-    expect(loginScreen).toBeInTheDocument();
+    // Unauthenticated: the app opens on Register; switch to the Login screen.
+    fireEvent.click(await screen.findByRole("button", { name: /already have an account\? sign in/i }));
 
-    // Fill in the login form with valid credentials
-    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: "test@example.com" } });
+    // Login screen is shown.
+    const emailInput = await screen.findByLabelText(/email/i);
+    fireEvent.change(emailInput, { target: { value: "ada@example.com" } });
     fireEvent.change(screen.getByLabelText(/password/i), { target: { value: "password123" } });
 
-    // Submit the form
-    fireEvent.click(screen.getByRole("button", { name: /sign in|log in/i }));
+    // Submit valid credentials.
+    fireEvent.click(screen.getByRole("button", { name: /^sign in$/i }));
 
-    // After successful login, the authenticated dashboard appears
-    expect(await screen.findByRole("heading", { name: /expense tracker/i })).toBeInTheDocument();
-    // Dashboard should show expenses or a "no expenses" message
-    expect(
-      await screen.findByText(/no expenses yet|expense|category|amount/i)
-    ).toBeInTheDocument();
+    // The app transitions to the authenticated dashboard.
+    await waitFor(() => expect(screen.getByText("Add an expense")).toBeInTheDocument());
+    expect(screen.getByRole("button", { name: /sign out/i })).toBeInTheDocument();
   });
 });
