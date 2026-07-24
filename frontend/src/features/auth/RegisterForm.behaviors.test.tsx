@@ -34,7 +34,8 @@ describe("B-2 (backfill): valid submission registers and transitions", () => {
 
     await waitFor(() => expect(onAuthenticated).toHaveBeenCalledWith(user));
     expect(fetchSpy).toHaveBeenCalledWith("/api/auth/register", expect.objectContaining({ method: "POST" }));
-    const body = JSON.parse((fetchSpy.mock.calls[0][1] as RequestInit).body as string);
+    const call = fetchSpy.mock.calls[0] as unknown as [string, RequestInit];
+    const body = JSON.parse(call[1].body as string);
     expect(body).toMatchObject({
       name: "Ada",
       email: "ada@example.com",

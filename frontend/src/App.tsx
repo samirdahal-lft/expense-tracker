@@ -1,59 +1,48 @@
-import { deleteExpense } from "@/api/client";
-import { AddExpenseForm } from "@/features/expenses/AddExpenseForm";
-import { ExpenseList } from "@/features/expenses/ExpenseList";
-import { CategorySummary } from "@/features/summary/CategorySummary";
-import { ThemeToggle } from "@/features/theme/ThemeToggle";
-import { useExpenses } from "@/hooks/useExpenses";
-import { useSummary } from "@/hooks/useSummary";
-import { useTheme } from "@/hooks/useTheme";
-import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { RegisterForm } from "@/features/auth/RegisterForm";
+import { Dashboard } from "@/features/dashboard/Dashboard";
+import { useAuth } from "@/hooks/useAuth";
+import { Button, Card, PageHeader } from "@/proto-vocab";
+
+type AuthMode = "register" | "login";
 
 /**
- * Application shell: add form, category summary (donut), expense list, and a
- * light/dark theme toggle. Add/delete refresh both the list and the summary
- * without a page reload.
+ * Auth-state gate: while bootstrapping the session, render nothing; when there is
+ * no session, show the unauthenticated view (Register, with a link to sign in);
+ * once authenticated, show the dashboard. The real Login screen + logout arrive
+ * in T-011 — for now the "Sign in" link lands on a placeholder.
  */
 export default function App() {
-  const { expenses, loading, error, reload } = useExpenses();
-  const { summary, loading: summaryLoading, error: summaryError, reload: reloadSummary } = useSummary();
-  const { theme, toggle } = useTheme();
-
-  function refreshAll() {
-    reload();
-    reloadSummary();
-  }
-
-  async function handleDelete(id: number) {
-    await deleteExpense(id);
-    refreshAll();
-  }
+  const { user, bootstrapping, setUser } = useAuth();
+  const [mode, setMode] = useState<AuthMode>("register");
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="container max-w-5xl py-10">
-        <header className="mb-8 flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight">Expense Tracker</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Track what you spend, in NPR.
-            </p>
-          </div>
-          <ThemeToggle theme={theme} onToggle={toggle} />
-        </header>
+        {bootstrapping ? null : user ? (
+          <Dashboard />
+        ) : mode === "register" ? (
+          <RegisterForm onAuthenticated={setUser} onSwitchToLogin={() => setMode("login")} />
+        ) : (
+          <LoginPlaceholder onSwitchToRegister={() => setMode("register")} />
+        )}
+      </div>
+    </div>
+  );
+}
 
-        <section className={cn("mb-6 rounded-lg border bg-card p-6 shadow-sm text-card-foreground")}>
-          <h2 className="mb-4 text-lg font-medium">Add an expense</h2>
-          <AddExpenseForm onCreated={refreshAll} />
-        </section>
-
-        <div className="mb-6">
-          <CategorySummary summary={summary} loading={summaryLoading} error={summaryError} />
-        </div>
-
-        <main className={cn("rounded-lg border bg-card p-6 shadow-sm text-card-foreground")}>
-          <h2 className="mb-2 text-lg font-medium">Expenses</h2>
-          <ExpenseList expenses={expenses} loading={loading} error={error} onDelete={handleDelete} />
-        </main>
+/** Temporary stand-in for the Login screen (built in T-011). */
+function LoginPlaceholder({ onSwitchToRegister }: { onSwitchToRegister: () => void }) {
+  return (
+    <div className="flex justify-center">
+      <div className="grid gap-6">
+        <PageHeader title="Expense Tracker" subtitle="Sign in" />
+        <Card>
+          <p className="text-sm text-muted-foreground">Sign in is coming soon.</p>
+          <Button type="button" variant="ghost" onClick={onSwitchToRegister} className="mt-4">
+            Need an account? Create one
+          </Button>
+        </Card>
       </div>
     </div>
   );

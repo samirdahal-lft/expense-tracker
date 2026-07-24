@@ -6,9 +6,12 @@ function stubEmptyApi() {
   vi.stubGlobal(
     "fetch",
     vi.fn((url: string) => {
-      const body = url.endsWith("/summary")
-        ? { total: 0, by_category: [] }
-        : [];
+      const body =
+        url === "/api/auth/me"
+          ? { id: 1, name: "Ada", email: "ada@example.com" }
+          : url.endsWith("/summary")
+            ? { total: 0, by_category: [] }
+            : [];
       return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(body) });
     }),
   );
@@ -45,6 +48,8 @@ describe("B-1: theme toggle + persistence", () => {
     document.documentElement.classList.remove("dark"); // reset DOM; the app should re-apply from storage
     render(<App />);
 
+    // wait for the dashboard to re-mount (past the auth bootstrap) before asserting
+    await screen.findByRole("button", { name: /theme|dark mode|light mode/i });
     expect(document.documentElement.classList.contains("dark")).toBe(true);
   });
 });

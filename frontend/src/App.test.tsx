@@ -11,12 +11,21 @@ describe("App shell", () => {
   });
 
   it("renders the app title", async () => {
+    // Authenticated session: /auth/me returns a user so the app renders the dashboard.
     vi.stubGlobal(
       "fetch",
-      vi.fn(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve([]) })),
+      vi.fn((url: string) => {
+        const body =
+          url === "/api/auth/me"
+            ? { id: 1, name: "Ada", email: "ada@example.com" }
+            : url.endsWith("/summary")
+              ? { total: 0, by_category: [] }
+              : [];
+        return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(body) });
+      }),
     );
     render(<App />);
-    expect(screen.getByText("Expense Tracker")).toBeInTheDocument();
+    expect(await screen.findByText("Expense Tracker")).toBeInTheDocument();
     await waitFor(() => expect(screen.getByText(/no expenses yet/i)).toBeInTheDocument());
   });
 });
