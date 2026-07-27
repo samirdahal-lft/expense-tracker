@@ -25,9 +25,16 @@
   still holds exactly one expense — none added, none removed.
 
 ## B-2: AC-3 [invariant] + AC-4 [invariant]: The update endpoint refuses precisely what the create endpoint refuses, names the offending field, and leaves the stored expense unchanged.
-- Given:
-- When:
-- Then:
+- Given: a store holding one valid expense — 1000 NPR, Food, dated 2026-07-01, note "lunch".
+- When: that expense is updated by its own id with a body that is invalid in exactly one field —
+  in turn: amount 0; amount -100; amount 12.5 (a fractional number, not a whole rupee); category
+  "Groceries" (outside the fixed set); date "not-a-date"; and date "2026-02-30" (well-formed but
+  not a real calendar day).
+- Then: every one of those is refused with a client-error status, and the error identifies the
+  offending field by name — `amount`, `category` or `date` respectively. The refusal happens at
+  the API itself, not in the browser. After each attempt the stored expense is byte-for-byte what
+  it was: 1000 NPR, Food, 2026-07-01, "lunch". The same bodies are refused by the create endpoint,
+  so editing is not a validation bypass.
 
 ## B-3: AC-5 [behavior]: Updating an unknown expense id is reported as not-found and mutates nothing.
 - Given:

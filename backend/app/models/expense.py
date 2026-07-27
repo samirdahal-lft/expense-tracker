@@ -28,17 +28,16 @@ class ExpenseCreate(BaseModel):
         return v
 
 
-class ExpenseUpdate(BaseModel):
+class ExpenseUpdate(ExpenseCreate):
     """Full replacement of an existing expense's four editable fields.
+
+    Derives from ExpenseCreate rather than restating its fields, so the rules an
+    edit must satisfy are the SAME OBJECT as the rules a creation must satisfy —
+    editing cannot become a validation bypass, and the two cannot drift apart.
 
     `id` and `created_at` are server-owned and are deliberately absent here — no
     request body can carry them, so no request can alter them.
     """
-
-    amount: int
-    category: Category
-    date: str
-    note: Optional[str] = None
 
 
 class ExpenseOut(BaseModel):
