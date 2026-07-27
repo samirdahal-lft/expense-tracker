@@ -83,9 +83,14 @@
   three fields are untouched — it is still 1000 NPR under Food on 2026-07-01.
 
 ## B-6: AC-8 [behavior]: Dismissing the edit form without submitting mutates nothing and issues no update request.
-- Given:
-- When:
-- Then:
+- Given: the app is listing an expense of 1000 NPR under Food, dated 2026-07-01, note "lunch",
+  and the user has opened edit on it and typed changes into it — a different amount and a
+  different category — but has not saved.
+- When: the user dismisses the form instead of submitting it.
+- Then: the form closes, and no update request is issued at all — abandoning an edit is not a
+  silent save. The listed expense still reads 1000 NPR, Food, 2026-07-01, "lunch": the typed-but-
+  unsaved changes are discarded. Re-opening edit on that row shows its stored values again, not
+  the abandoned draft.
 
 ## B-7: AC-9 [e2e, UI half]: In the running app, a user viewing the expense list opens an entry, changes its amount and category, saves, and sees the updated row and the re-reflected per-category summary without reloading the page.
 - Given:

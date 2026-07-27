@@ -59,7 +59,7 @@ export default function App() {
         {editing ? (
           <section className={cn("mb-6 rounded-lg border bg-card p-6 shadow-sm text-card-foreground")}>
             <h2 className="mb-4 text-lg font-medium">Edit expense</h2>
-            <EditExpenseForm key={editing.id} expense={editing} onSave={handleSaveEdit} />
+            <EditExpenseForm key={editing.id} expense={editing} onSave={handleSaveEdit} onCancel={() => setEditing(null)} />
           </section>
         ) : null}
 

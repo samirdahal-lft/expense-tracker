@@ -6,6 +6,8 @@ interface EditExpenseFormProps {
   expense: Expense;
   /** Called with the full replacement values when the user saves. */
   onSave: (input: ExpenseInput) => Promise<void>;
+  /** Called when the user abandons the edit. Nothing is sent and the draft is dropped. */
+  onCancel: () => void;
 }
 
 const inputClass =
@@ -17,7 +19,7 @@ const inputClass =
  * current values so the user edits what is there rather than retyping the entry;
  * an absent note seeds an empty field.
  */
-export function EditExpenseForm({ expense, onSave }: EditExpenseFormProps) {
+export function EditExpenseForm({ expense, onSave, onCancel }: EditExpenseFormProps) {
   const [amount, setAmount] = useState(String(expense.amount));
   const [category, setCategory] = useState<Category>(expense.category);
   const [date, setDate] = useState(expense.date);
@@ -104,6 +106,13 @@ export function EditExpenseForm({ expense, onSave }: EditExpenseFormProps) {
         className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm transition-opacity hover:opacity-90 disabled:opacity-50"
       >
         {submitting ? "Saving…" : "Save changes"}
+      </button>
+      <button
+        type="button"
+        onClick={onCancel}
+        className="inline-flex h-10 items-center justify-center rounded-md border border-input px-4 text-sm font-medium transition-colors hover:bg-secondary"
+      >
+        Cancel
       </button>
       {error ? <p className="text-sm text-destructive sm:col-span-full">{error}</p> : null}
     </form>
