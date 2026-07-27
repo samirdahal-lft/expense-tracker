@@ -1,3 +1,8 @@
+---
+approved_by: "Samir dahal"
+approved_at: "2026-07-27"
+approved_sha256: "3a8cf3f8163d7a5eb80b94f66f4263e60ff8c71414f7828aea24e15f4aa2935a"
+---
 ## Verification — Task T-edit-bf02tp — 2026-07-27
 > Critic anchored to TSD (external spec), NOT to the code. ★GATE: owner confirms/dismisses every flag.
 
