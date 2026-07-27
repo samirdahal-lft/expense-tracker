@@ -94,3 +94,16 @@ def test_update_refuses_what_create_refuses_and_changes_nothing(client, field, b
     listed = client.get("/api/expenses").json()
     assert len(listed) == 1
     assert listed[0] == {"id": expense_id, **ORIGINAL}
+
+
+def test_update_unknown_id_is_not_found_and_changes_nothing(client):
+    # B-3: an update against an id nobody holds is reported as not-found (AC-5).
+    # It must not upsert: the store keeps exactly the one expense it had.
+    expense_id = _seed(**ORIGINAL)
+
+    resp = client.put("/api/expenses/99999", json=_valid_body())
+
+    assert resp.status_code == 404
+    listed = client.get("/api/expenses").json()
+    assert len(listed) == 1  # nothing created to satisfy the unknown id
+    assert listed[0] == {"id": expense_id, **ORIGINAL}  # and nothing touched
