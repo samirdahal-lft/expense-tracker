@@ -54,6 +54,17 @@ export function createExpense(input: ExpenseInput): Promise<Expense> {
   });
 }
 
+/**
+ * Replace an existing expense's four editable fields; resolves to the updated resource.
+ * A full replacement, not a partial patch — an omitted note clears the stored note.
+ */
+export function updateExpense(id: number, input: ExpenseInput): Promise<Expense> {
+  return apiFetch<Expense>(`/expenses/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(input),
+  });
+}
+
 /** Delete an expense by id. */
 export function deleteExpense(id: number): Promise<void> {
   return apiFetch<void>(`/expenses/${id}`, { method: "DELETE" });

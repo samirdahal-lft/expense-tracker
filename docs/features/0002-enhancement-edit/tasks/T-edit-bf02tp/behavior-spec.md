@@ -72,9 +72,15 @@
   placeholder.
 
 ## B-5: AC-7 [behavior]: Submitting the form empties the note when the note field is submitted empty — the note is a replaced field, not a preserved one.
-- Given:
-- When:
-- Then:
+- Given: the app is listing an expense of 1000 NPR under Food, dated 2026-07-01, whose note
+  currently reads "lunch", and the user has opened edit on it.
+- When: the user clears the note field — leaving it empty, or holding only whitespace — and saves,
+  changing nothing else.
+- Then: the expense no longer carries a note: the listed row shows no note text. The update that
+  went over the wire carried the emptied note as an absent one rather than omitting the field and
+  letting the old value stand — the note is replaced, not preserved. Whitespace alone counts as
+  empty, matching how the add form already treats a blank note at creation. The expense's other
+  three fields are untouched — it is still 1000 NPR under Food on 2026-07-01.
 
 ## B-6: AC-8 [behavior]: Dismissing the edit form without submitting mutates nothing and issues no update request.
 - Given:

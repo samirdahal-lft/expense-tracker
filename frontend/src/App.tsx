@@ -1,4 +1,4 @@
-import { deleteExpense, type Expense } from "@/api/client";
+import { deleteExpense, type Expense, type ExpenseInput, updateExpense } from "@/api/client";
 import { AddExpenseForm } from "@/features/expenses/AddExpenseForm";
 import { EditExpenseForm } from "@/features/expenses/EditExpenseForm";
 import { ExpenseList } from "@/features/expenses/ExpenseList";
@@ -24,6 +24,13 @@ export default function App() {
   function refreshAll() {
     reload();
     reloadSummary();
+  }
+
+  async function handleSaveEdit(input: ExpenseInput) {
+    if (!editing) return;
+    await updateExpense(editing.id, input);
+    setEditing(null);
+    reload();
   }
 
   async function handleDelete(id: number) {
@@ -52,7 +59,7 @@ export default function App() {
         {editing ? (
           <section className={cn("mb-6 rounded-lg border bg-card p-6 shadow-sm text-card-foreground")}>
             <h2 className="mb-4 text-lg font-medium">Edit expense</h2>
-            <EditExpenseForm key={editing.id} expense={editing} />
+            <EditExpenseForm key={editing.id} expense={editing} onSave={handleSaveEdit} />
           </section>
         ) : null}
 

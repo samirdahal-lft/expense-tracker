@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { CATEGORIES, type Category, type Expense } from "@/api/client";
+import { type FormEvent, useState } from "react";
+import { CATEGORIES, type Category, type Expense, type ExpenseInput } from "@/api/client";
 
 interface EditExpenseFormProps {
   /** The expense being corrected. Its current values seed every field. */
   expense: Expense;
+  /** Called with the full replacement values when the user saves. */
+  onSave: (input: ExpenseInput) => Promise<void>;
 }
 
 const inputClass =
@@ -15,14 +17,37 @@ const inputClass =
  * current values so the user edits what is there rather than retyping the entry;
  * an absent note seeds an empty field.
  */
-export function EditExpenseForm({ expense }: EditExpenseFormProps) {
+export function EditExpenseForm({ expense, onSave }: EditExpenseFormProps) {
   const [amount, setAmount] = useState(String(expense.amount));
   const [category, setCategory] = useState<Category>(expense.category);
   const [date, setDate] = useState(expense.date);
   const [note, setNote] = useState(expense.note ?? "");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setSubmitting(true);
+    try {
+      // A full replacement: a blank note is sent as no note, exactly as the add
+      // form treats a blank note at creation — so saving empty CLEARS the note.
+      await onSave({
+        amount: Number(amount),
+        category,
+        date,
+        note: note.trim() || undefined,
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save changes");
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <form
+      onSubmit={handleSubmit}
       aria-label="Edit expense"
       className="grid gap-4 sm:grid-cols-[1fr_1fr_1fr_2fr_auto] sm:items-end"
     >
@@ -75,10 +100,12 @@ export function EditExpenseForm({ expense }: EditExpenseFormProps) {
       </div>
       <button
         type="submit"
+        disabled={submitting}
         className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm transition-opacity hover:opacity-90 disabled:opacity-50"
       >
-        Save changes
+        {submitting ? "Saving…" : "Save changes"}
       </button>
+      {error ? <p className="text-sm text-destructive sm:col-span-full">{error}</p> : null}
     </form>
   );
 }
