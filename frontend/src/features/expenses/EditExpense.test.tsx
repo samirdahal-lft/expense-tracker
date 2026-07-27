@@ -65,9 +65,14 @@ function statefulFetch(initial: Row[]) {
   return fn;
 }
 
+/** The expense list lives in <main>; the summary renders its own list, so scope to it. */
+async function expenseList() {
+  return within(await screen.findByRole("main"));
+}
+
 /** Open the edit form on the first listed row and return a scope over that form. */
 async function openEditForm() {
-  const list = within(await screen.findByRole("list"));
+  const list = await expenseList();
   fireEvent.click(list.getByRole("button", { name: /^edit/i }));
   return within(await screen.findByRole("form", { name: /edit expense/i }));
 }
