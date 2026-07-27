@@ -107,3 +107,26 @@ def test_update_unknown_id_is_not_found_and_changes_nothing(client):
     listed = client.get("/api/expenses").json()
     assert len(listed) == 1  # nothing created to satisfy the unknown id
     assert listed[0] == {"id": expense_id, **ORIGINAL}  # and nothing touched
+
+
+def test_update_moving_amount_between_categories_reconciles_in_summary(client):
+    # B-4 (backfill): the store half of AC-9 — an edit that moves an amount from one
+    # category to another is reflected by the summary endpoint, against the real store.
+    food_id = _seed(1000, "Food", "2026-07-01", "lunch", "2026-07-01T10:00:00Z")
+    _seed(500, "Transport", "2026-07-02", "bus", "2026-07-02T10:00:00Z")
+
+    before = {row["category"]: row["total"] for row in client.get("/api/summary").json()["by_category"]}
+    assert (before["Food"], before["Transport"]) == (1000, 500)
+
+    resp = client.put(
+        f"/api/expenses/{food_id}",
+        json={"amount": 400, "category": "Transport", "date": "2026-07-01", "note": "taxi"},
+    )
+    assert resp.status_code == 200
+
+    summary = client.get("/api/summary").json()
+    totals = {row["category"]: row["total"] for row in summary["by_category"]}
+    assert totals["Food"] == 0  # the amount left Food entirely
+    assert totals["Transport"] == 900  # 500 already there + the 400 that moved
+    assert summary["total"] == 900
+    assert sum(totals.values()) == summary["total"]  # the breakdown still sums to the total
