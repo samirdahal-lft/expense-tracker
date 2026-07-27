@@ -135,3 +135,36 @@ describe("B-5: submitting an emptied note clears it", () => {
     expect(list.getByText("2026-07-01")).toBeInTheDocument();
   });
 });
+
+describe("B-6: dismissing the edit form", () => {
+  it("issues no update request and discards the unsaved draft", async () => {
+    const fetchMock = statefulFetch([LUNCH]);
+    vi.stubGlobal("fetch", fetchMock);
+    render(<App />);
+
+    let form = await openEditForm();
+    fireEvent.change(form.getByLabelText(/amount/i), { target: { value: "9999" } });
+    fireEvent.change(form.getByLabelText(/category/i), { target: { value: "Bills" } });
+
+    fireEvent.click(form.getByRole("button", { name: /cancel/i }));
+
+    // the form is gone and nothing was sent — abandoning an edit is not a silent save
+    await waitFor(() =>
+      expect(screen.queryByRole("form", { name: /edit expense/i })).not.toBeInTheDocument(),
+    );
+    expect(
+      fetchMock.mock.calls.some(([, init]) => (init as RequestInit)?.method === "PUT"),
+    ).toBe(false);
+
+    // the listed expense is untouched
+    const list = await expenseList();
+    expect(list.getByText("Rs 1,000")).toBeInTheDocument();
+    expect(list.getByText("Food")).toBeInTheDocument();
+    expect(list.getByText("lunch")).toBeInTheDocument();
+
+    // and re-opening shows the stored values, not the abandoned draft
+    form = await openEditForm();
+    expect(form.getByLabelText(/amount/i)).toHaveValue(1000);
+    expect(form.getByLabelText(/category/i)).toHaveValue("Food");
+  });
+});
