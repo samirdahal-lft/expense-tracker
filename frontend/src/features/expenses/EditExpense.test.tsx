@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import App from "@/App";
 
@@ -104,5 +104,34 @@ describe("B-4: opening edit on a listed expense presents a pre-filled form", () 
 
     expect(form.getByLabelText(/note/i)).toBeInTheDocument();
     expect(form.getByLabelText(/note/i)).toHaveValue("");
+  });
+});
+
+describe("B-5: submitting an emptied note clears it", () => {
+  it("replaces the note rather than preserving the old one", async () => {
+    const fetchMock = statefulFetch([LUNCH]);
+    vi.stubGlobal("fetch", fetchMock);
+    render(<App />);
+
+    expect((await expenseList()).getByText("lunch")).toBeInTheDocument();
+
+    const form = await openEditForm();
+    fireEvent.change(form.getByLabelText(/note/i), { target: { value: "   " } }); // whitespace = empty
+    fireEvent.click(form.getByRole("button", { name: /save/i }));
+
+    // the note is gone from the listed expense
+    await waitFor(() => expect(screen.queryByText("lunch")).not.toBeInTheDocument());
+
+    // and it went over the wire as an emptied note, not an omitted field
+    const put = fetchMock.mock.calls.find(([, init]) => (init as RequestInit)?.method === "PUT");
+    expect(put, "an update request should have been issued").toBeDefined();
+    const sent = JSON.parse(String((put![1] as RequestInit).body)) as Partial<Row>;
+    expect(sent.note ?? "").toBe("");
+
+    // nothing else about the expense changed
+    const list = await expenseList();
+    expect(list.getByText("Rs 1,000")).toBeInTheDocument();
+    expect(list.getByText("Food")).toBeInTheDocument();
+    expect(list.getByText("2026-07-01")).toBeInTheDocument();
   });
 });
