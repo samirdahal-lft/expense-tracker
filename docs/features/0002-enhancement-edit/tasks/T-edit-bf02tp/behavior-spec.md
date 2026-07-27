@@ -7,33 +7,54 @@
 > final. One AC may be several behaviors (split it); the Critic may surface more (add
 > them). B-numbering is the Coordinator's, not fixed by AC count. Invariant /
 > non-functional ACs are not RED→GREEN cycles — any are listed in their own section.
+>
+> Renumbered against the approved exec plan (8 behaviors). Two departures from the
+> scaffold's seeding, both argued in the plan: AC-3 and AC-4 are driven as one cycle
+> (B-2) because they are one property — validation parity with create — satisfied by one
+> change; and AC-9 is driven as two (B-4 store, B-8 UI) because a green component test
+> alone does not make the behavior reachable.
 
-## B-1 (tracer bullet): AC-1 [behavior]: Submitting valid new values for an existing expense persists them — a subsequent read of the expense returns exactly the submitted amount, category, date, and note.
+## B-1 (tracer bullet): AC-1 [behavior] + AC-2 [invariant]: Submitting valid new values for an existing expense persists them — a subsequent read returns exactly the submitted amount, category, date and note — and the expense keeps its identity.
+- Given: a store holding exactly one expense — 1000 NPR, Food, dated 2026-07-01, note "lunch",
+  with a known server-stamped `created_at` — and no other expenses.
+- When: that expense is updated by its own id with a full set of valid new values: 2500 NPR,
+  Transport, dated 2026-07-05, note "taxi".
+- Then: the call succeeds and returns the complete updated expense; a subsequent read of the
+  store returns amount 2500, category Transport, date 2026-07-05 and note "taxi" for that
+  expense; its `id` and its original `created_at` are byte-for-byte unchanged; and the store
+  still holds exactly one expense — none added, none removed.
+
+## B-2: AC-3 [invariant] + AC-4 [invariant]: The update endpoint refuses precisely what the create endpoint refuses, names the offending field, and leaves the stored expense unchanged.
 - Given:
 - When:
 - Then:
 
-## B-2: AC-5 [behavior]: Updating an unknown expense id is reported as not-found and mutates nothing.
+## B-3: AC-5 [behavior]: Updating an unknown expense id is reported as not-found and mutates nothing.
 - Given:
 - When:
 - Then:
 
-## B-3: AC-6 [behavior]: Opening edit on a listed expense presents a form pre-filled with that expense's current amount, category, date, and note; an absent note presents as an empty field.
+## B-4: AC-9 [e2e, store half]: An update that moves an amount from one category to another reconciles in the per-category summary, against the real store.
 - Given:
 - When:
 - Then:
 
-## B-4: AC-7 [behavior]: Submitting the form empties the note when the note field is submitted empty — the note is a replaced field, not a preserved one.
+## B-5: AC-6 [behavior]: Opening edit on a listed expense presents a form pre-filled with that expense's current amount, category, date, and note; an absent note presents as an empty field.
 - Given:
 - When:
 - Then:
 
-## B-5: AC-8 [behavior]: Dismissing the edit form without submitting mutates nothing and issues no update request.
+## B-6: AC-7 [behavior]: Submitting the form empties the note when the note field is submitted empty — the note is a replaced field, not a preserved one.
 - Given:
 - When:
 - Then:
 
-## B-6: AC-9 [e2e]: In the running app, a user viewing the expense list opens an entry, changes its amount and category, saves, and sees the updated row and the re-reflected per-category summary without reloading the page.
+## B-7: AC-8 [behavior]: Dismissing the edit form without submitting mutates nothing and issues no update request.
+- Given:
+- When:
+- Then:
+
+## B-8: AC-9 [e2e, UI half]: In the running app, a user viewing the expense list opens an entry, changes its amount and category, saves, and sees the updated row and the re-reflected per-category summary without reloading the page.
 - Given:
 - When:
 - Then:
@@ -42,7 +63,6 @@
 > Not standalone behaviors to drive. An invariant usually holds as a property of a
 > behavior above (state which) or is locked by a guard test recorded off-ledger with
 > `lane red --regression`. Non-functional ACs are validated out-of-band (load test, etc.).
-- AC-2 [invariant]: The expense keeps its identity across an update — its `id` and its original `created_at` are unchanged, and no expense is added or removed. — coverage:
-- AC-3 [invariant]: An amount that is zero, negative, or non-integer is refused with a client error naming the offending field, and the stored expense is left unchanged. The refusal holds at the API, not only in the browser. — coverage:
-- AC-4 [invariant]: A category outside the fixed set, and a malformed or non-calendar date, are refused on the same terms as at creation — editing is not a validation bypass. — coverage:
-
+- AC-2 [invariant]: The expense keeps its identity across an update — its `id` and its original `created_at` are unchanged, and no expense is added or removed. — coverage: **a property of B-1**, asserted in the same cycle: B-1's Then requires the original `id` and `created_at` to survive the update and the expense count to be unchanged. It is not a separate cycle because there is no way to observe it except through a successful update.
+- AC-3 [invariant]: An amount that is zero, negative, or non-integer is refused with a client error naming the offending field, and the stored expense is left unchanged. The refusal holds at the API, not only in the browser. — coverage: **driven as B-2**, its own RED→GREEN cycle rather than an off-ledger guard. `lane red --regression` would be wrong here: a guard must pass at the task's base, and at base there is no update endpoint to refuse anything — this is new behavior this task introduces, so it earns a real test-first cycle. Asserted at the API, not in the browser.
+- AC-4 [invariant]: A category outside the fixed set, and a malformed or non-calendar date, are refused on the same terms as at creation — editing is not a validation bypass. — coverage: **driven as B-2**, the same cycle as AC-3 and for the same reason. The two ACs are one property — the update path refuses exactly what the create path refuses — and one change satisfies both: the update model derives its rules from the create model instead of restating them, so the two cannot drift apart.

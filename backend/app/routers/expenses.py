@@ -1,7 +1,7 @@
 """Expense HTTP routes. Thin — validation/serialization via Pydantic, logic in the service."""
 from fastapi import APIRouter, HTTPException, status
 
-from app.models.expense import ExpenseCreate, ExpenseOut, Summary
+from app.models.expense import ExpenseCreate, ExpenseOut, ExpenseUpdate, Summary
 from app.services import expenses as service
 
 router = APIRouter(prefix="/api", tags=["expenses"])
@@ -20,6 +20,11 @@ def get_summary() -> dict:
 @router.post("/expenses", response_model=ExpenseOut, status_code=status.HTTP_201_CREATED)
 def create_expense(payload: ExpenseCreate) -> dict:
     return service.create_expense(payload)
+
+
+@router.put("/expenses/{expense_id}", response_model=ExpenseOut)
+def update_expense(expense_id: int, payload: ExpenseUpdate) -> dict:
+    return service.update_expense(expense_id, payload)
 
 
 @router.delete("/expenses/{expense_id}", status_code=status.HTTP_204_NO_CONTENT)

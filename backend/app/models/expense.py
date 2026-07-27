@@ -28,6 +28,19 @@ class ExpenseCreate(BaseModel):
         return v
 
 
+class ExpenseUpdate(BaseModel):
+    """Full replacement of an existing expense's four editable fields.
+
+    `id` and `created_at` are server-owned and are deliberately absent here — no
+    request body can carry them, so no request can alter them.
+    """
+
+    amount: int
+    category: Category
+    date: str
+    note: Optional[str] = None
+
+
 class ExpenseOut(BaseModel):
     id: int
     amount: int

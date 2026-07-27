@@ -37,6 +37,34 @@ def add_expense(
         conn.close()
 
 
+def update_expense(
+    expense_id: int, amount: int, category: str, date: str, note: str | None
+) -> dict | None:
+    """Replace the four editable columns of one expense; return the updated row.
+
+    Returns None when no row carries this id. `id` and `created_at` are absent
+    from the SET clause on purpose — they are server-owned and never rewritten.
+    """
+    conn = get_connection()
+    try:
+        cur = conn.execute(
+            "UPDATE expenses SET amount = ?, category = ?, date = ?, note = ? "
+            "WHERE id = ?",
+            (amount, category, date, note, expense_id),
+        )
+        conn.commit()
+        if cur.rowcount == 0:
+            return None
+        row = conn.execute(
+            "SELECT id, amount, category, date, note, created_at "
+            "FROM expenses WHERE id = ?",
+            (expense_id,),
+        ).fetchone()
+        return dict(row)
+    finally:
+        conn.close()
+
+
 def delete_expense(expense_id: int) -> int:
     """Delete the expense with this id. Returns the number of rows removed (0 if absent)."""
     conn = get_connection()

@@ -1,7 +1,7 @@
 """Expense service — business/domain logic for expenses."""
 from datetime import datetime, timezone
 
-from app.models.expense import CATEGORIES, ExpenseCreate
+from app.models.expense import CATEGORIES, ExpenseCreate, ExpenseUpdate
 from app.repositories import expenses as repo
 
 
@@ -18,6 +18,17 @@ def create_expense(data: ExpenseCreate) -> dict:
         date=data.date,
         note=data.note,
         created_at=created_at,
+    )
+
+
+def update_expense(expense_id: int, data: ExpenseUpdate) -> dict | None:
+    """Replace an expense's editable fields. No clock: created_at is never restamped."""
+    return repo.update_expense(
+        expense_id=expense_id,
+        amount=data.amount,
+        category=data.category,
+        date=data.date,
+        note=data.note,
     )
 
 
