@@ -168,3 +168,46 @@ describe("B-6: dismissing the edit form", () => {
     expect(form.getByLabelText(/category/i)).toHaveValue("Food");
   });
 });
+
+/** The per-category summary panel. */
+async function summaryPanel() {
+  return within(await screen.findByRole("region", { name: /spending by category/i }));
+}
+
+/** The amount the summary currently attributes to one category. */
+function totalFor(panel: ReturnType<typeof within>, category: string) {
+  const row = panel
+    .getAllByRole("listitem")
+    .find((li: HTMLElement) => li.textContent?.trim().startsWith(category));
+  return row ? within(row).getByText(/^Rs /).textContent : null;
+}
+
+describe("B-7 (e2e): editing an entry updates the list and the summary without a reload", () => {
+  it("re-reflects the change in both views in the same interaction", async () => {
+    vi.stubGlobal("fetch", statefulFetch([LUNCH]));
+    render(<App />);
+
+    // starting point: one Food expense, and a summary that agrees with it
+    let panel = await summaryPanel();
+    expect(totalFor(panel, "Food")).toBe("Rs 1,000");
+    expect(totalFor(panel, "Transport")).toBe("Rs 0");
+    expect(totalFor(panel, "Total")).toBe("Rs 1,000");
+
+    // the user corrects the entry: a different amount AND a different category
+    const form = await openEditForm();
+    fireEvent.change(form.getByLabelText(/amount/i), { target: { value: "2500" } });
+    fireEvent.change(form.getByLabelText(/category/i), { target: { value: "Transport" } });
+    fireEvent.click(form.getByRole("button", { name: /save/i }));
+
+    // the row reflects it…
+    const list = await expenseList();
+    await waitFor(() => expect(list.getByText("Rs 2,500")).toBeInTheDocument());
+    expect(list.getByText("Transport")).toBeInTheDocument();
+
+    // …and so does the summary, in the same interaction, with no page reload
+    panel = await summaryPanel();
+    await waitFor(() => expect(totalFor(panel, "Transport")).toBe("Rs 2,500"));
+    expect(totalFor(panel, "Food")).toBe("Rs 0");
+    expect(totalFor(panel, "Total")).toBe("Rs 2,500");
+  });
+});
