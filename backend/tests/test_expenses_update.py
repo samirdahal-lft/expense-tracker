@@ -1,5 +1,19 @@
 """Correct a recorded expense — update by id (T-edit-bf02tp)."""
+import pytest
+
 from app.db import get_connection
+
+ORIGINAL = {
+    "amount": 1000,
+    "category": "Food",
+    "date": "2026-07-01",
+    "note": "lunch",
+    "created_at": "2026-07-01T10:00:00Z",
+}
+
+
+def _valid_body() -> dict:
+    return {"amount": 2500, "category": "Transport", "date": "2026-07-05", "note": "taxi"}
 
 
 def _seed(amount, category, date, note, created_at) -> int:
@@ -48,3 +62,35 @@ def test_update_persists_new_values_and_keeps_identity(client):
         "note": "taxi",
         "created_at": created_at,  # server-owned, never restamped
     }
+
+
+@pytest.mark.parametrize(
+    ("field", "bad_value"),
+    [
+        ("amount", 0),  # not a positive amount
+        ("amount", -100),  # negative
+        ("amount", 12.5),  # not a whole rupee
+        ("category", "Groceries"),  # outside the fixed set
+        ("date", "not-a-date"),  # malformed
+        ("date", "2026-02-30"),  # well-formed but not a real calendar day
+    ],
+)
+def test_update_refuses_what_create_refuses_and_changes_nothing(client, field, bad_value):
+    # B-2: editing is not a validation bypass (AC-3, AC-4). Each bad value is refused
+    # at the API, the offending field is named, and the stored expense is untouched.
+    expense_id = _seed(**ORIGINAL)
+    body = {**_valid_body(), field: bad_value}
+
+    resp = client.put(f"/api/expenses/{expense_id}", json=body)
+
+    assert resp.status_code == 422, f"{field}={bad_value!r} should be refused"
+    named_fields = {loc for item in resp.json()["detail"] for loc in item["loc"]}
+    assert field in named_fields, f"the error should name {field}: {resp.json()['detail']}"
+
+    # the same body is refused at creation too — the two paths agree
+    assert client.post("/api/expenses", json=body).status_code == 422
+
+    # nothing moved
+    listed = client.get("/api/expenses").json()
+    assert len(listed) == 1
+    assert listed[0] == {"id": expense_id, **ORIGINAL}
