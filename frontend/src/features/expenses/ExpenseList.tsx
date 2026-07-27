@@ -6,10 +6,11 @@ interface ExpenseListProps {
   loading: boolean;
   error: string | null;
   onDelete: (id: number) => void;
+  onEdit: (expense: Expense) => void;
 }
 
 /** Renders the expense list with deliberate loading and empty states. */
-export function ExpenseList({ expenses, loading, error, onDelete }: ExpenseListProps) {
+export function ExpenseList({ expenses, loading, error, onDelete, onEdit }: ExpenseListProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16 text-muted-foreground">
@@ -50,6 +51,14 @@ export function ExpenseList({ expenses, loading, error, onDelete }: ExpenseListP
           </div>
           <div className="flex shrink-0 items-center gap-3">
             <span className="font-semibold tabular-nums">{formatNpr(e.amount)}</span>
+            <button
+              type="button"
+              aria-label={`Edit ${e.category} expense of ${formatNpr(e.amount)}`}
+              onClick={() => onEdit(e)}
+              className="rounded-md px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            >
+              Edit
+            </button>
             <button
               type="button"
               aria-label={`Delete ${e.category} expense of ${formatNpr(e.amount)}`}

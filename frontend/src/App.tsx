@@ -1,5 +1,6 @@
-import { deleteExpense } from "@/api/client";
+import { deleteExpense, type Expense } from "@/api/client";
 import { AddExpenseForm } from "@/features/expenses/AddExpenseForm";
+import { EditExpenseForm } from "@/features/expenses/EditExpenseForm";
 import { ExpenseList } from "@/features/expenses/ExpenseList";
 import { CategorySummary } from "@/features/summary/CategorySummary";
 import { ThemeToggle } from "@/features/theme/ThemeToggle";
@@ -7,6 +8,7 @@ import { useExpenses } from "@/hooks/useExpenses";
 import { useSummary } from "@/hooks/useSummary";
 import { useTheme } from "@/hooks/useTheme";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 /**
  * Application shell: add form, category summary (donut), expense list, and a
@@ -17,6 +19,7 @@ export default function App() {
   const { expenses, loading, error, reload } = useExpenses();
   const { summary, loading: summaryLoading, error: summaryError, reload: reloadSummary } = useSummary();
   const { theme, toggle } = useTheme();
+  const [editing, setEditing] = useState<Expense | null>(null);
 
   function refreshAll() {
     reload();
@@ -46,13 +49,20 @@ export default function App() {
           <AddExpenseForm onCreated={refreshAll} />
         </section>
 
+        {editing ? (
+          <section className={cn("mb-6 rounded-lg border bg-card p-6 shadow-sm text-card-foreground")}>
+            <h2 className="mb-4 text-lg font-medium">Edit expense</h2>
+            <EditExpenseForm key={editing.id} expense={editing} />
+          </section>
+        ) : null}
+
         <div className="mb-6">
           <CategorySummary summary={summary} loading={summaryLoading} error={summaryError} />
         </div>
 
         <main className={cn("rounded-lg border bg-card p-6 shadow-sm text-card-foreground")}>
           <h2 className="mb-2 text-lg font-medium">Expenses</h2>
-          <ExpenseList expenses={expenses} loading={loading} error={error} onDelete={handleDelete} />
+          <ExpenseList expenses={expenses} loading={loading} error={error} onDelete={handleDelete} onEdit={setEditing} />
         </main>
       </div>
     </div>

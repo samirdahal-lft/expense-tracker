@@ -8,10 +8,10 @@
 > them). B-numbering is the Coordinator's, not fixed by AC count. Invariant /
 > non-functional ACs are not RED→GREEN cycles — any are listed in their own section.
 >
-> Renumbered against the approved exec plan (8 behaviors). Two departures from the
+> Renumbered against the approved exec plan (7 on-ledger behaviors + 1 off-ledger back-fill). Two departures from the
 > scaffold's seeding, both argued in the plan: AC-3 and AC-4 are driven as one cycle
 > (B-2) because they are one property — validation parity with create — satisfied by one
-> change; and AC-9 is driven as two (B-4 store, B-8 UI) because a green component test
+> change; and AC-9 is driven as two (BF-1 store, B-7 UI) because a green component test
 > alone does not make the behavior reachable.
 
 ## B-1 (tracer bullet): AC-1 [behavior] + AC-2 [invariant]: Submitting valid new values for an existing expense persists them — a subsequent read returns exactly the submitted amount, category, date and note — and the expense keeps its identity.
@@ -43,27 +43,45 @@
 - Then: the call is reported as not-found. Nothing is created to satisfy it — the store still
   holds exactly one expense — and the expense that does exist is unchanged in every field.
 
-## B-4: AC-9 [e2e, store half]: An update that moves an amount from one category to another reconciles in the per-category summary, against the real store.
+## BF-1 (off-ledger back-fill, consumed no behavior number; the test's inline comment reads "B-4 (backfill)" — written before this renumbering): AC-9 [e2e, store half]: An update that moves an amount from one category to another reconciles in the per-category summary, against the real store.
+> **Off-ledger — recorded with `lane red --backfill`, not a test-first cycle.** The exec plan
+> listed this as a RED→GREEN behavior; that was wrong, and this is the honest correction rather
+> than a manufactured failure. The summary endpoint already existed at this task's base, and once
+> B-1 made the update path write the row, reconciliation followed with no further code. The test
+> was therefore verified to PASS before it was written down — there is no failing state to record.
+> It is not a `--regression` guard either: a guard must pass at the task's BASE, and at base there
+> was no update endpoint at all. So it is a backfill: real behavior this task introduces, tested
+> after the fact, counted apart from the test-first proof. The TSD names this integration test
+> explicitly, so it is kept rather than dropped.
+- Given: a store holding two expenses — 1000 NPR under Food and 500 NPR under Transport — whose
+  summary therefore reports Food 1000, Transport 500, and a grand total of 1500.
+- When: the Food expense is updated to 400 NPR under Transport, moving its amount between
+  categories in a single edit.
+- Then: a subsequent read of the summary reports Food 0 and Transport 900, with a grand total of
+  900. Every fixed category is still present, and the per-category totals still sum to the grand
+  total. This is asserted against the real SQLite store through the real HTTP API — no stub.
+
+## B-4: AC-6 [behavior]: Opening edit on a listed expense presents a form pre-filled with that expense's current amount, category, date, and note; an absent note presents as an empty field.
+- Given: the app is showing its expense list, and that list holds an expense of 1000 NPR under
+  Food, dated 2026-07-01, with the note "lunch" — and, separately, one with no note at all.
+- When: the user opens edit on that listed row.
+- Then: an edit form appears, distinct from the add-an-expense form, and every one of its four
+  fields already holds that expense's current value — amount 1000, category Food, date
+  2026-07-01, note "lunch" — so the user corrects a value rather than retyping the entry. For the
+  expense that has no note, the note field is present and empty, not absent and not filled with a
+  placeholder.
+
+## B-5: AC-7 [behavior]: Submitting the form empties the note when the note field is submitted empty — the note is a replaced field, not a preserved one.
 - Given:
 - When:
 - Then:
 
-## B-5: AC-6 [behavior]: Opening edit on a listed expense presents a form pre-filled with that expense's current amount, category, date, and note; an absent note presents as an empty field.
+## B-6: AC-8 [behavior]: Dismissing the edit form without submitting mutates nothing and issues no update request.
 - Given:
 - When:
 - Then:
 
-## B-6: AC-7 [behavior]: Submitting the form empties the note when the note field is submitted empty — the note is a replaced field, not a preserved one.
-- Given:
-- When:
-- Then:
-
-## B-7: AC-8 [behavior]: Dismissing the edit form without submitting mutates nothing and issues no update request.
-- Given:
-- When:
-- Then:
-
-## B-8: AC-9 [e2e, UI half]: In the running app, a user viewing the expense list opens an entry, changes its amount and category, saves, and sees the updated row and the re-reflected per-category summary without reloading the page.
+## B-7: AC-9 [e2e, UI half]: In the running app, a user viewing the expense list opens an entry, changes its amount and category, saves, and sees the updated row and the re-reflected per-category summary without reloading the page.
 - Given:
 - When:
 - Then:
