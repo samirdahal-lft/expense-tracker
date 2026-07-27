@@ -37,9 +37,11 @@
   so editing is not a validation bypass.
 
 ## B-3: AC-5 [behavior]: Updating an unknown expense id is reported as not-found and mutates nothing.
-- Given:
-- When:
-- Then:
+- Given: a store holding exactly one expense — 1000 NPR, Food, dated 2026-07-01, note "lunch" —
+  and an id that belongs to no expense.
+- When: an otherwise entirely valid update is submitted against that unknown id.
+- Then: the call is reported as not-found. Nothing is created to satisfy it — the store still
+  holds exactly one expense — and the expense that does exist is unchanged in every field.
 
 ## B-4: AC-9 [e2e, store half]: An update that moves an amount from one category to another reconciles in the per-category summary, against the real store.
 - Given:

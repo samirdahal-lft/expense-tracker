@@ -24,7 +24,10 @@ def create_expense(payload: ExpenseCreate) -> dict:
 
 @router.put("/expenses/{expense_id}", response_model=ExpenseOut)
 def update_expense(expense_id: int, payload: ExpenseUpdate) -> dict:
-    return service.update_expense(expense_id, payload)
+    updated = service.update_expense(expense_id, payload)
+    if updated is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Expense not found")
+    return updated
 
 
 @router.delete("/expenses/{expense_id}", status_code=status.HTTP_204_NO_CONTENT)
