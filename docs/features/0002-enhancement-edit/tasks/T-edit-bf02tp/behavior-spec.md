@@ -93,9 +93,14 @@
   the abandoned draft.
 
 ## B-7: AC-9 [e2e, UI half]: In the running app, a user viewing the expense list opens an entry, changes its amount and category, saves, and sees the updated row and the re-reflected per-category summary without reloading the page.
-- Given:
-- When:
-- Then:
+- Given: the app is running and showing a single recorded expense of 1000 NPR under Food, with
+  the per-category summary alongside it reporting Food 1000, Transport 0 and a total of 1000.
+- When: the user opens that entry, changes its amount to 2500 and its category to Transport, and
+  saves — performing no page reload of any kind.
+- Then: the listed row now reads Rs 2,500 under Transport. The summary beside it has re-reflected
+  the same change in the same interaction: Food has dropped to 0, Transport reads Rs 2,500, and
+  the total reads Rs 2,500. Both views are consistent with the store, and neither required the
+  user to refresh the page — this is the whole slice observable end to end.
 
 ## Invariants & non-functional ACs (NOT RED→GREEN cycles)
 > Not standalone behaviors to drive. An invariant usually holds as a property of a

@@ -30,7 +30,7 @@ export default function App() {
     if (!editing) return;
     await updateExpense(editing.id, input);
     setEditing(null);
-    reload();
+    refreshAll(); // an edit can move an amount between categories — the summary must re-reflect it
   }
 
   async function handleDelete(id: number) {
