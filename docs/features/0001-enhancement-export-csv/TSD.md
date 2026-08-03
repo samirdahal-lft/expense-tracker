@@ -1,22 +1,30 @@
 ---
-approved_by: ""
-approved_at: ""
+approved_by: "Samir dahal"
+approved_at: "2026-08-03"
+approved_sha256: "3c668e96fcf107250d6a16df71f8d225acc1541df1bab9dee00eabbf82e6d347"
 ---
-# TSD 0001 — <feature title>
+# TSD 0001 — Export expenses to CSV
 > Behavior + contracts ONLY. Never name the library/method/pattern (over-spec = defeats spec-first).
 > One section per PRD story. Critic anchors to this as the external executable spec.
 > Story IDs are S-0001.nn — the 0001 prefix is what resolves this folder (docs/features/0001-*/),
 > so the `## TSD S-0001.nn` header below must match the story ID exactly.
 
-<!-- Domain-neutral default rows — tailor `.lane/templates/TSD.md` to your stack
-     (web: DB / API / Frontend · pipeline: sources / transforms / sinks ·
-      CLI: commands / flags / output · library: public API / invariants). -->
-## TSD S-0001.01 — <title>  (PRD §S-0001.01)
+**Grounding decision (BLUEPRINT):** the CSV is produced in the frontend from the expense list the
+app already holds — **no new API surface, no backend change**. The app has no pagination or
+filtering (`docs/context/PRODUCT.md`), so the loaded list *is* the complete dataset, and the
+existing boundary rules already have a home for this: a pure helper in `frontend/src/lib/`
+(alongside the money formatter) plus a presentational control under
+`frontend/src/features/expenses/`. Adding a server endpoint would introduce a second, redundant
+definition of the export format across the hand-mirrored contract boundary. Consequence
+accepted: the exported rows are the rows the client currently has — a stale client exports stale
+rows, exactly as its list already displays stale rows.
+
+## TSD S-0001.01 — Export expenses to CSV  (PRD §S-0001.01)
 | Aspect | Spec |
 |--------|------|
-| Interfaces | contracts this exposes/consumes — endpoints, CLI flags, function/SDK signatures, events, queues |
-| Data / State | persistent or in-memory state it touches — schemas, files, formats (empty if none) |
-| Behavior | the observable behavior delivered |
-| Access | who/what may invoke it (empty if N/A) |
-| Boundaries | external deps we DON'T own — network/external services, clock, randomness, filesystem. A *what* ("external mail provider"), not a library. Injected as ports; faked in unit/integration. (empty if none) |
-| Tests | unit (what logic) / integration (which flows) / smoke (critical path — **required when Boundaries non-empty**: exercises the real boundary in a realistic environment) |
+| Interfaces | **(a) Pure serializer** — a function taking the ordered list of expense records and returning CSV **text**: header row `date,category,amount,note`, then one row per record **in the order given** (the caller passes the list in display order — newest first). Total rows = records + 1. Fields per row, in that fixed column order: `date` as `YYYY-MM-DD`; `category` verbatim from the fixed set; `amount` as a bare base-10 integer of whole NPR (`2500` — no `Rs`, no thousands separator, no decimal point); `note` as the user's text, or **empty** when absent (never the words `undefined`/`null`). Rows are terminated by CRLF (`\r\n`), including the last. Quoting per RFC 4180: a field is wrapped in double quotes **iff** it contains a comma, a double quote, CR, or LF; an embedded double quote is doubled (`he said "hi"` → `"he said ""hi"""`); no other field is quoted. An empty record list still yields the header row alone — the serializer never decides *whether* to export. **(b) Export action** — invoked from the expenses screen; takes the current list, and either (empty list) produces no file and reports *nothing to export*, or (non-empty) hands the serialized text to the file-download boundary as a UTF-8 `text/csv` file named `expenses-<YYYY-MM-DD>.csv` (today's date, local calendar day) and reports success. It returns/exposes exactly one outcome — nothing-to-export **or** success — never both. **(c) UI surface** — a control on the expenses screen labelled for export (accessible name states the action), keyboard-reachable in normal tab order, plus a live status region that carries whichever message the action produced. |
+| Data / State | Reads only the in-memory expense list the screen already holds (`id`, `amount`, `category`, `date`, `note`, `created_at`). **Writes nothing** — no request is issued, no persistent store is touched, no client state other than the transient status message. Output artifact: a CSV text file, UTF-8 with a byte-order mark so a spreadsheet opens non-ASCII notes correctly (the BOM is added at the download boundary, not by the serializer, so the serialized text stays assertable as plain CSV). `id` and `created_at` are deliberately **not** columns — the approved AC set defines the file as date, category, amount, note. |
+| Behavior | AC-1 — with ≥1 expense, activating export yields a downloadable file: header row + one row per expense, in the list's own order (newest first). AC-2 — every row carries date/category/amount/note per the column contract above; a missing note is an empty field. AC-3 — a note containing `,`, `"`, or a line break is quoted (and its quotes doubled), so the row keeps its four columns and reads back byte-identical to what the user typed. AC-4 — with zero expenses, **no file is produced** and the user is told there is nothing to export. AC-5 — a success confirmation appears only when a file was produced; the two messages are mutually exclusive, and the previous message is replaced (not accumulated) on a repeat activation. AC-6 — export is read-only: no create/update/delete, no list or summary refresh, no observable change to what the user is looking at. AC-7 — the control lives on the expenses screen; using it never navigates away or reloads. AC-8 — the control has an accessible name and keyboard access; the status message is exposed to assistive technology as a status update, not by colour alone. |
+| Access | The single owner of the app (`docs/context/PRODUCT.md`: no accounts, no roles). Export exposes exactly the data the screen already displays, so it grants no access the UI does not already give. Available whenever the expenses screen is loaded, including while the list is empty (that is the nothing-to-export path). Not reachable as an API — it is a client-side action only. |
+| Boundaries | **(1) The browser's file-download facility** — turning text into a file the user receives, and the resource handle that implies. Not owned by us; reached through one seam so the export action can be exercised without a real download, and released after use so repeated exports leak nothing. **(2) The clock** — today's calendar date for the filename. Injected/fakeable; the serializer itself must be clock-free so its output is deterministic. No network boundary is introduced (no request is made) and no filesystem access beyond handing the file to the browser. |
+| Tests | **Unit** (pure serializer, no DOM): header row present and exact; row count and order match the input; integer amount rendered bare (`2500`, not `Rs 2,500` and not `2500.0`); absent note → empty field, never `undefined`; comma/quote/newline notes quoted and quotes doubled with the column count preserved; a field needing no quoting is left unquoted; empty input → header row only; CRLF row termination. **Integration** (the running app with the API stubbed at the network seam, per CONSTITUTION convention 15 — render the app, drive the real control, fake the download boundary and the clock): with expenses loaded, activating export produces exactly one file whose name is `expenses-<today>.csv` and whose content matches the serializer's output, and the success message appears; with an empty list, **no** file is produced and the nothing-to-export message appears with no success message; activating twice replaces rather than stacks the message; no write request is issued and the rendered list/summary are unchanged (AC-6); the control is reachable and named for assistive technology (AC-8). **Smoke** (required — the download boundary is external): in the running app (`docker compose up`), with at least one expense recorded, click Export CSV and confirm a real `expenses-<today>.csv` lands in the browser's downloads and opens in a spreadsheet with four columns, a comma-containing note intact in one cell, and the amount as a plain number; then confirm the empty-list case shows the message and downloads nothing. Manual: jsdom cannot perform a real download, so this one step is human-run and recorded in the verification report. |
