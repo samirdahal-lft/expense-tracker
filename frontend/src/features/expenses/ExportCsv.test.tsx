@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "@/App";
+import { ExportCsvButton } from "@/features/expenses/ExportCsvButton";
 import { expensesToCsv } from "@/lib/csv";
 
 const SAMPLE = [
@@ -272,5 +273,23 @@ describe("AC-8 guard: the control is keyboard-reachable", () => {
     expect(button).toHaveFocus();
     fireEvent.click(document.activeElement as HTMLElement); // Enter/Space on a focused button
     await waitFor(() => expect(offered).toHaveLength(1));
+  });
+});
+
+describe("the injectable download seam", () => {
+  it("hands the filename and CSV text to a caller-supplied port instead of the browser", () => {
+    const handed: Array<[string, string]> = [];
+    render(
+      <ExportCsvButton
+        expenses={SAMPLE as never}
+        downloadCsv={(filename, csv) => handed.push([filename, csv])}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /export/i }));
+
+    expect(handed).toHaveLength(1);
+    expect(handed[0][0]).toBe("expenses-2026-08-04.csv");
+    expect(handed[0][1]).toBe(expensesToCsv(SAMPLE as never));
   });
 });

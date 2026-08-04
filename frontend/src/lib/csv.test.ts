@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { type Expense } from "@/api/client";
 import { expensesToCsv } from "@/lib/csv";
+// added with the post-review guard below, as a separate line so the proven lines above stay untouched
+import { csvFileName } from "@/lib/csv";
 
 /**
  * B-1: the serializer emits the header row plus one CRLF-terminated row per expense,
@@ -121,5 +123,14 @@ describe("B-6: expensesToCsv quotes every field that needs it", () => {
     const row = expensesToCsv([hostile]).split("\r\n")[1];
 
     expect(row).toBe('"2026-07-05, evening","Food, ""fancy""",100,plain');
+  });
+});
+
+/** Guard added after review: the filename builder had no unit test of its own. */
+describe("csvFileName guard: zero-padded local calendar day", () => {
+  it("pads single-digit months and days and uses the LOCAL date", () => {
+    // local construction, so this asserts the calendar day the user is in, not UTC's
+    expect(csvFileName(new Date(2026, 0, 9, 23, 30))).toBe("expenses-2026-01-09.csv");
+    expect(csvFileName(new Date(2026, 11, 31, 0, 5))).toBe("expenses-2026-12-31.csv");
   });
 });
