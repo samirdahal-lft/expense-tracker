@@ -123,7 +123,7 @@
 - [x] Boundaries non-empty ⇒ a smoke AC exists. AC-10 is that smoke AC. It is **not yet run** — it
       needs a human at a browser, and it is the one open item below.
 
-**Suite state at hand-off:** `TYPECHECK OK`; `Test Files 10 passed (10)`, `Tests 33 passed (33)` —
+**Suite state at hand-off:** `TYPECHECK OK`; `Test Files 10 passed (10)`, `Tests 32 passed (32)` —
 re-run under `TZ=Pacific/Auckland` as well as the local zone.
 
 **Human verdict:** each item confirmed/dismissed (Path R: + SA) — the lane approve stamp records who signed
