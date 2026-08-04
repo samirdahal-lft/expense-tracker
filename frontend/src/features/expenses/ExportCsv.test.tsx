@@ -80,7 +80,7 @@ describe("B-4: exporting expenses from the running app", () => {
     const calls = stubApi(SAMPLE);
     const { offered } = stubDownloadBoundary();
     render(<App />);
-    await screen.findByRole("list"); // expenses loaded
+    await screen.findByText("taxi"); // expenses loaded and rendered
 
     fireEvent.click(screen.getByRole("button", { name: /export/i }));
 
