@@ -106,3 +106,19 @@ describe("B-4: exporting expenses from the running app", () => {
     expect(calls.filter((c) => c.method !== "GET")).toHaveLength(0);
   });
 });
+
+describe("B-5: exporting with nothing recorded", () => {
+  it("produces no file and says there is nothing to export", async () => {
+    stubApi([]);
+    const { offered } = stubDownloadBoundary();
+    render(<App />);
+    await screen.findByText(/no expenses yet/i); // empty list rendered
+
+    fireEvent.click(screen.getByRole("button", { name: /export/i }));
+
+    const status = await screen.findByRole("status");
+    await waitFor(() => expect(status.textContent).toMatch(/nothing to export/i));
+    expect(offered).toHaveLength(0); // no file was produced
+    expect(screen.queryByText(/^Exported /)).not.toBeInTheDocument();
+  });
+});
