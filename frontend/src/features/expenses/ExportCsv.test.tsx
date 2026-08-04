@@ -86,7 +86,9 @@ function blobBytes(blob: Blob): Promise<Uint8Array> {
 
 beforeEach(() => {
   vi.useFakeTimers({ shouldAdvanceTime: true });
-  vi.setSystemTime(new Date("2026-08-04T12:00:00Z"));
+  // A LOCAL midday instant: the filename uses the local calendar day, so a UTC instant would
+  // make this assertion depend on the machine's timezone.
+  vi.setSystemTime(new Date(2026, 7, 4, 12, 0, 0));
 });
 
 afterEach(() => {
@@ -150,6 +152,34 @@ describe("B-6: repeated exports", () => {
     expect(statuses).toHaveLength(1);
     expect(statuses[0].textContent).toMatch(/^Exported /);
     expect(statuses[0].textContent).not.toMatch(/nothing to export/i);
+  });
+});
+
+describe("B-5: the status message describes the export that happened", () => {
+  it("keeps reporting what was exported after the list changes underneath it", async () => {
+    // the list shrinks after the export: first load returns two expenses, later loads one
+    let listBody: unknown[] = SAMPLE;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((url: string) => {
+        const body = url.includes("/summary") ? SUMMARY : listBody;
+        return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(body) });
+      }),
+    );
+    stubDownloadBoundary();
+    render(<App />);
+    await screen.findByText("taxi");
+
+    fireEvent.click(screen.getByRole("button", { name: /export/i }));
+    await waitFor(() => expect(screen.getByRole("status").textContent).toMatch(/2 expenses/));
+
+    // the user deletes a row; the app refetches and the loaded list is now one expense
+    listBody = [SAMPLE[1]];
+    fireEvent.click(screen.getByRole("button", { name: /delete transport expense/i }));
+    await waitFor(() => expect(screen.queryByText("taxi")).not.toBeInTheDocument());
+
+    // the message still describes the export that actually happened — 2 expenses, not 1
+    expect(screen.getByRole("status").textContent).toMatch(/2 expenses/);
   });
 });
 
