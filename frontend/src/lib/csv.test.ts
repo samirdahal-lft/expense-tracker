@@ -100,3 +100,26 @@ describe("B-4: expensesToCsv on an empty list", () => {
     expect(expensesToCsv([])).toBe("date,category,amount,note\r\n");
   });
 });
+
+/**
+ * B-6: the quoting rule is a property of a FIELD, not of the note column. Today's UI cannot put a
+ * comma in a category, but the serializer must not depend on that — a comma arriving from the API
+ * would otherwise silently produce a five-column row.
+ */
+describe("B-6: expensesToCsv quotes every field that needs it", () => {
+  it("quotes a comma or quote in the date or category, keeping four columns", () => {
+    const hostile = {
+      id: 1,
+      amount: 100,
+      // deliberately not Category/date-shaped: the serializer must not trust its input
+      category: 'Food, "fancy"',
+      date: "2026-07-05, evening",
+      note: "plain",
+      created_at: "2026-07-05T08:00:00Z",
+    } as unknown as Expense;
+
+    const row = expensesToCsv([hostile]).split("\r\n")[1];
+
+    expect(row).toBe('"2026-07-05, evening","Food, ""fancy""",100,plain');
+  });
+});
