@@ -13,8 +13,12 @@
 > minimal implementation — mapping over an empty array cannot do otherwise — so `lane red`
 > correctly refused it as a RED and it was committed **off-ledger** with `lane red --backfill`.
 > It therefore consumes no RED→GREEN cycle. The remaining app-level behaviors shift down one:
-> plan B-5→B-4, B-6→B-5, B-7→B-6, B-8→B-7. Ledger cycles total 7 (`planned_behaviors: 7`);
-> the AC coverage is unchanged.
+> plan B-5→B-4, B-6→B-5, B-7→B-6, B-8→B-7. The AC coverage is unchanged.
+>
+> **Correction (written after the work finished).** This note first estimated 7 ledger cycles. The
+> real count is 4 test-first cycles for the planned work (`planned_behaviors: 4`) plus 2
+> review-driven cycles (B-5, B-6 below) — plan B-5..B-8 collapsed the same way AC-4 did, because
+> B-4's GREEN already contained them. See the Off-ledger section for the honest tally and cause.
 
 ## B-1 (tracer bullet): AC-1 [behavior]: Serializing a list of expenses yields CSV text with the header row
 - Given: two expenses in display order (newest first) — `{id:2, amount:2500, category:"Transport", date:"2026-07-02", note:"taxi"}` then `{id:1, amount:1000, category:"Food", date:"2026-07-01", note:"lunch"}`.
