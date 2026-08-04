@@ -1,3 +1,8 @@
+---
+approved_by: "Samir dahal"
+approved_at: "2026-08-04"
+approved_sha256: "49296caba6736a0b7a8ddb983bef7e051eebf9d863ed0f9856e909c413700c38"
+---
 ## Task T-golden-button — The Export CSV button renders as a filled pink control
 
 > **The task ID says "golden"; the colour is pink.** The card was scaffolded under the previous
