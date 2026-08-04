@@ -53,10 +53,24 @@
 - Note: this proves the wiring through the real seam. The genuinely-real download — a file arriving in a browser's downloads and opening in a spreadsheet with four columns and a comma-containing note intact — is the human smoke step for AC-10, recorded in verification.md. jsdom cannot perform a real download.
 
 ## Off-ledger (back-filled, no RED→GREEN cycle)
+> Final tally: **4 test-first cycles** (B-1..B-4, `planned_behaviors: 4`) and **4 back-filled
+> behaviors** below. Cause, stated plainly: B-4 was the first behavior needing the whole vertical
+> (control + status region + download helper), and the smallest implementation that turned B-4
+> green already contained the empty-list branch, the single-status-message state, and the blob
+> details. Everything after it therefore passed on arrival and `lane red` rightly refused to
+> record a RED. A stricter B-4 could have exported unconditionally and left the empty branch to
+> its own cycle — worth doing next time a UI behavior lands.
 - AC-4 [behavior] (plan B-4): serializing an empty list yields the header row alone. Already true
   from B-1's implementation, so it could not fail first; its test
   (`frontend/src/lib/csv.test.ts`, "B-4: expensesToCsv on an empty list") is committed via
   `lane red --backfill` — audited, but counted apart from the test-first proof.
+- AC-6 [behavior] (spec B-5): empty list → no file, nothing-to-export message. Built as part of
+  B-4's GREEN; test back-filled (`ExportCsv.test.tsx`, "B-5: exporting with nothing recorded").
+- AC-7 [behavior] (spec B-6): repeat activation replaces the status message. Structural in the
+  single `Status` state introduced by B-4's GREEN; test back-filled ("B-6: repeated exports").
+- AC-10 wiring [e2e] (spec B-7): `text/csv` blob with a UTF-8 BOM, object URL revoked. Built in
+  `downloadCsv` during B-4's GREEN; test back-filled ("B-7: the real download seam"). The human
+  smoke step for AC-10 is unchanged and still outstanding.
 
 ## Invariants & non-functional ACs (NOT RED→GREEN cycles)
 > Not standalone behaviors to drive. An invariant usually holds as a property of a
