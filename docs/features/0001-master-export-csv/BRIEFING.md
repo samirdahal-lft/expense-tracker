@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-08-04"
-approved_sha256: "7d800f5e1eccf8505285e67bbc399e281b045422da1f9f6f9cffc77d2e2e5ab3"
+approved_sha256: "6c1b71e8fa5c72da6e1c22916ee7f0eb4139333f803a6bfd4d70cd3c8001fba9"
 ---
 # Briefing 0001 — Export expenses to CSV
 
@@ -24,7 +24,7 @@ export, the user sees a failure/error message instead of a downloaded file. If t
 export succeeds, the user sees a success message confirming the download.
 
 ## Mocks / references
-- No visual mock provided — a single button near the expense list (e.g. next to the
+- No visual mock provided — a single button aft-prdnear the expense list (e.g. next to the
   "Expenses" heading in `frontend/src/App.tsx`) that triggers the download and shows a
   transient status message (success or failure).
 
