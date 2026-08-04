@@ -32,8 +32,12 @@ export function expensesToCsv(expenses: Expense[]): string {
       // whole NPR as a bare integer — the "Rs 2,500" formatting belongs to the screen, not the file
       String(e.amount),
       // an absent note is an empty field, never the text "undefined"
-      quoteField(e.note ?? ""),
-    ].join(","),
+      e.note ?? "",
+    ]
+      // quoting is a property of a FIELD, not of the note column: a comma arriving in any field
+      // would otherwise shift the row's columns
+      .map(quoteField)
+      .join(","),
   );
   return [HEADER, ...rows].map((row) => row + ROW_END).join("");
 }
