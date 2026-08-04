@@ -74,6 +74,16 @@ function blobText(blob: Blob): Promise<string> {
   });
 }
 
+/** Raw bytes — readAsText decodes UTF-8 and swallows the BOM, so the BOM must be read as bytes. */
+function blobBytes(blob: Blob): Promise<Uint8Array> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(new Uint8Array(reader.result as ArrayBuffer));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsArrayBuffer(blob);
+  });
+}
+
 beforeEach(() => {
   vi.useFakeTimers({ shouldAdvanceTime: true });
   vi.setSystemTime(new Date("2026-08-04T12:00:00Z"));
@@ -120,5 +130,45 @@ describe("B-5: exporting with nothing recorded", () => {
     await waitFor(() => expect(status.textContent).toMatch(/nothing to export/i));
     expect(offered).toHaveLength(0); // no file was produced
     expect(screen.queryByText(/^Exported /)).not.toBeInTheDocument();
+  });
+});
+
+describe("B-6: repeated exports", () => {
+  it("replaces the status message instead of stacking messages", async () => {
+    stubApi(SAMPLE);
+    stubDownloadBoundary();
+    render(<App />);
+    await screen.findByText("taxi");
+
+    const button = screen.getByRole("button", { name: /export/i });
+    fireEvent.click(button);
+    await waitFor(() => expect(screen.getByRole("status").textContent).toMatch(/^Exported /));
+    fireEvent.click(button);
+
+    // one live region carrying one message — messages do not accumulate
+    const statuses = screen.getAllByRole("status");
+    expect(statuses).toHaveLength(1);
+    expect(statuses[0].textContent).toMatch(/^Exported /);
+    expect(statuses[0].textContent).not.toMatch(/nothing to export/i);
+  });
+});
+
+describe("B-7: the real download seam (AC-10 wiring)", () => {
+  it("offers a text/csv blob carrying the UTF-8 BOM and releases the object URL", async () => {
+    stubApi(SAMPLE);
+    const { offered, revoked } = stubDownloadBoundary();
+    render(<App />);
+    await screen.findByText("taxi");
+
+    fireEvent.click(screen.getByRole("button", { name: /export/i }));
+
+    await waitFor(() => expect(offered).toHaveLength(1));
+    expect(offered[0].blob.type).toMatch(/^text\/csv/);
+    // a spreadsheet needs the BOM to read non-ASCII notes correctly
+    const bytes = await blobBytes(offered[0].blob);
+    expect([bytes[0], bytes[1], bytes[2]]).toEqual([0xef, 0xbb, 0xbf]);
+    await expect(blobText(offered[0].blob)).resolves.toMatch(/^date,category,amount,note/);
+    // the handle is released, so repeated exports leak nothing
+    expect(revoked).toHaveLength(1);
   });
 });
