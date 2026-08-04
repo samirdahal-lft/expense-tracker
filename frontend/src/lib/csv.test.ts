@@ -51,3 +51,42 @@ describe("B-2: expensesToCsv field canonicalization", () => {
     expect(rows[1]).not.toContain("undefined");
   });
 });
+
+/**
+ * B-3: a note carrying a comma, a double quote, or a line break is quoted per RFC 4180 so the
+ * row keeps its four columns and the note round-trips byte-identically. Fields that need no
+ * quoting stay unquoted.
+ */
+describe("B-3: expensesToCsv RFC 4180 quoting", () => {
+  function withNote(id: number, note: string): Expense {
+    return {
+      id,
+      amount: 100,
+      category: "Food",
+      date: "2026-07-05",
+      note,
+      created_at: "2026-07-05T08:00:00Z",
+    };
+  }
+
+  it("quotes notes containing a comma, a quote, or a newline and doubles embedded quotes", () => {
+    const csv = expensesToCsv([
+      withNote(1, "lunch, with tea"),
+      withNote(2, 'he said "hi"'),
+      withNote(3, "line one\nline two"),
+    ]);
+
+    expect(csv).toBe(
+      "date,category,amount,note\r\n" +
+        '2026-07-05,Food,100,"lunch, with tea"\r\n' +
+        '2026-07-05,Food,100,"he said ""hi"""\r\n' +
+        '2026-07-05,Food,100,"line one\nline two"\r\n',
+    );
+  });
+
+  it("leaves a note that needs no quoting unquoted", () => {
+    const csv = expensesToCsv([withNote(4, "plain note")]);
+
+    expect(csv.split("\r\n")[1]).toBe("2026-07-05,Food,100,plain note");
+  });
+});
