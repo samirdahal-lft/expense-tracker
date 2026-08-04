@@ -64,6 +64,16 @@ function stubDownloadBoundary() {
   return { offered, revoked, clickSpy };
 }
 
+/** jsdom's Blob has no text() — read it the way a browser without that method would. */
+function blobText(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsText(blob);
+  });
+}
+
 beforeEach(() => {
   vi.useFakeTimers({ shouldAdvanceTime: true });
   vi.setSystemTime(new Date("2026-08-04T12:00:00Z"));
@@ -86,7 +96,7 @@ describe("B-4: exporting expenses from the running app", () => {
 
     await waitFor(() => expect(offered).toHaveLength(1));
     expect(offered[0].filename).toBe("expenses-2026-08-04.csv");
-    await expect(offered[0].blob.text()).resolves.toContain(expensesToCsv(SAMPLE as never));
+    await expect(blobText(offered[0].blob)).resolves.toContain(expensesToCsv(SAMPLE as never));
 
     // the user is told it worked
     const status = await screen.findByRole("status");
