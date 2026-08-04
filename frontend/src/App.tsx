@@ -1,6 +1,7 @@
 import { deleteExpense, type Expense, type ExpenseInput, updateExpense } from "@/api/client";
 import { AddExpenseForm } from "@/features/expenses/AddExpenseForm";
 import { EditExpenseForm } from "@/features/expenses/EditExpenseForm";
+import { ExportCsvButton } from "@/features/expenses/ExportCsvButton";
 import { ExpenseList } from "@/features/expenses/ExpenseList";
 import { CategorySummary } from "@/features/summary/CategorySummary";
 import { ThemeToggle } from "@/features/theme/ThemeToggle";
@@ -68,7 +69,11 @@ export default function App() {
         </div>
 
         <main className={cn("rounded-lg border bg-card p-6 shadow-sm text-card-foreground")}>
-          <h2 className="mb-2 text-lg font-medium">Expenses</h2>
+          <div className="mb-2 flex items-start justify-between gap-4">
+            <h2 className="text-lg font-medium">Expenses</h2>
+            {/* read-only: exports the loaded list, refreshes nothing */}
+            <ExportCsvButton expenses={expenses} />
+          </div>
           <ExpenseList expenses={expenses} loading={loading} error={error} onDelete={handleDelete} onEdit={setEditing} />
         </main>
       </div>

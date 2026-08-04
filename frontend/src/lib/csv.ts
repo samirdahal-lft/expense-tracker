@@ -37,3 +37,29 @@ export function expensesToCsv(expenses: Expense[]): string {
   );
   return [HEADER, ...rows].map((row) => row + ROW_END).join("");
 }
+
+/**
+ * Name of the exported file for a given day, e.g. `expenses-2026-08-04.csv`. Pure — the clock
+ * is the caller's, so the name is assertable without faking time inside here.
+ */
+export function csvFileName(now: Date): string {
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
+  return `expenses-${yyyy}-${mm}-${dd}.csv`;
+}
+
+/**
+ * Hand CSV text to the browser as a file download. The ONLY impure piece of this module and
+ * the single place the download boundary is touched. A UTF-8 byte-order mark is prepended so
+ * spreadsheets read non-ASCII notes correctly — it belongs here, not in the serialized text.
+ */
+export function downloadCsv(filename: string, csvText: string): void {
+  const blob = new Blob(["﻿" + csvText], { type: "text/csv;charset=utf-8" });
+  const href = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = href;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(href); // release the handle so repeated exports leak nothing
+}
