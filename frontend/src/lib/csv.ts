@@ -13,6 +13,15 @@ const ROW_END = "\r\n";
  * Pure: no DOM, no clock. That is what lets the file format be asserted directly.
  */
 export function expensesToCsv(expenses: Expense[]): string {
-  const rows = expenses.map((e) => `${e.date},${e.category},${e.amount},${e.note}`);
+  const rows = expenses.map((e) =>
+    [
+      e.date,
+      e.category,
+      // whole NPR as a bare integer — the "Rs 2,500" formatting belongs to the screen, not the file
+      String(e.amount),
+      // an absent note is an empty field, never the text "undefined"
+      e.note ?? "",
+    ].join(","),
+  );
   return [HEADER, ...rows].map((row) => row + ROW_END).join("");
 }
