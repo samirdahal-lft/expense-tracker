@@ -202,3 +202,75 @@ describe("B-7: the real download seam (AC-10 wiring)", () => {
     expect(revoked).toHaveLength(1);
   });
 });
+
+/**
+ * Guards added after review. Each strengthens an AC whose original assertion could pass for the
+ * wrong reason; they are recorded off-ledger because the behavior was already built.
+ */
+describe("AC-5 guard: the message is replaced when the outcome changes", () => {
+  it("drops the success message for nothing-to-export once the last expense is gone", async () => {
+    let listBody: unknown[] = [SAMPLE[0]];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((url: string) => {
+        const body = url.includes("/summary") ? SUMMARY : listBody;
+        return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(body) });
+      }),
+    );
+    stubDownloadBoundary();
+    render(<App />);
+    await screen.findByText("taxi");
+
+    const button = screen.getByRole("button", { name: /export/i });
+    fireEvent.click(button);
+    await waitFor(() => expect(screen.getByRole("status").textContent).toMatch(/^Exported /));
+
+    // delete the only expense, then export again — the OUTCOME changes this time
+    listBody = [];
+    fireEvent.click(screen.getByRole("button", { name: /delete transport expense/i }));
+    await waitFor(() => expect(screen.queryByText("taxi")).not.toBeInTheDocument());
+    fireEvent.click(button);
+
+    await waitFor(() => expect(screen.getByRole("status").textContent).toMatch(/nothing to export/i));
+    expect(screen.getAllByRole("status")).toHaveLength(1);
+    expect(screen.queryByText(/^Exported /)).not.toBeInTheDocument();
+  });
+});
+
+describe("AC-6 guard: export triggers no request and changes nothing on screen", () => {
+  it("makes no call at all and leaves the expenses panel identical", async () => {
+    const calls = stubApi(SAMPLE);
+    stubDownloadBoundary();
+    render(<App />);
+    await screen.findByText("taxi");
+    const callsBefore = calls.length;
+    const panelBefore = screen.getByRole("main").innerHTML;
+
+    fireEvent.click(screen.getByRole("button", { name: /export/i }));
+    await waitFor(() => expect(screen.getByRole("status").textContent).toMatch(/^Exported /));
+
+    // stronger than "no writes": exporting does not even refetch
+    expect(calls.length).toBe(callsBefore);
+    // and nothing the user is looking at moved, apart from the status line itself
+    const strip = (html: string) => html.replace(/Exported[^<]*/, "");
+    expect(strip(screen.getByRole("main").innerHTML)).toBe(strip(panelBefore));
+  });
+});
+
+describe("AC-8 guard: the control is keyboard-reachable", () => {
+  it("is a native button that takes focus and exports when activated from the keyboard", async () => {
+    stubApi(SAMPLE);
+    const { offered } = stubDownloadBoundary();
+    render(<App />);
+    await screen.findByText("taxi");
+
+    const button = screen.getByRole("button", { name: /export/i });
+    expect(button.tagName).toBe("BUTTON"); // natively in tab order — no tabindex juggling
+    expect(button).not.toHaveAttribute("tabindex");
+
+    button.focus();
+    expect(button).toHaveFocus();
+    fireEvent.click(document.activeElement as HTMLElement); // Enter/Space on a focused button
+    await waitFor(() => expect(offered).toHaveLength(1));
+  });
+});
