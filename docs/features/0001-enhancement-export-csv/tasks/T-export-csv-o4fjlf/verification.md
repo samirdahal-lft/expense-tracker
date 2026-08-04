@@ -1,3 +1,8 @@
+---
+approved_by: "Samir dahal"
+approved_at: "2026-08-04"
+approved_sha256: "80743a3bd8ba2a5164e0a18be5831d0bcfa3533276bdf680c7015086b68062e1"
+---
 ## Verification — Task T-export-csv-o4fjlf — 2026-08-04
 > Critic anchored to TSD (external spec), NOT to the code. ★GATE: owner confirms/dismisses every flag.
 >
