@@ -90,3 +90,13 @@ describe("B-3: expensesToCsv RFC 4180 quoting", () => {
     expect(csv.split("\r\n")[1]).toBe("2026-07-05,Food,100,plain note");
   });
 });
+
+/**
+ * B-4: an empty list still yields the header row alone. The serializer never decides
+ * *whether* an export should happen — that judgement belongs to the export action.
+ */
+describe("B-4: expensesToCsv on an empty list", () => {
+  it("returns the header row and nothing else", () => {
+    expect(expensesToCsv([])).toBe("date,category,amount,note\r\n");
+  });
+});
