@@ -1,9 +1,9 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-08-04"
-approved_sha256: "1918434491ea9aaa9f238b3d85ef4c0f737359d9bdd76029117d9a0d91613c3b"
+approved_sha256: "fa05f9441178fea714b61dcec29fbf884f6ecc26bc3c942131a1d6c7cc422a8b"
 ---
-# Mini PRD 0002 — Make the Export CSV button purple
+# Mini PRD 0002 — Make the Export CSV button golden
 > An `enhancement` iteration (LANE §8) — a small, scoped improvement on top of what already
 > ships. Lighter than a full feature PRD: usually one story, no full success-metrics apparatus.
 > Paired with TSD.md in this folder. If it grows past a couple of stories, it's a `feature` —
@@ -11,8 +11,8 @@ approved_sha256: "1918434491ea9aaa9f238b3d85ef4c0f737359d9bdd76029117d9a0d91613c
 
 **Parent:** 0001 (enhancement — export expenses to CSV). This restyles the control that feature
 introduced; it adds no behavior to it.
-**Source:** real-usage feedback — the owner asked for the export control to be purple after seeing
-it ship as a plain outline button.
+**Source:** real-usage feedback — the owner asked for the export control to be coloured after seeing
+it ship as a plain outline button. Purple was tried first and dropped; the colour is **golden**.
 
 > **Scope honesty.** This is a single-property visual change to one control. It is written up
 > because the work is going through LANE, not because it carries product risk. If you would rather
