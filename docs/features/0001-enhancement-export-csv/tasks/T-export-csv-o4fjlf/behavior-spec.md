@@ -36,21 +36,15 @@
 - When: the user activates the export control on the expenses screen.
 - Then: the port received exactly one file, named `expenses-2026-08-04.csv`, whose text equals the serializer's output for that list; and a success confirmation naming the export is visible to the user.
 
-## B-5 (plan B-6): AC-6 [behavior]: In the app with an empty list, activating the export control produces no
-- Given: the app rendered with the API stubbed to return an empty expense list, and a recording download port injected.
-- When: the user activates the export control.
-- Then: the port received nothing — no file was produced — and the user sees a message stating there is nothing to export, with no success confirmation present anywhere on the screen.
+## B-5 (review-driven, Critic flag 1): AC-5 [behavior] — the status message stays faithful to the export that produced it
+- Given: the app rendered with two expenses loaded and an export already performed, so the success message names two expenses; then the user deletes one row, so the loaded list shrinks to one while the old success message is still on screen.
+- When: the rendered status message is read after the list has changed.
+- Then: it still describes the export that actually happened (two expenses) — it does not silently rewrite itself to describe a state no export produced. A status message reports a past action, so it is captured at export time, not recomputed from live data.
 
-## B-6 (plan B-7): AC-7 [behavior]: Activating export twice replaces the status message rather than stacking
-- Given: the app rendered with one expense loaded, a recording download port injected, and the export control already activated once so a success message is showing.
-- When: the user activates the export control a second time.
-- Then: exactly one status message is present (the newest one replaced the previous — messages do not accumulate), and a nothing-to-export message is never shown alongside a success message.
-
-## B-7 (plan B-8): AC-10 [e2e]: In the running app (`docker compose up`), the owner clicks Export CSV on the
-- Given: the app rendered with one expense loaded and **no** download port injected — the component's real download helper is in force — with only jsdom's absent `URL.createObjectURL`/`URL.revokeObjectURL` stubbed to observe the browser API.
-- When: the user activates the export control on the expenses screen.
-- Then: the real path ran end to end from the rendered app: a `text/csv` blob carrying the UTF-8 byte-order mark plus the serialized text was turned into an object URL, offered to the browser under the name `expenses-<today>.csv`, and the object URL was released afterwards; the page did not navigate or reload.
-- Note: this proves the wiring through the real seam. The genuinely-real download — a file arriving in a browser's downloads and opening in a spreadsheet with four columns and a comma-containing note intact — is the human smoke step for AC-10, recorded in verification.md. jsdom cannot perform a real download.
+## B-6 (review-driven, Critic flag 4): AC-3 [behavior] — the quoting rule applies to every field, not just the note
+- Given: an expense whose category and date are values carrying a comma and a double quote (data the serializer must not trust to be comma-free just because today's UI cannot produce it).
+- When: the list is serialized to CSV text.
+- Then: each such field is quoted per RFC 4180 exactly as a note would be, so the row keeps its four columns; a field needing no quoting is still left unquoted.
 
 ## Off-ledger (back-filled, no RED→GREEN cycle)
 > Final tally: **4 test-first cycles** (B-1..B-4, `planned_behaviors: 4`) and **4 back-filled

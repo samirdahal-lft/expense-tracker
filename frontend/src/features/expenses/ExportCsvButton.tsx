@@ -12,8 +12,13 @@ interface ExportCsvButtonProps {
   downloadCsv?: (filename: string, csvText: string) => void;
 }
 
-/** One message at a time: a successful export or nothing to export. Never both. */
-type Status = { kind: "exported"; filename: string } | { kind: "empty" };
+/**
+ * One message at a time: a successful export or nothing to export. Never both.
+ *
+ * `count` is captured at export time rather than read from live props: this message reports a
+ * PAST action, so it must keep describing that export even after the list changes underneath it.
+ */
+type Status = { kind: "exported"; filename: string; count: number } | { kind: "empty" };
 
 /**
  * Exports the expenses as a CSV file. Read-only: it issues no request and changes no
@@ -29,7 +34,7 @@ export function ExportCsvButton({ expenses, downloadCsv = realDownloadCsv }: Exp
     }
     const filename = csvFileName(new Date());
     downloadCsv(filename, expensesToCsv(expenses));
-    setStatus({ kind: "exported", filename });
+    setStatus({ kind: "exported", filename, count: expenses.length });
   }
 
   return (
@@ -44,7 +49,7 @@ export function ExportCsvButton({ expenses, downloadCsv = realDownloadCsv }: Exp
       {/* a live region, so the outcome is announced rather than conveyed by colour alone */}
       <p role="status" className="text-sm text-muted-foreground">
         {status?.kind === "exported"
-          ? `Exported ${expenses.length} ${expenses.length === 1 ? "expense" : "expenses"} to ${status.filename}`
+          ? `Exported ${status.count} ${status.count === 1 ? "expense" : "expenses"} to ${status.filename}`
           : status?.kind === "empty"
             ? "Nothing to export — add an expense first."
             : null}
