@@ -20,3 +20,34 @@ describe("B-1: expensesToCsv row structure", () => {
     );
   });
 });
+
+/**
+ * B-2: every field is canonical — a bare integer amount, the date and category verbatim,
+ * and an absent note as an empty field (never the text `undefined`).
+ */
+describe("B-2: expensesToCsv field canonicalization", () => {
+  it("writes the amount as a bare integer and an absent note as an empty field", () => {
+    const noNote: Expense = {
+      id: 3,
+      amount: 2500,
+      category: "Bills",
+      date: "2026-07-03",
+      created_at: "2026-07-03T08:00:00Z",
+    };
+    const emptyNote: Expense = {
+      id: 4,
+      amount: 7,
+      category: "Other",
+      date: "2026-07-04",
+      note: "",
+      created_at: "2026-07-04T08:00:00Z",
+    };
+
+    const rows = expensesToCsv([noNote, emptyNote]).split("\r\n");
+
+    // no "Rs", no thousands separator, no decimal point — and an empty trailing note field
+    expect(rows[1]).toBe("2026-07-03,Bills,2500,");
+    expect(rows[2]).toBe("2026-07-04,Other,7,");
+    expect(rows[1]).not.toContain("undefined");
+  });
+});
