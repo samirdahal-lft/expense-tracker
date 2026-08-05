@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
-approved_at: "2026-08-04"
-approved_sha256: "bd9fe5f18096ecb6c0dc3aeebe97927915413283a36a8427658ec5c22d0f70cf"
+approved_at: "2026-08-05"
+approved_sha256: "eb4eabc2ea5b9e37f73ae2daf07f1115be73a54ccdbbac5df86f8c14e2a4007b"
 ---
 # Mini PRD 0002 — Make the Export CSV button red
 > An `enhancement` iteration (LANE §8) — a small, scoped improvement on top of what already
