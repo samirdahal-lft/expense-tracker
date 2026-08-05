@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
-approved_at: "2026-08-04"
-approved_sha256: "6c0aee6e7f561be2c2577f1d3dcdcf5fba4564a3e083e3ed7ecc3f27f5cc07fa"
+approved_at: "2026-08-05"
+approved_sha256: "77c76eaec3dbb9f2d58a8c4cc8b5d571da96f8d6a060411ada0c310b433f9921"
 ---
 # TSD 0002 — Make the Export CSV button red
 > Behavior + contracts ONLY. Never name the library/method/pattern (over-spec = defeats spec-first).
