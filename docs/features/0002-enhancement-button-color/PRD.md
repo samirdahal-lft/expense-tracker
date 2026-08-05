@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-08-05"
-approved_sha256: "eb4eabc2ea5b9e37f73ae2daf07f1115be73a54ccdbbac5df86f8c14e2a4007b"
+approved_sha256: "d5b5b2680c812b87414316b9cf0b617736cbb98b8e7a2ba5b1b0d40f7539ae42"
 ---
 # Mini PRD 0002 — Make the Export CSV button red
 > An `enhancement` iteration (LANE §8) — a small, scoped improvement on top of what already
@@ -105,3 +105,5 @@ and a red-on-hover delete control still reads as safe to click — with 0001's s
   a larger, deliberate change and is explicitly *not* in this PRD's scope. Note that promoting *red*
   specifically would collide with `--destructive` app-wide, not just on this panel — which is an
   argument for keeping it a one-off.
+
+<!-- samir dahal -->
