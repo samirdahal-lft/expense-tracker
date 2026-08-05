@@ -30,3 +30,12 @@
 **Stories:** S-0002, S-0002.01
 **Cascade:** <FILL IN — PRD §… / TSD §… / Stories [discard/add/modify] / Code>
 **ADR update:** <FILL IN — Yes/No>
+
+## Amendment 004 — 2026-08-05
+**Type:** <FILL IN — Shallow | Deep>
+**Trigger:** PRD — 0002-enhancement-button-color edited after approval, then re-approved (stamp had gone stale)
+**What changed:** docs/features/0002-enhancement-button-color/PRD.md — see the diff in this commit
+**Why:** <FILL IN — lane cannot know this; state why the spec was changed>
+**Stories:** S-0002.01, S-0002.02
+**Cascade:** <FILL IN — PRD §… / TSD §… / Stories [discard/add/modify] / Code>
+**ADR update:** <FILL IN — Yes/No>
