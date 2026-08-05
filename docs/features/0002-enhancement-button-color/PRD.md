@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-08-05"
-approved_sha256: "2d1df1d1e7451d3675d3979c28008dbd5a1c995243aac127545e918b55935828"
+approved_sha256: "de3565ba3f83cd607debb44be1c5bac58f6907326e667bcddf3514eab9cd6028"
 ---
 # Mini PRD 0002 — Make the Export CSV button red
 > An `enhancement` iteration (LANE §8) — a small, scoped improvement on top of what already
@@ -111,3 +111,5 @@ and a red-on-hover delete control still reads as safe to click — with 0001's s
 ## Story S-0002.02 — The export control reads as the primary action on the expenses panel
 <!-- sam -->
 <!-- #dahal -->
+
+<!-- mony -->
