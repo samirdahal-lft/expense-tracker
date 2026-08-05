@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
-approved_at: "2026-08-04"
-approved_sha256: "49296caba6736a0b7a8ddb983bef7e051eebf9d863ed0f9856e909c413700c38"
+approved_at: "2026-08-05"
+approved_sha256: "a6cdcfaab0bbcf48bb8eab5f7744156ab1bb250eb55c3a3051378240eec726f7"
 ---
 ## Task T-golden-button — The Export CSV button renders as a filled red control
 
