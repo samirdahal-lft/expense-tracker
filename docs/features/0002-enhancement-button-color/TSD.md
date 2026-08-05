@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-08-05"
-approved_sha256: "77c76eaec3dbb9f2d58a8c4cc8b5d571da96f8d6a060411ada0c310b433f9921"
+approved_sha256: "6b4193a0eac0e646f354b47b0f5b9610f9a5e61549a4d367b8880dcb19a48dd1"
 ---
 # TSD 0002 — Make the Export CSV button red
 > Behavior + contracts ONLY. Never name the library/method/pattern (over-spec = defeats spec-first).
@@ -112,3 +112,5 @@ before approval.
   than this control — restyling the delete control, recolouring error text, or moving the destructive
   signal to another hue. If the smoke check finds the export reads as destructive, that is its own
   card, and it may conclude that red is the wrong colour for this control.
+
+<!-- samir  -->
