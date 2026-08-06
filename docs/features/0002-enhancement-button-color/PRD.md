@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
-approved_at: "2026-08-05"
-approved_sha256: "21fc5a633dd46fbde43eb5bc5b337370de47aac7c56e7f0f1d6c0017422af0d1"
+approved_at: "2026-08-06"
+approved_sha256: "a7ee58bfd06965ad3f3421085630eab4a22f04507c8c0190e31c9e8f10d9b73e"
 ---
 # Mini PRD 0002 — Make the Export CSV button red
 > An `enhancement` iteration (LANE §8) — a small, scoped improvement on top of what already
@@ -114,3 +114,4 @@ and a red-on-hover delete control still reads as safe to click — with 0001's s
 
 <!-- mony -->
 <!-- #have -->
+
