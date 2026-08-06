@@ -64,3 +64,10 @@
 **What changed:** docs/features/0002-enhancement-button-color/PRD.md — see the diff in this commit
 **Why:** <FILL IN — lane cannot know this; state why the spec was changed>
 **Stories:** S-0002.01, S-0002.02
+
+## Amendment 008 — 2026-08-06
+**Type:** <FILL IN — Shallow | Deep>
+**Trigger:** Briefing — 0003-master-footer edited after approval, then re-approved (stamp had gone stale)
+**What changed:** docs/features/0003-master-footer/BRIEFING.md — see the diff in this commit
+**Why:** <FILL IN — lane cannot know this; state why the spec was changed>
+**Stories:** (none referenced)
