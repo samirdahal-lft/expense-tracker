@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-08-10"
-approved_sha256: "57553fd8410acbc62abac9ff8258ae7308b19d4900985d059615390c5dfbd022"
+approved_sha256: "c9c9815447a6f59e7bdfa2af1c5bdb354830c2b820352a2ecd074a1c82308872"
 ---
 # Briefing 0003 — Persistent app footer
 
@@ -65,3 +65,4 @@ light/dark theme via the same semantic Tailwind tokens used throughout the app.
 Run `lane approve` — lane stamps the frontmatter (name, date, content hash) after you confirm.
 Editing this file after approval invalidates the stamp and reopens the gate.
 
+sasasa
