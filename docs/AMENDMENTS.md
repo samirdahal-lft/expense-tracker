@@ -90,3 +90,7 @@
 ## Amendment 012 — 2026-08-10
 **What changed:** docs/features/0003-master-footer/BRIEFING.md — edited after approval, re-approved; see the diff in this commit
 **Why:** <FILL IN — why was the spec changed?>
+
+## Amendment 013 — 2026-08-10
+**What changed:** docs/features/0003-master-footer/BRIEFING.md — edited after approval, re-approved; see the diff in this commit
+**Why:** <FILL IN — why was the spec changed?>
