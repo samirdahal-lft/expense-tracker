@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-08-10"
-approved_sha256: "77f3886cba2903170e8a18f5332d76db748b184efe4103e71c3831aaf7d18ed7"
+approved_sha256: "64659e1398f66b8d11d8e6f4f513741da9ffbb9ca7d8440542da541e377023bd"
 ---
 # Briefing 0003 — Persistent app footer
 
@@ -68,3 +68,5 @@ Editing this file after approval invalidates the stamp and reopens the gate.
 sasas
 
 sasa
+
+asas
