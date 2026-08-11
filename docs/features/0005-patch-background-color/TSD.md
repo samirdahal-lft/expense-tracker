@@ -1,11 +1,9 @@
-## TSD S-0005.01 — <title>
-> Behavior + contracts ONLY — never the library/method/pattern. The Critic anchors to THIS
-> section (snapshot frozen at `lane start`), exactly as it would to a TSD.md section.
+## TSD S-0005.01 — Golden background CSS variable
 
 | Aspect | Spec |
 |--------|------|
-| Interfaces | <contracts touched — endpoint, CLI flag, function/SDK signature> |
-| Data / State | <state it touches — empty if none> |
-| Behavior | <the observable behavior after the patch> |
-| Boundaries | <external deps we DON'T own, faked in tests — empty if none> |
-| Tests | <unit/integration — what proves the fix> |
+| Interfaces | `--background` CSS custom property in `frontend/src/index.css`, `:root` (light mode) and `.dark` (dark mode) selectors |
+| Data / State | No runtime state — pure CSS variable change |
+| Behavior | In light mode, `document.documentElement` resolves `--background` to an HSL value in the golden range (hue 40–50, saturation ≥ 70%, lightness ≥ 85%). In dark mode, `--background` resolves to an HSL value in the golden range (hue 40–50, saturation ≥ 30%, lightness ≤ 20%). |
+| Boundaries | None — no external deps |
+| Tests | Parse `index.css` and assert the `--background` values in `:root` and `.dark` match the expected golden HSL strings |
