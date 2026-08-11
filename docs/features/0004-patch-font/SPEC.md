@@ -1,49 +1,37 @@
 ---
-approved_by: ""
-approved_at: ""
+approved_by: "Samir dahal"
+approved_at: "2026-08-11"
+approved_sha256: "8197d07a2086d7f58c3119fb24aeea0c44eb53c25c398bb0732199d201bd74b5"
 ---
-# Patch 0004 — <short title>
-> A `patch` iteration — the TWO-STAMP ceremony for small, known-scope work (a bug fix, a
-> tweak, one behavior, one PR). This ONE document is the ticket + TSD + task card + exec
-> plan: your single `lane approve` stamp covers all of it (stamp 1 of 2; stamp 2 is the
-> verification report at the end). The TDD ledger, Critic snapshot, and verify replay are
-> unchanged — a patch removes redundant signatures, never proof.
-> Too big for a patch? More than one story, more than ~3 behaviors, or more than one task
-> → use `lane new fix` / `lane new enhancement` instead (agents: CALL THIS OUT when
-> drafting; the human decides at the stamp).
+# Patch 0004 — Switch app font to Roboto
 
-**Severity:** <blocker | major | minor>
-**Source:** <where this came from — bug report, monitoring, review feedback>   ← audit chain
+**Severity:** minor
+**Source:** user request — design preference
 
-**Current behavior:** <what happens now — the scenario that triggers it, not just the error message>
-**Expected behavior:** <what should happen instead>
-**Must NOT change:** <behavior/contracts that stay intact — guards against regression>
+**Current behavior:** The app renders with the browser's default system font stack; no font family is declared in `index.html`, `index.css`, or `tailwind.config.ts`.
+**Expected behavior:** The entire app renders in Roboto (400 and 700 weights) loaded from Google Fonts. The font applies to all text including headings, labels, buttons, and inputs.
+**Must NOT change:** Colors, layout, spacing, component behaviour, API contracts, theme toggle, money formatting, or any existing Tailwind token values.
 
-## TSD S-0004.01 — <title>
-> Behavior + contracts ONLY — never the library/method/pattern. The Critic anchors to THIS
-> section (snapshot frozen at `lane start`), exactly as it would to a TSD.md section.
+## TSD S-0004.01 — Roboto font applied site-wide
 
 | Aspect | Spec |
 |--------|------|
-| Interfaces | <contracts touched — endpoint, CLI flag, function/SDK signature> |
-| Data / State | <state it touches — empty if none> |
-| Behavior | <the observable behavior after the patch> |
-| Boundaries | <external deps we DON'T own, faked in tests — empty if none> |
-| Tests | <unit/integration — what proves the fix> |
+| Interfaces | `frontend/index.html` (link tag added to `<head>`); `frontend/src/index.css` (font-family set on `body` inside `@layer base`) |
+| Data / State | none |
+| Behavior | Every text node in the app uses Roboto at all viewport sizes and in both light and dark themes. The Google Fonts stylesheet is the sole source of truth for the typeface; no local font file is bundled. |
+| Boundaries | Google Fonts CDN — not faked in tests (CSS-only change; jsdom cannot evaluate applied font faces) |
+| Tests | Tests: N/A — styling: font-family is a CSS-only change applied through a `<link>` tag and `@layer base` rule; jsdom does not process external stylesheets or render fonts, making the declared font face untestable through the Vitest/jsdom stack |
 
-## Task T-font-sm3asg — <short title>
+## Task T-font-sm3asg — Apply Roboto font via Google Fonts
 **Slice:** a complete observable behavior end-to-end + tests (full vertical)
 **Acceptance criteria:** (tag each: `behavior` | `invariant` | `non-functional` | `e2e`)
-- [ ] AC-1 [behavior]: <observable outcome through an interface that proves the fix>
-**Tests:** AC-1  ← ordered; first = tracer bullet
-<!-- exception: Tests: N/A — reason: config | scaffolding | spike | refactor | tooling — the opt-out is part of what you stamp -->
+- [ ] AC-1 [behavior]: `frontend/index.html` `<head>` contains a `<link>` that loads Roboto (weights 400 and 700) from fonts.googleapis.com, and `frontend/src/index.css` sets `font-family: 'Roboto', sans-serif` on `body` inside `@layer base`.
+**Tests:** N/A — styling: CSS-only change; jsdom cannot verify loaded font faces or applied external stylesheets
 
 ## Execution Plan
-> Approved BY the spec stamp: `lane start` copies this section verbatim into the worktree's
-> exec-plan.md and carries your stamp onto it — no separate plan gate. Keep it last in this file.
 
-**Approach:** <high-level how — NOT implementation prescription>
-**Boundaries & mocks:** <what's FAKED vs REAL — empty if none>
+**Approach:** Two-file CSS/HTML-only edit — add a Google Fonts preconnect + stylesheet link to `index.html`; declare `font-family: 'Roboto', sans-serif` on `body` in `index.css`. No TypeScript, no component, no Tailwind config change needed.
+**Boundaries & mocks:** none
 **Behaviors (TDD order):**
-- B-1: <the failing test that proves the bug/behavior, then the change that fixes it>
-**Open questions:** <MUST be resolved (or say "none") before the stamp>
+- B-1: Add Google Fonts `<link>` to `frontend/index.html` and `font-family` declaration to `frontend/src/index.css`; visually confirm Roboto renders in the running app.
+**Open questions:** none
