@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
-approved_at: "2026-08-06"
-approved_sha256: "c4ed7d076019966b71808fc8869661f73940ea2744a02e0cf7c97dbcd0a62c5b"
+approved_at: "2026-08-11"
+approved_sha256: "fdc3f0fdff3f114f7afbfb294f77a7ac58423708ca9e9f5c2b792b2d83b3382f"
 ---
 # PRD 0003 — Persistent app footer
 
@@ -74,3 +74,4 @@ page reload.
 
 ## Open questions for the human
 - None — all BRIEFING questions resolved above. Human review at this gate is the final check.
+sasas

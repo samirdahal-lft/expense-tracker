@@ -98,3 +98,8 @@
 ## Amendment 014 — 2026-08-10
 **What changed:** docs/features/0003-master-footer/BRIEFING.md — edited after approval, re-approved; see the diff in this commit
 **Why:** <FILL IN — why was the spec changed?>
+
+## Amendment 015 — 2026-08-11
+**What changed:** docs/features/0003-master-footer/PRD.md — edited after approval, re-approved; see the diff in this commit
+**Why:** <FILL IN — why was the spec changed?>
+**Stories:** S-0003.01
