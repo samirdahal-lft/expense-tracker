@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-08-11"
-approved_sha256: "905292c64818f01d9177625bdaa162002ce7c9fee3d3cfe97e5fed3dcdb62885"
+approved_sha256: "073cc436ac64371db1b34daa3a42ee519aca387133ccf48ad0a447ada9b66d5b"
 ---
 # Patch 0005 — Change app background color to golden
 > A `patch` iteration — the TWO-STAMP ceremony for small, known-scope work (a bug fix, a
@@ -48,6 +48,21 @@ approved_sha256: "905292c64818f01d9177625bdaa162002ce7c9fee3d3cfe97e5fed3dcdb628
 **Behaviors (TDD order):**
 - B-1: Write a test that reads `index.css` and asserts `--background` in `:root` is `43 80% 90%` and in `.dark` is `43 35% 14%`. Commit as RED. Then update both values in `index.css`. Commit as GREEN.
 **Open questions:** none
+
+## TSD S-0005.02 — Golden background CSS variable
+> Behavior + contracts ONLY — never the library/method/pattern. The Critic anchors to THIS
+> section (snapshot frozen at `lane start`), exactly as it would to a TSD.md section.
+
+| Aspect | Spec |
+|--------|------|
+| Interfaces | `--background` CSS custom property in `frontend/src/index.css`, inside `:root` (light) and `.dark` selectors |
+| Data / State | No runtime state — pure static CSS variable change |
+| Behavior | Light mode: `--background` resolves to `43 80% 90%` (golden hue, high lightness). Dark mode: `--background` resolves to `43 35% 14%` (golden hue, low lightness). All other variables unchanged. |
+| Boundaries | None — no external deps |
+| Tests | Read `frontend/src/index.css`; assert `--background` under `:root` equals `43 80% 90%` and under `.dark` equals `43 35% 14%` |
+
+
+
 
 ## TSD S-0005.02 — Golden background CSS variable
 > Behavior + contracts ONLY — never the library/method/pattern. The Critic anchors to THIS
