@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-08-12"
-approved_sha256: "aa3eb348656fa94535d67ba22155d2ff60092bbd616da833056450682cf6f86f"
+approved_sha256: "6d1e7ad365a502223d7fd5b4db97663e6d0270c18cc85b75e4440abf1c11be26"
 ---
 # Patch 0005 — Separate tab for expense list
 
@@ -84,7 +84,8 @@ present, (b) "Expenses" content visible by default, (c) clicking "Summary" tab s
 - [ ] AC-2 [behavior]: "Expenses" tab is active by default; `ExpenseList` is visible, `CategorySummary` is not
 - [ ] AC-3 [behavior]: clicking "Summary" tab makes `CategorySum
 mary` visible and hides `ExpenseList`
-- [ ] AC-4 [invariant]: add-form and edit-form sections remain outside/above the tab panel
+- [ ] AC-4 [invariant]: add-form and edit-form sections re
+main outside/above the tab panel
 **Tests:** AC-1, AC-2, AC-3, AC-4
 
 ## Execution Plan
