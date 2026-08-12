@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-08-12"
-approved_sha256: "382185e8058c8c1c62c901573d890420d475f9c78e866b5f49daac29b253394e"
+approved_sha256: "c474edea6a80b0211a7239b7e54ab13efacfcf0fbaefd841c635b5d26403bef3"
 ---
 # Patch 0005 — Separate tab for expense list
 
@@ -60,7 +60,7 @@ approved_sha256: "382185e8058c8c1c62c901573d890420d475f9c78e866b5f49daac29b25339
 | Behavior | Renders two tab buttons labeled "Expenses" and "Summary". Active tab button is visually distinguished (e.g. underline or background). Clicking "Summary" shows `CategorySummary`; clicking "Expenses" shows `ExpenseList` + `ExportCsvButton`. Only the active tab's content is in the DOM (conditional render). |
 | Boundaries | None — no external deps beyond what App already imports |
 | Tests | Render `App` with MSW/vi mocks (matching existing test patterns). Assert: (a) both tab buttons are present, (b) "Expenses" content visible by default, (c) clicking "Summary" tab shows summary content and hides expense list, (d) clicking "Expenses" tab restores expense list. |
-## TSD S-0005.01 — Tab panel replacing stacked summary + list
+## TSD S-0005.01 — Tab panel replacing stacked summary + list samir dahao
 
 | Aspect | Spec |
 |--------|------|
