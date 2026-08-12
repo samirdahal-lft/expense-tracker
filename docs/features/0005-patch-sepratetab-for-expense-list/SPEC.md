@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-08-12"
-approved_sha256: "9613a9acdd50226778279be2f35114595a40981833dc4f6197256a56366ab04f"
+approved_sha256: "e219efbe11956aec02cbfc0cd3cc1fa98926bf4e06f9e9db2cef86f60d45732f"
 ---
 # Patch 0005 — Separate tab for expense list
 
@@ -31,6 +31,17 @@ approved_sha256: "9613a9acdd50226778279be2f35114595a40981833dc4f6197256a56366ab0
 | Data / State | One new local state in `App`: `activeTab: "expenses" \| "summary"`, default `"expenses"`. No server state added. |
 | Behavior | Renders two tab buttons labeled "Expenses" and "Summary". Active tab button is visually distinguished (e.g. underline or background). Clicking "Summary" shows `CategorySummary`; clicking "Expenses" shows `ExpenseList` + `ExportCsvButton`. Only the active tab's content is in the DOM (conditional render). |
 | Boundaries | None — no external deps beyond what App already imports |
+
+## TSD S-0005.01 — Tab panel replacing stacked summary + list
+
+| Aspect | Spec |
+|--------|------|
+| Interfaces | `App` component (no prop changes). New tab panel renders inside `App` in place of the current side-by-side `CategorySummary` + `ExpenseList` divs. |
+| Data / State | One new local state in `App`: `activeTab: "expenses" \| "summary"`, default `"expenses"`. No server state added. |
+| Behavior | Renders two tab buttons labeled "Expenses" and "Summary". Active tab button is visually distinguished (e.g. underline or background). Clicking "Summary" shows `CategorySummary`; clicking "Expenses" shows `ExpenseList` + `ExportCsvButton`. Only the active tab's content is in the DOM (conditional render). |
+| Boundaries | None — no external deps beyond what App already imports |
+| Tests | Render `App` with MSW/vi mocks (matching existing test patterns). Assert: (a) both tab buttons are present, (b) "Expenses" content visible by default, (c) clicking "Summary" tab shows summary content and hides expense list, (d) clicking "Expenses" tab restores expense list. |
+
 
 
 ## Task T-sepratetab-for-expense-list-vp1olq — Add Expenses/Summary tab panel to App
