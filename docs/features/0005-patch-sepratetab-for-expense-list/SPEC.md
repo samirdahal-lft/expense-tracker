@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-08-12"
-approved_sha256: "07f45dec8e58e2afd6774c1867dd8fdd8d86060d577f999a1816b373e4caacef"
+approved_sha256: "e5c88cc6cffe5076c3f33a8a922dcb7f2ef801370d30507e931df7593152b66c"
 ---
 # Patch 0005 — Separate tab for expense list
 
@@ -21,15 +21,6 @@ approved_sha256: "07f45dec8e58e2afd6774c1867dd8fdd8d86060d577f999a1816b373e4caac
 **Expected behavior:** The main content area below the add-form is replaced with a two-tab panel: a "Summary" tab (renders `CategorySummary`) and an "Expenses" tab (renders `ExpenseList` + `ExportCsvButton`). "Expenses" is the default active tab. Switching tabs is instant (no network call).
 **Must NOT change:** Add expense form stays above tabs. Edit expense form appears above tabs when active. Theme toggle, header, and all existing data-fetching/refresh logic remain untouched. No existing props or hook contracts change.
 
-## TSD S-0005.01 — Tab panel replacing stacked summary + list
-
-| Aspect | Spec |
-|--------|------|
-| Interfaces | `App` component (no prop changes). New tab panel renders inside `App` in place of the current side-by-side `CategorySummary` + `ExpenseList` divs. |
-| Data / State | One new local state in `App`: `activeTab: "expenses" \| "summary"`, default `"expenses"`. No server state added. |
-| Behavior | Renders two tab buttons labeled "Expenses" and "Summary". Active tab button is visually distinguished (e.g. underline or background). Clicking "Summary" shows `CategorySummary`; clicking "Expenses" shows `ExpenseList` + `ExportCsvButton`. Only the active tab's content is in the DOM (conditional render). |
-| Boundaries | None — no external deps beyond what App already imports |
-| Tests | Render `App` with MSW/vi mocks (matching existing test patterns). Assert: (a) both tab buttons are present, (b) "Expenses" content visible by default, (c) clicking "Summary" tab shows summary content and hides expense list, (d) clicking "Expenses" tab restores expense list. |
 
 
 ## TSD S-0005.01 — Tab panel replacing stacked summary + list
