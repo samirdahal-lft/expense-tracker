@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-08-12"
-approved_sha256: "e5c88cc6cffe5076c3f33a8a922dcb7f2ef801370d30507e931df7593152b66c"
+approved_sha256: "9613a9acdd50226778279be2f35114595a40981833dc4f6197256a56366ab04f"
 ---
 # Patch 0005 — Separate tab for expense list
 
@@ -23,7 +23,7 @@ approved_sha256: "e5c88cc6cffe5076c3f33a8a922dcb7f2ef801370d30507e931df7593152b6
 
 
 
-## TSD S-0005.01 — Tab panel replacing stacked summary + list
+## TSD S-0005.02 — Tab panel replacing stacked summary + list
 
 | Aspect | Spec |
 |--------|------|
