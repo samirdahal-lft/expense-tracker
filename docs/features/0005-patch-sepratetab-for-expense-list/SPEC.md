@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-08-12"
-approved_sha256: "6d1e7ad365a502223d7fd5b4db97663e6d0270c18cc85b75e4440abf1c11be26"
+approved_sha256: "77da5ca45fc774f49a4fe9b74a4daea591f23c5f42ff99f0baebd08326af7307"
 ---
 # Patch 0005 — Separate tab for expense list
 
@@ -60,7 +60,7 @@ approved_sha256: "6d1e7ad365a502223d7fd5b4db97663e6d0270c18cc85b75e4440abf1c11be
 | Behavior | Renders two tab buttons labeled "Expenses" and "Summary". Active tab button is visually distinguished (e.g. underline or background). Clicking "Summary" shows `CategorySummary`; clicking "Expenses" shows `ExpenseList` + `ExportCsvButton`. Only the active tab's content is in the DOM (conditional render). |
 | Boundaries | None — no external deps beyond what App already imports |
 | Tests | Render `App` with MSW/vi mocks (matching existing test patterns). Assert: (a) both tab buttons are present, (b) "Expenses" content visible by default, (c) clicking "Summary" tab shows summary content and hides expense list, (d) clicking "Expenses" tab restores expense list. |
-## TSD S-0005.01 — Tab panel replacing stacked summary + list samir dahao
+## TSD S-0005.01 — Tab panel replacing stacked summary + list samir dahao and me and me 
 
 | Aspect | Spec |
 | Aspect | Spec |
@@ -71,6 +71,7 @@ approved_sha256: "6d1e7ad365a502223d7fd5b4db97663e6d0270c18cc85b75e4440abf1c11be
 | Boundaries | None — no external deps beyond what App already imports |
 | Tests | Render `App` with MSW/vi mocks (matching existing test patterns). Assert: (a) both tab buttons are 
 present, (b) "Expenses" content visible by default, (c) clicking "Summary" tab shows summary content and hides expense list, (d) clicking "Expenses" tab restores expense list. |
+
 
 
 
