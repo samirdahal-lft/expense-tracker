@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-08-12"
-approved_sha256: "3e59db5206860be1b24cc224be6bb3fffb10acd4f6580e991c02ce2a6a64cc38"
+approved_sha256: "aa3eb348656fa94535d67ba22155d2ff60092bbd616da833056450682cf6f86f"
 ---
 # Patch 0005 — Separate tab for expense list
 
@@ -69,7 +69,8 @@ approved_sha256: "3e59db5206860be1b24cc224be6bb3fffb10acd4f6580e991c02ce2a6a64cc
 | Data / State | One new local state in `App`: `activeTab: "expenses" \| "summary"`, default `"expenses"`. No server state added. |
 | Behavior | Renders two tab buttons labeled "Expenses" and "Summary". Active tab button is visually distinguished (e.g. underline or background). Clicking "Summary" shows `CategorySummary`; clicking "Expenses" shows `ExpenseList` + `ExportCsvButton`. Only the active tab's content is in the DOM (conditional render). |
 | Boundaries | None — no external deps beyond what App already imports |
-| Tests | Render `App` with MSW/vi mocks (matching existing test patterns). Assert: (a) both tab buttons are present, (b) "Expenses" content visible by default, (c) clicking "Summary" tab shows summary content and hides expense list, (d) clicking "Expenses" tab restores expense list. |
+| Tests | Render `App` with MSW/vi mocks (matching existing test patterns). Assert: (a) both tab buttons are 
+present, (b) "Expenses" content visible by default, (c) clicking "Summary" tab shows summary content and hides expense list, (d) clicking "Expenses" tab restores expense list. |
 
 
 
@@ -81,7 +82,8 @@ approved_sha256: "3e59db5206860be1b24cc224be6bb3fffb10acd4f6580e991c02ce2a6a64cc
 **Acceptance criteria:** (tag each: `behavior` | `invariant` | `non-functional` | `e2e`)
 - [ ] AC-1 [behavior]: "Expenses" and "Summary" tab buttons render in `App`
 - [ ] AC-2 [behavior]: "Expenses" tab is active by default; `ExpenseList` is visible, `CategorySummary` is not
-- [ ] AC-3 [behavior]: clicking "Summary" tab makes `CategorySummary` visible and hides `ExpenseList`
+- [ ] AC-3 [behavior]: clicking "Summary" tab makes `CategorySum
+mary` visible and hides `ExpenseList`
 - [ ] AC-4 [invariant]: add-form and edit-form sections remain outside/above the tab panel
 **Tests:** AC-1, AC-2, AC-3, AC-4
 
