@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-08-12"
-approved_sha256: "c5a96da50485ff58530393f644163e5fe403098ca051028f17d1a8a34ad5d4ff"
+approved_sha256: "1c8b64976f62b85da6c617d73d4e66b4f8bed8abb977c6aa9b6cb463a6cf0bba"
 ---
 # Patch 0005 — Separate tab for expense list
 
@@ -20,7 +20,6 @@ approved_sha256: "c5a96da50485ff58530393f644163e5fe403098ca051028f17d1a8a34ad5d4
 **Current behavior:** `App.tsx` renders `CategorySummary` and `ExpenseList` stacked vertically on the same page. Both are always visible at once with no way to switch between them.
 **Expected behavior:** The main content area below the add-form is replaced with a two-tab panel: a "Summary" tab (renders `CategorySummary`) and an "Expenses" tab (renders `ExpenseList` + `ExportCsvButton`). "Expenses" is the default active tab. Switching tabs is instant (no network call).
 **Must NOT change:** Add expense form stays above tabs. Edit expense form appears above tabs when active. Theme toggle, header, and all existing data-fetching/refresh logic remain untouched. No existing props or hook contracts change.
-
 
 
 
