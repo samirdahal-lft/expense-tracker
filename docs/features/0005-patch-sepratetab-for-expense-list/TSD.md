@@ -1,6 +1,6 @@
 > Lane-generated — extracted from SPEC.md at approval. View only; edit the TSD section in SPEC.md, not here.
 
-## TSD S-0005.01 — Tab panel replacing stacked summary + list
+## TSD S-0005.02 — Tab panel replacing stacked summary + list
 
 | Aspect | Spec |
 |--------|------|
