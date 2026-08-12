@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-08-12"
-approved_sha256: "ee207a025077ed4e8a26b3074d15eacd1415423a81eb5db9b95e3bb11e9d16ea"
+approved_sha256: "382185e8058c8c1c62c901573d890420d475f9c78e866b5f49daac29b253394e"
 ---
 # Patch 0005 — Separate tab for expense list
 
@@ -93,3 +93,4 @@ approved_sha256: "ee207a025077ed4e8a26b3074d15eacd1415423a81eb5db9b95e3bb11e9d16
 **Behaviors (TDD order):**
 - B-1: Write failing tests for AC-1 through AC-4 (tab buttons present, correct default, tab switching). Commit RED. Implement `activeTab` state and tab panel in `App.tsx`. Commit GREEN.
 **Open questions:** none
+
