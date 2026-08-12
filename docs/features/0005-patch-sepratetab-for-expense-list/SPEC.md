@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-08-12"
-approved_sha256: "c474edea6a80b0211a7239b7e54ab13efacfcf0fbaefd841c635b5d26403bef3"
+approved_sha256: "3e59db5206860be1b24cc224be6bb3fffb10acd4f6580e991c02ce2a6a64cc38"
 ---
 # Patch 0005 — Separate tab for expense list
 
@@ -62,6 +62,7 @@ approved_sha256: "c474edea6a80b0211a7239b7e54ab13efacfcf0fbaefd841c635b5d26403be
 | Tests | Render `App` with MSW/vi mocks (matching existing test patterns). Assert: (a) both tab buttons are present, (b) "Expenses" content visible by default, (c) clicking "Summary" tab shows summary content and hides expense list, (d) clicking "Expenses" tab restores expense list. |
 ## TSD S-0005.01 — Tab panel replacing stacked summary + list samir dahao
 
+| Aspect | Spec |
 | Aspect | Spec |
 |--------|------|
 | Interfaces | `App` component (no prop changes). New tab panel renders inside `App` in place of the current side-by-side `CategorySummary` + `ExpenseList` divs. |
