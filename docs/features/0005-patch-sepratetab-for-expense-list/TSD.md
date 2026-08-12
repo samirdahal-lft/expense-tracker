@@ -40,6 +40,7 @@
 ## TSD S-0005.01 — Tab panel replacing stacked summary + list samir dahao
 
 | Aspect | Spec |
+| Aspect | Spec |
 |--------|------|
 | Interfaces | `App` component (no prop changes). New tab panel renders inside `App` in place of the current side-by-side `CategorySummary` + `ExpenseList` divs. |
 | Data / State | One new local state in `App`: `activeTab: "expenses" \| "summary"`, default `"expenses"`. No server state added. |
