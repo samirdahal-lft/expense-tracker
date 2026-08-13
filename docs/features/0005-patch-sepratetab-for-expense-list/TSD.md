@@ -37,7 +37,7 @@
 | Behavior | Renders two tab buttons labeled "Expenses" and "Summary". Active tab button is visually distinguished (e.g. underline or background). Clicking "Summary" shows `CategorySummary`; clicking "Expenses" shows `ExpenseList` + `ExportCsvButton`. Only the active tab's content is in the DOM (conditional render). |
 | Boundaries | None — no external deps beyond what App already imports |
 | Tests | Render `App` with MSW/vi mocks (matching existing test patterns). Assert: (a) both tab buttons are present, (b) "Expenses" content visible by default, (c) clicking "Summary" tab shows summary content and hides expense list, (d) clicking "Expenses" tab restores expense list. |
-## TSD S-0005.01 — Tab panel replacing stacked summary + list samir dahao and me and me 
+## TSD S-0005.01 — Tab panel replacing stacked summary + list samir dahao and me and me  let me verify whats going 
 
 | Aspect | Spec |
 | Aspect | Spec |
