@@ -1,49 +1,40 @@
 ---
-approved_by: ""
-approved_at: ""
+approved_by: "Samir dahal"
+approved_at: "2026-08-20"
+approved_sha256: "e9c1aa2df526c52c36a7d2c468e3f499939812974f8612a39c11f3650de5aa3b"
 ---
-# Patch 0003 — <short title>
-> A `patch` iteration — the TWO-STAMP ceremony for small, known-scope work (a bug fix, a
-> tweak, one behavior, one PR). This ONE document is the ticket + TSD + task card + exec
-> plan: your single `lane approve` stamp covers all of it (stamp 1 of 2; stamp 2 is the
-> verification report at the end). The TDD ledger, Critic snapshot, and verify replay are
-> unchanged — a patch removes redundant signatures, never proof.
-> Too big for a patch? More than one story, more than ~3 behaviors, or more than one task
-> → use `lane new fix` / `lane new enhancement` instead (agents: CALL THIS OUT when
-> drafting; the human decides at the stamp).
+# Patch 0003 — Change app background color
 
-**Severity:** <blocker | major | minor>
-**Source:** <where this came from — bug report, monitoring, review feedback>   ← audit chain
+**Severity:** minor
+**Source:** UI improvement request — freshen the app's visual identity
 
-**Current behavior:** <what happens now — the scenario that triggers it, not just the error message>
-**Expected behavior:** <what should happen instead>
-**Must NOT change:** <behavior/contracts that stay intact — guards against regression>
+**Current behavior:** The light-mode app background is `210 40% 98%` (near-white cool blue-tint) and the dark-mode background is `222 47% 8%` (very dark navy). These are the default shadcn/ui palette values.
+**Expected behavior:** Light-mode background changes to a warm neutral `30 20% 97%` (warm off-white) and dark-mode background changes to `220 13% 10%` (soft dark neutral), giving the app a warmer, less sterile feel.
+**Must NOT change:** All other CSS custom properties (foreground, card, primary, secondary, muted, accent, destructive, border, input, ring, radius) remain untouched. The `bg-background` Tailwind utility class continues to map to `--background` — no class names change.
 
-## TSD S-0003.01 — <title>
-> Behavior + contracts ONLY — never the library/method/pattern. The Critic anchors to THIS
-> section (snapshot frozen at `lane start`), exactly as it would to a TSD.md section.
+## TSD S-0003.01 — Background color CSS variable update
 
 | Aspect | Spec |
 |--------|------|
-| Interfaces | <contracts touched — endpoint, CLI flag, function/SDK signature> |
-| Data / State | <state it touches — empty if none> |
-| Behavior | <the observable behavior after the patch> |
-| Boundaries | <external deps we DON'T own, faked in tests — empty if none> |
-| Tests | <unit/integration — what proves the fix> |
+| Interfaces | `frontend/src/index.css` — `:root { --background }` (light) and `.dark { --background }` (dark) CSS custom properties |
+| Data / State | No runtime state; CSS variable change is static |
+| Behavior | Light mode: `--background` resolves to HSL `30 20% 97%`. Dark mode: `--background` resolves to HSL `220 13% 10%`. All pages/components using `bg-background` or `hsl(var(--background))` reflect the new color automatically. |
+| Boundaries | None — pure CSS, no external deps |
+| Tests | Snapshot/value test: read `index.css`, assert the new HSL values appear for `--background` in both `:root` and `.dark` blocks |
 
-## Task T-change-bg-color-tlouek — <short title>
-**Slice:** a complete observable behavior end-to-end + tests (full vertical)
-**Acceptance criteria:** (tag each: `behavior` | `invariant` | `non-functional` | `e2e`)
-- [ ] AC-1 [behavior]: <observable outcome through an interface that proves the fix>
-**Tests:** AC-1  ← ordered; first = tracer bullet
-<!-- exception: Tests: N/A — reason: config | scaffolding | spike | refactor | tooling — the opt-out is part of what you stamp -->
+## Task T-change-bg-color-tlouek — Update background CSS variable in light and dark themes
+
+**Slice:** Full vertical — CSS change + a test that asserts the new values are present
+**Acceptance criteria:**
+- [ ] AC-1 [behavior]: `:root --background` equals `30 20% 97%` in `frontend/src/index.css`
+- [ ] AC-2 [behavior]: `.dark --background` equals `220 13% 10%` in `frontend/src/index.css`
+- [ ] AC-3 [invariant]: All other CSS custom properties in both `:root` and `.dark` blocks are unchanged
+**Tests:** AC-1, AC-2, AC-3
 
 ## Execution Plan
-> Approved BY the spec stamp: `lane start` copies this section verbatim into the worktree's
-> exec-plan.md and carries your stamp onto it — no separate plan gate. Keep it last in this file.
 
-**Approach:** <high-level how — NOT implementation prescription>
-**Boundaries & mocks:** <what's FAKED vs REAL — empty if none>
+**Approach:** Edit the two `--background` values in `frontend/src/index.css`. Write a test that reads the file and asserts the exact HSL strings for both light and dark modes.
+**Boundaries & mocks:** None — the test reads the real file on disk.
 **Behaviors (TDD order):**
-- B-1: <the failing test that proves the bug/behavior, then the change that fixes it>
-**Open questions:** <MUST be resolved (or say "none") before the stamp>
+- B-1: Test asserts `--background: 30 20% 97%` in `:root` and `--background: 220 13% 10%` in `.dark` — fails before the edit; passes after updating `index.css`.
+**Open questions:** none
