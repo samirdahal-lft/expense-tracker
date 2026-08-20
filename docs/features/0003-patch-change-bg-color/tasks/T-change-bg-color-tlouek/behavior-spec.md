@@ -9,18 +9,18 @@
 > non-functional ACs are not RED→GREEN cycles — any are listed in their own section.
 
 ## B-1 (tracer bullet): AC-1 [behavior]: `:root --background` equals `30 20% 97%` in `frontend/src/index.css`
-- Given:
-- When:
-- Then:
+- Given: `frontend/src/index.css` contains `:root { --background: 210 40% 98%; ... }`
+- When: the test reads the file and checks the `:root` block
+- Then: `--background: 30 20% 97%` is present in the `:root` block
 
 ## B-2: AC-2 [behavior]: `.dark --background` equals `220 13% 10%` in `frontend/src/index.css`
-- Given:
-- When:
-- Then:
+- Given: `frontend/src/index.css` contains `.dark { --background: 222 47% 8%; ... }`
+- When: the test reads the file and checks the `.dark` block
+- Then: `--background: 220 13% 10%` is present in the `.dark` block
 
 ## Invariants & non-functional ACs (NOT RED→GREEN cycles)
 > Not standalone behaviors to drive. An invariant usually holds as a property of a
 > behavior above (state which) or is locked by a guard test recorded off-ledger with
 > `lane red --regression`. Non-functional ACs are validated out-of-band (load test, etc.).
-- AC-3 [invariant]: All other CSS custom properties in both `:root` and `.dark` blocks are unchanged — coverage:
+- AC-3 [invariant]: All other CSS custom properties in both `:root` and `.dark` blocks are unchanged — coverage: verified within the B-1/B-2 test (spot-checks --foreground, --primary, --card)
 
