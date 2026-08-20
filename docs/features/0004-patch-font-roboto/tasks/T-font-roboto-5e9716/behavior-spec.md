@@ -9,12 +9,12 @@
 > non-functional ACs are not RED→GREEN cycles — any are listed in their own section.
 
 ## B-1 (tracer bullet): AC-1 [behavior]: `tailwind.config.ts` `theme.extend.fontFamily.sans` array starts with `'Roboto'`
-- Given:
-- When:
-- Then:
+- Given: the frontend Tailwind config has no custom fontFamily declared
+- When: the config is read by the test
+- Then: `theme.extend.fontFamily.sans[0]` equals `'Roboto'`
 
 ## B-2: AC-2 [behavior]: `index.css` contains a Google Fonts `@import` URL for Roboto
-- Given:
-- When:
-- Then:
+- Given: index.css has no Google Fonts import
+- When: the CSS file is read by the test
+- Then: the file contains a `@import` URL matching `fonts.googleapis.com` and `Roboto`
 
