@@ -1,49 +1,40 @@
 ---
-approved_by: ""
-approved_at: ""
+approved_by: "Samir dahal"
+approved_at: "2026-08-20"
+approved_sha256: "22695c188c4e8779854b1560b12aa03bf181bac0a89ec39caacbf4d759c916ce"
 ---
-# Patch 0004 — <short title>
-> A `patch` iteration — the TWO-STAMP ceremony for small, known-scope work (a bug fix, a
-> tweak, one behavior, one PR). This ONE document is the ticket + TSD + task card + exec
-> plan: your single `lane approve` stamp covers all of it (stamp 1 of 2; stamp 2 is the
-> verification report at the end). The TDD ledger, Critic snapshot, and verify replay are
-> unchanged — a patch removes redundant signatures, never proof.
-> Too big for a patch? More than one story, more than ~3 behaviors, or more than one task
-> → use `lane new fix` / `lane new enhancement` instead (agents: CALL THIS OUT when
-> drafting; the human decides at the stamp).
+# Patch 0004 — Switch app font to Roboto
 
-**Severity:** <blocker | major | minor>
-**Source:** <where this came from — bug report, monitoring, review feedback>   ← audit chain
+**Severity:** minor
+**Source:** user request — visual/branding preference
 
-**Current behavior:** <what happens now — the scenario that triggers it, not just the error message>
-**Expected behavior:** <what should happen instead>
-**Must NOT change:** <behavior/contracts that stay intact — guards against regression>
+**Current behavior:** The app uses the browser/OS default sans-serif font; no custom font is declared in the Tailwind config or index.css.
+**Expected behavior:** All UI text uses the Roboto font (loaded from Google Fonts), applied globally via Tailwind's `fontFamily` config as the default sans-serif.
+**Must NOT change:** Tailwind theme token names, shadcn/ui component markup, color tokens, all backend code, all existing tests.
 
-## TSD S-0004.01 — <title>
-> Behavior + contracts ONLY — never the library/method/pattern. The Critic anchors to THIS
-> section (snapshot frozen at `lane start`), exactly as it would to a TSD.md section.
+## TSD S-0004.01 — Global Roboto font via Tailwind
 
 | Aspect | Spec |
 |--------|------|
-| Interfaces | <contracts touched — endpoint, CLI flag, function/SDK signature> |
-| Data / State | <state it touches — empty if none> |
-| Behavior | <the observable behavior after the patch> |
-| Boundaries | <external deps we DON'T own, faked in tests — empty if none> |
-| Tests | <unit/integration — what proves the fix> |
+| Interfaces | `tailwind.config.ts` → `theme.extend.fontFamily.sans`; `index.css` → Google Fonts `@import` |
+| Data / State | None |
+| Behavior | Every element that inherits Tailwind's `font-sans` (the default) renders in Roboto; fallback chain: `Roboto, ui-sans-serif, system-ui, sans-serif` |
+| Boundaries | Google Fonts CDN (external) — not faked in tests |
+| Tests | Vitest + jsdom: assert `tailwind.config.ts` exports `fontFamily.sans` that starts with `'Roboto'`; assert `index.css` contains the Google Fonts `@import` for Roboto |
 
-## Task T-font-roboto-5e9716 — <short title>
-**Slice:** a complete observable behavior end-to-end + tests (full vertical)
-**Acceptance criteria:** (tag each: `behavior` | `invariant` | `non-functional` | `e2e`)
-- [ ] AC-1 [behavior]: <observable outcome through an interface that proves the fix>
-**Tests:** AC-1  ← ordered; first = tracer bullet
-<!-- exception: Tests: N/A — reason: config | scaffolding | spike | refactor | tooling — the opt-out is part of what you stamp -->
+## Task T-font-roboto-5e9716 — Switch app font to Roboto
+
+**Slice:** font configured globally + tests prove both config entries
+**Acceptance criteria:**
+- [ ] AC-1 [behavior]: `tailwind.config.ts` `theme.extend.fontFamily.sans` array starts with `'Roboto'`
+- [ ] AC-2 [behavior]: `index.css` contains a Google Fonts `@import` URL for Roboto
+**Tests:** AC-1, AC-2
 
 ## Execution Plan
-> Approved BY the spec stamp: `lane start` copies this section verbatim into the worktree's
-> exec-plan.md and carries your stamp onto it — no separate plan gate. Keep it last in this file.
 
-**Approach:** <high-level how — NOT implementation prescription>
-**Boundaries & mocks:** <what's FAKED vs REAL — empty if none>
+**Approach:** Add Google Fonts `@import` to `index.css` and extend `tailwind.config.ts` with `fontFamily.sans = ['Roboto', ...]`; no component edits needed.
+**Boundaries & mocks:** None — tests inspect the config file text and CSS file text directly; no network call needed.
 **Behaviors (TDD order):**
-- B-1: <the failing test that proves the bug/behavior, then the change that fixes it>
-**Open questions:** <MUST be resolved (or say "none") before the stamp>
+- B-1: Tailwind config exports Roboto as the first sans-serif font
+- B-2: index.css imports Roboto from Google Fonts
+**Open questions:** none
