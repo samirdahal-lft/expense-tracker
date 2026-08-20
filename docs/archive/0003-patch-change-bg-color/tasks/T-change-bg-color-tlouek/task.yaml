@@ -17,5 +17,5 @@ depends_on: []
 #               Use `lane red --regression` inside red-green to commit a passing
 #               test outside the ledger (non-ledger guard, verify ignores it).
 tests_mode: red-green
-base_ref: master
+base_ref: test-multi-session-2
 worktree_path: /home/leapfrog/expense-tracker.wt/T-change-bg-color-tlouek
