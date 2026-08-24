@@ -1,49 +1,39 @@
 ---
-approved_by: ""
-approved_at: ""
+approved_by: "Samir dahal"
+approved_at: "2026-08-24"
+approved_sha256: "166db362fe46c77401e65e12f2329ad68d4f0614d0709dc7e9470e5b85cf8d22"
 ---
-# Patch 0008 — <short title>
-> A `patch` iteration — the TWO-STAMP ceremony for small, known-scope work (a bug fix, a
-> tweak, one behavior, one PR). This ONE document is the ticket + TSD + task card + exec
-> plan: your single `lane approve` stamp covers all of it (stamp 1 of 2; stamp 2 is the
-> verification report at the end). The TDD ledger, Critic snapshot, and verify replay are
-> unchanged — a patch removes redundant signatures, never proof.
-> Too big for a patch? More than one story, more than ~3 behaviors, or more than one task
-> → use `lane new fix` / `lane new enhancement` instead (agents: CALL THIS OUT when
-> drafting; the human decides at the stamp).
+# Patch 0008 — Make all buttons pink
 
-**Severity:** <blocker | major | minor>
-**Source:** <where this came from — bug report, monitoring, review feedback>   ← audit chain
+**Severity:** minor
+**Source:** user request
 
-**Current behavior:** <what happens now — the scenario that triggers it, not just the error message>
-**Expected behavior:** <what should happen instead>
-**Must NOT change:** <behavior/contracts that stay intact — guards against regression>
+**Current behavior:** All primary buttons display in green (HSL ~160° teal-green) in both light and dark themes.
+**Expected behavior:** All primary buttons display in pink (HSL ~330° pink) in both light and dark themes.
+**Must NOT change:** Button text readability (contrast ratio), dark-mode toggle behavior, all non-button UI elements, layout, and all existing functionality.
 
-## TSD S-0008.01 — <title>
-> Behavior + contracts ONLY — never the library/method/pattern. The Critic anchors to THIS
-> section (snapshot frozen at `lane start`), exactly as it would to a TSD.md section.
+## TSD S-0008.01 — Primary button color changed to pink
 
 | Aspect | Spec |
 |--------|------|
-| Interfaces | <contracts touched — endpoint, CLI flag, function/SDK signature> |
-| Data / State | <state it touches — empty if none> |
-| Behavior | <the observable behavior after the patch> |
-| Boundaries | <external deps we DON'T own, faked in tests — empty if none> |
-| Tests | <unit/integration — what proves the fix> |
+| Interfaces | `--primary` and `--ring` CSS custom properties in `frontend/src/index.css` |
+| Data / State | No runtime state; CSS-only change |
+| Behavior | After the change, any element using `bg-primary` / `text-primary` / `ring-primary` (i.e., all primary buttons) renders with a pink hue (~330° HSL) in both `:root` (light) and `.dark` themes. Foreground text on pink buttons remains legible (white). |
+| Boundaries | None |
+| Tests | JSDOM computed-style test: assert `--primary` CSS variable value resolves to the pink HSL string in both `:root` and `.dark` |
 
-## Task T-make-button-pink-l14gsl — <short title>
-**Slice:** a complete observable behavior end-to-end + tests (full vertical)
-**Acceptance criteria:** (tag each: `behavior` | `invariant` | `non-functional` | `e2e`)
-- [ ] AC-1 [behavior]: <observable outcome through an interface that proves the fix>
-**Tests:** AC-1  ← ordered; first = tracer bullet
-<!-- exception: Tests: N/A — reason: config | scaffolding | spike | refactor | tooling — the opt-out is part of what you stamp -->
+## Task T-make-button-pink-l14gsl — Change --primary to pink in index.css
+**Slice:** full vertical — CSS variable change + test that asserts the value is applied
+**Acceptance criteria:**
+- [ ] AC-1 [behavior]: `--primary` CSS variable in `:root` resolves to a pink hue (hue 330)
+- [ ] AC-2 [behavior]: `--primary` CSS variable in `.dark` resolves to a pink hue (hue 330)
+- [ ] AC-3 [invariant]: No other CSS variables are changed outside of `--primary` and `--ring`
+**Tests:** AC-1, AC-2, AC-3
 
 ## Execution Plan
-> Approved BY the spec stamp: `lane start` copies this section verbatim into the worktree's
-> exec-plan.md and carries your stamp onto it — no separate plan gate. Keep it last in this file.
 
-**Approach:** <high-level how — NOT implementation prescription>
-**Boundaries & mocks:** <what's FAKED vs REAL — empty if none>
+**Approach:** Update the two `--primary` (and `--ring`) entries in `frontend/src/index.css` from the current green hue to a pink hue. Write a JSDOM test that loads the stylesheet and asserts the CSS variable value.
+**Boundaries & mocks:** None — pure CSS change, test reads computed style via JSDOM.
 **Behaviors (TDD order):**
-- B-1: <the failing test that proves the bug/behavior, then the change that fixes it>
-**Open questions:** <MUST be resolved (or say "none") before the stamp>
+- B-1: Test asserts `--primary` in `:root` and `.dark` contains hue 330 (pink) — fails on green, passes after edit
+**Open questions:** none
