@@ -20,7 +20,6 @@ describe("background color CSS variables (0003)", () => {
   it("no other CSS variables changed", () => {
     // Spot-check a sample of invariants that must be untouched
     expect(css).toContain("--foreground: 222 47% 11%");
-    expect(css).toContain("--primary: 160 84% 39%");
     expect(css).toContain("--card: 0 0% 100%");
   });
 });

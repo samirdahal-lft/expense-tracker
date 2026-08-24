@@ -1,0 +1,26 @@
+# Behavior Spec — T-make-button-pink-l14gsl: Change --primary to pink in index.css
+> Source: task card ACs + docs/features/0008-patch-make-button-pink/tasks/T-make-button-pink-l14gsl/snapshot-TSD.md
+> One test at a time. B-1 = tracer bullet. Never write B-N+1 before B-N is GREEN.
+> Fill a behavior's Given/When/Then JUST BEFORE you `lane red` it — `lane red` checks
+> only the behavior it's about to prove, so later B-N may stay stubs until their turn.
+> B-N below seed from the card's drivable ACs (behavior / e2e) — a starting point, not
+> final. One AC may be several behaviors (split it); the Critic may surface more (add
+> them). B-numbering is the Coordinator's, not fixed by AC count. Invariant /
+> non-functional ACs are not RED→GREEN cycles — any are listed in their own section.
+
+## B-1 (tracer bullet): AC-1 [behavior]: `--primary` CSS variable in `:root` resolves to a pink hue (hue 330)
+- Given: the app's `index.css` stylesheet is loaded
+- When: the `:root` block is parsed for the `--primary` CSS custom property
+- Then: the value starts with hue `330`
+
+## B-2: AC-2 [behavior]: `--primary` CSS variable in `.dark` resolves to a pink hue (hue 330)
+- Given: the app's `index.css` stylesheet is loaded
+- When: the `.dark` block is parsed for the `--primary` CSS custom property
+- Then: the value starts with hue `330`
+
+## Invariants & non-functional ACs (NOT RED→GREEN cycles)
+> Not standalone behaviors to drive. An invariant usually holds as a property of a
+> behavior above (state which) or is locked by a guard test recorded off-ledger with
+> `lane red --regression`. Non-functional ACs are validated out-of-band (load test, etc.).
+- AC-3 [invariant]: No other CSS variables are changed outside of `--primary` and `--ring` — coverage:
+
