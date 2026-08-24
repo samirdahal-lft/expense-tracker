@@ -9,14 +9,14 @@
 > non-functional ACs are not RED→GREEN cycles — any are listed in their own section.
 
 ## B-1 (tracer bullet): AC-1 [behavior]: `--primary` CSS variable in `:root` resolves to a pink hue (hue 330)
-- Given:
-- When:
-- Then:
+- Given: the app's `index.css` stylesheet is loaded
+- When: the `:root` block is parsed for the `--primary` CSS custom property
+- Then: the value starts with hue `330`
 
 ## B-2: AC-2 [behavior]: `--primary` CSS variable in `.dark` resolves to a pink hue (hue 330)
-- Given:
-- When:
-- Then:
+- Given: the app's `index.css` stylesheet is loaded
+- When: the `.dark` block is parsed for the `--primary` CSS custom property
+- Then: the value starts with hue `330`
 
 ## Invariants & non-functional ACs (NOT RED→GREEN cycles)
 > Not standalone behaviors to drive. An invariant usually holds as a property of a
