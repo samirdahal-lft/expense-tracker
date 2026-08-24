@@ -9,9 +9,9 @@
 > non-functional ACs are not RED→GREEN cycles — any are listed in their own section.
 
 ## B-1 (tracer bullet): AC-1 [behavior]: The root `<div>` in `App.tsx` applies an animated rainbow gradient background visible in the rendered output
-- Given:
-- When:
-- Then:
+- Given: the App component is rendered
+- When: the root container element is inspected
+- Then: it carries the `rainbow-bg` CSS class that applies an animated rainbow gradient background
 
 ## Invariants & non-functional ACs (NOT RED→GREEN cycles)
 > Not standalone behaviors to drive. An invariant usually holds as a property of a
