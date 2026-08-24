@@ -2,6 +2,7 @@ import { render } from "@testing-library/react";
 import { vi } from "vitest";
 import { describe, it, expect, afterEach } from "vitest";
 import App from "@/App";
+import indexCss from "@/index.css?raw";
 
 // B-1: Root <div> must carry the animated rainbow gradient background class.
 describe("Rainbow background", () => {
@@ -18,5 +19,9 @@ describe("Rainbow background", () => {
     const { container } = render(<App />);
     const root = container.firstElementChild as HTMLElement;
     expect(root.classList.contains("rainbow-bg")).toBe(true);
+  });
+
+  it("index.css declares the rainbow-shift @keyframes animation", () => {
+    expect(indexCss).toContain("@keyframes rainbow-shift");
   });
 });
