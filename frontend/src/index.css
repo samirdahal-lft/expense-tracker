@@ -71,3 +71,26 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+@keyframes rainbow-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.rainbow-bg {
+  background: linear-gradient(
+    270deg,
+    hsl(0, 90%, 65%),
+    hsl(30, 90%, 65%),
+    hsl(60, 90%, 65%),
+    hsl(120, 90%, 55%),
+    hsl(180, 90%, 55%),
+    hsl(240, 90%, 65%),
+    hsl(280, 90%, 65%),
+    hsl(320, 90%, 65%),
+    hsl(360, 90%, 65%)
+  );
+  background-size: 400% 400%;
+  animation: rainbow-shift 6s ease infinite;
+}

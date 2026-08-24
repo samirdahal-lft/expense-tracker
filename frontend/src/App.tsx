@@ -39,7 +39,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground rainbow-bg">
       <div className="container max-w-5xl py-10">
         <header className="mb-8 flex items-start justify-between gap-4">
           <div>
