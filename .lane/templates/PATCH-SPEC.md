@@ -2,7 +2,7 @@
 approved_by: ""
 approved_at: ""
 ---
-# Patch 0007 — <short title>
+# Patch <FEAT> — <short title>
 > A `patch` iteration — the TWO-STAMP ceremony for small, known-scope work (a bug fix, a
 > tweak, one behavior, one PR). This ONE document is the ticket + TSD + task card + exec
 > plan: your single `lane approve` stamp covers all of it (stamp 1 of 2; stamp 2 is the
@@ -19,7 +19,7 @@ approved_at: ""
 **Expected behavior:** <what should happen instead>
 **Must NOT change:** <behavior/contracts that stay intact — guards against regression>
 
-## TSD S-0007.01 — <title>
+## TSD S-<FEAT>.01 — <title>
 > Behavior + contracts ONLY — never the library/method/pattern. The Critic anchors to THIS
 > section (snapshot frozen at `lane start`), exactly as it would to a TSD.md section.
 
@@ -31,7 +31,7 @@ approved_at: ""
 | Boundaries | <external deps we DON'T own, faked in tests — empty if none> |
 | Tests | <unit/integration — what proves the fix> |
 
-## Task T-make-button-pink-vqafo2 — <short title>
+## Task <T-ID> — <short title>
 **Slice:** a complete observable behavior end-to-end + tests (full vertical)
 **Acceptance criteria:** (tag each: `behavior` | `invariant` | `non-functional` | `e2e`)
 - [ ] AC-1 [behavior]: <observable outcome through an interface that proves the fix>
