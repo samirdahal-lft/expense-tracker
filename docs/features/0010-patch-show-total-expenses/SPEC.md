@@ -1,49 +1,44 @@
 ---
-approved_by: ""
-approved_at: ""
+approved_by: "Samir dahal"
+approved_at: "2026-08-25"
+approved_sha256: "9af9a8208bc2b0d7e93e90a8a1f2b3aaf743c2d1f2f947f75a3d030b84774491"
 ---
-# Patch 0010 — <short title>
-> A `patch` iteration — the TWO-STAMP ceremony for small, known-scope work (a bug fix, a
-> tweak, one behavior, one PR). This ONE document is the ticket + TSD + task card + exec
-> plan: your single `lane approve` stamp covers all of it (stamp 1 of 2; stamp 2 is the
-> verification report at the end). The TDD ledger, Critic snapshot, and verify replay are
-> unchanged — a patch removes redundant signatures, never proof.
-> Too big for a patch? More than one story, more than ~3 behaviors, or more than one task
-> → use `lane new fix` / `lane new enhancement` instead (agents: CALL THIS OUT when
-> drafting; the human decides at the stamp).
+# Patch 0010 — Show total expenses stat tile on dashboard
 
-**Severity:** <blocker | major | minor>
-**Source:** <where this came from — bug report, monitoring, review feedback>   ← audit chain
+**Severity:** minor
+**Source:** user request — dashboard lacks a prominent "total spent to date" figure
 
-**Current behavior:** <what happens now — the scenario that triggers it, not just the error message>
-**Expected behavior:** <what should happen instead>
-**Must NOT change:** <behavior/contracts that stay intact — guards against regression>
+**Current behavior:** The grand total is buried at the bottom of the "Spending by category" list, invisible in the empty state and small relative to the page.
+**Expected behavior:** A prominent stat tile showing the all-time total NPR spent is displayed in the dashboard header area, always visible (including empty state).
+**Must NOT change:** Per-category breakdown, donut chart, expense list, add/edit/delete flows, API contract, backend code.
 
-## TSD S-0010.01 — <title>
-> Behavior + contracts ONLY — never the library/method/pattern. The Critic anchors to THIS
-> section (snapshot frozen at `lane start`), exactly as it would to a TSD.md section.
+## TSD S-0010.01 — Total expenses stat tile
 
 | Aspect | Spec |
 |--------|------|
-| Interfaces | <contracts touched — endpoint, CLI flag, function/SDK signature> |
-| Data / State | <state it touches — empty if none> |
-| Behavior | <the observable behavior after the patch> |
-| Boundaries | <external deps we DON'T own, faked in tests — empty if none> |
-| Tests | <unit/integration — what proves the fix> |
+| Interfaces | New `TotalExpenseStat` React component in `frontend/src/features/summary/TotalExpenseStat.tsx`. Props: `total: number \| null`, `loading: boolean`, `error: string \| null`. Rendered in `App.tsx` above the category summary section, consuming `summary.total` from the existing `useSummary` hook (no new API call). |
+| Data / State | Reads `summary.total` (integer whole NPR) already fetched by `useSummary`. No new state. |
+| Behavior | - When loading: shows a skeleton/placeholder text "Loading…" inside the tile. - When error: shows "—" with muted styling. - When `total === 0` (no expenses): shows "NPR 0" (tile always visible). - When `total > 0`: shows the formatted total using `formatNpr` (e.g. "NPR 12,500"). The tile is always rendered in the dashboard header area, regardless of expense count. |
+| Boundaries | `getSummary()` API call — already faked via `vi.mock` in existing tests. |
+| Tests | Vitest + React Testing Library unit tests for `TotalExpenseStat` covering: loading state, error state, zero total, non-zero total. Tests live at `frontend/src/features/summary/TotalExpenseStat.test.tsx`. |
 
-## Task T-show-total-expenses-d789bk — <short title>
-**Slice:** a complete observable behavior end-to-end + tests (full vertical)
-**Acceptance criteria:** (tag each: `behavior` | `invariant` | `non-functional` | `e2e`)
-- [ ] AC-1 [behavior]: <observable outcome through an interface that proves the fix>
-**Tests:** AC-1  ← ordered; first = tracer bullet
-<!-- exception: Tests: N/A — reason: config | scaffolding | spike | refactor | tooling — the opt-out is part of what you stamp -->
+## Task T-show-total-expenses-d789bk — Add TotalExpenseStat tile to dashboard
+**Slice:** full vertical — new component + App.tsx wiring + tests
+**Acceptance criteria:**
+- [ ] AC-1 [behavior]: `TotalExpenseStat` renders "Loading…" when `loading=true`
+- [ ] AC-2 [behavior]: `TotalExpenseStat` renders "—" (muted) when `error` is set
+- [ ] AC-3 [behavior]: `TotalExpenseStat` renders `formatNpr(0)` when `total=0`
+- [ ] AC-4 [behavior]: `TotalExpenseStat` renders `formatNpr(total)` for a positive total
+- [ ] AC-5 [behavior]: The tile appears in the dashboard header area in `App.tsx`, consuming `summary.total` from `useSummary`
+**Tests:** AC-1, AC-2, AC-3, AC-4 (unit); AC-5 verified by App.test.tsx smoke or visual inspection
 
 ## Execution Plan
-> Approved BY the spec stamp: `lane start` copies this section verbatim into the worktree's
-> exec-plan.md and carries your stamp onto it — no separate plan gate. Keep it last in this file.
-
-**Approach:** <high-level how — NOT implementation prescription>
-**Boundaries & mocks:** <what's FAKED vs REAL — empty if none>
+**Approach:** Add a small presentational `TotalExpenseStat` component; wire it into the existing `App.tsx` header using the already-loaded `summary` from `useSummary`. No new hooks, no new API calls.
+**Boundaries & mocks:** none — component is pure props-driven; no API boundary in component tests.
 **Behaviors (TDD order):**
-- B-1: <the failing test that proves the bug/behavior, then the change that fixes it>
-**Open questions:** <MUST be resolved (or say "none") before the stamp>
+- B-1: `TotalExpenseStat` loading state — test renders loading text; impl renders "Loading…"
+- B-2: `TotalExpenseStat` error state — test renders "—"; impl handles error prop
+- B-3: `TotalExpenseStat` zero total — test renders `formatNpr(0)`; impl handles 0
+- B-4: `TotalExpenseStat` positive total — test renders `formatNpr(12500)`; impl formats correctly
+- B-5: Wire into `App.tsx` header — component visible in dashboard above category summary
+**Open questions:** none
