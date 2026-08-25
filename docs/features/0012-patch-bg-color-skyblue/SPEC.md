@@ -1,49 +1,43 @@
 ---
-approved_by: ""
-approved_at: ""
+approved_by: "Samir dahal"
+approved_at: "2026-08-25"
+approved_sha256: "26757c2ac5cf0e0dfa4d69614224ad44b3c7badd734fa637916760b286037727"
 ---
-# Patch 0012 — <short title>
-> A `patch` iteration — the TWO-STAMP ceremony for small, known-scope work (a bug fix, a
-> tweak, one behavior, one PR). This ONE document is the ticket + TSD + task card + exec
-> plan: your single `lane approve` stamp covers all of it (stamp 1 of 2; stamp 2 is the
-> verification report at the end). The TDD ledger, Critic snapshot, and verify replay are
-> unchanged — a patch removes redundant signatures, never proof.
-> Too big for a patch? More than one story, more than ~3 behaviors, or more than one task
-> → use `lane new fix` / `lane new enhancement` instead (agents: CALL THIS OUT when
-> drafting; the human decides at the stamp).
+# Patch 0012 — Default background colour: sky blue
 
-**Severity:** <blocker | major | minor>
-**Source:** <where this came from — bug report, monitoring, review feedback>   ← audit chain
+**Severity:** minor
+**Source:** user request — change the platform's default background from animated rainbow to solid sky blue
 
-**Current behavior:** <what happens now — the scenario that triggers it, not just the error message>
-**Expected behavior:** <what should happen instead>
-**Must NOT change:** <behavior/contracts that stay intact — guards against regression>
+**Current behavior:** The app root div carries a `rainbow-bg` CSS class that applies an animated multi-colour gradient, overriding the `--background` CSS custom property entirely. The static `--background` token (`30 20% 97%`) is never visible.
+**Expected behavior:** The platform background is a solid sky-blue colour (`200 100% 70%` in HSL) both in light mode and dark mode (same hue, slightly muted for dark). No animation runs. The `rainbow-bg` class and its `@keyframes rainbow-shift` rule are removed.
+**Must NOT change:** Tailwind card/section backgrounds (`bg-card`), foreground text colours, the `ThemeToggle` functionality, existing component layout, or any backend behaviour.
 
-## TSD S-0012.01 — <title>
-> Behavior + contracts ONLY — never the library/method/pattern. The Critic anchors to THIS
-> section (snapshot frozen at `lane start`), exactly as it would to a TSD.md section.
+## TSD S-0012.01 — Sky-blue default background
 
 | Aspect | Spec |
 |--------|------|
-| Interfaces | <contracts touched — endpoint, CLI flag, function/SDK signature> |
-| Data / State | <state it touches — empty if none> |
-| Behavior | <the observable behavior after the patch> |
-| Boundaries | <external deps we DON'T own, faked in tests — empty if none> |
-| Tests | <unit/integration — what proves the fix> |
+| Interfaces | `frontend/src/index.css` — CSS custom property `--background` in `:root` and `.dark`; `frontend/src/App.tsx` — root `<div>` className |
+| Data / State | No runtime state change — purely a styling constant |
+| Behavior | On page load the full-page background renders as solid sky blue (`hsl(200, 100%, 70%)` light; `hsl(200, 60%, 25%)` dark). No animation plays. Removing the browser's prefers-color-scheme or toggling via `ThemeToggle` switches to the dark-mode variant. |
+| Boundaries | None — no external deps faked in tests |
+| Tests | Vitest + @testing-library/react: assert the root `<div>` in `App` does NOT have `rainbow-bg` class; assert it has `bg-background` class; assert `:root` CSS custom property `--background` resolves to the sky-blue value via `getComputedStyle` (or via a snapshot of `index.css` content). |
 
-## Task T-bg-color-skyblue-3hkota — <short title>
-**Slice:** a complete observable behavior end-to-end + tests (full vertical)
-**Acceptance criteria:** (tag each: `behavior` | `invariant` | `non-functional` | `e2e`)
-- [ ] AC-1 [behavior]: <observable outcome through an interface that proves the fix>
-**Tests:** AC-1  ← ordered; first = tracer bullet
-<!-- exception: Tests: N/A — reason: config | scaffolding | spike | refactor | tooling — the opt-out is part of what you stamp -->
+## Task T-bg-color-skyblue-3hkota — Replace rainbow background with solid sky blue
+
+**Slice:** end-to-end: CSS variable update + class removal + test coverage
+**Acceptance criteria:**
+- [ ] AC-1 [behavior]: Root `<div>` in `App` no longer carries the `rainbow-bg` class
+- [ ] AC-2 [behavior]: `--background` CSS custom property in `:root` is set to `200 100% 70%` (sky blue HSL)
+- [ ] AC-3 [behavior]: `.dark` variant sets `--background` to `200 60% 25%` (muted sky blue)
+- [ ] AC-4 [invariant]: `rainbow-bg` class and `@keyframes rainbow-shift` are removed from `index.css`
+- [ ] AC-5 [non-functional]: No animation runs on the background in any theme
+**Tests:** AC-1, AC-2, AC-4
 
 ## Execution Plan
-> Approved BY the spec stamp: `lane start` copies this section verbatim into the worktree's
-> exec-plan.md and carries your stamp onto it — no separate plan gate. Keep it last in this file.
 
-**Approach:** <high-level how — NOT implementation prescription>
-**Boundaries & mocks:** <what's FAKED vs REAL — empty if none>
+**Approach:** Update the `--background` CSS custom property for both `:root` and `.dark` in `index.css` to sky-blue HSL values; remove the `.rainbow-bg` rule and its `@keyframes` block from `index.css`; remove the `rainbow-bg` class from the root `<div>` in `App.tsx`.
+**Boundaries & mocks:** none — pure CSS/JSX change, no API or backend involved
 **Behaviors (TDD order):**
-- B-1: <the failing test that proves the bug/behavior, then the change that fixes it>
-**Open questions:** <MUST be resolved (or say "none") before the stamp>
+- B-1: Test asserts root `<div>` lacks `rainbow-bg` class (fails while class is present) → remove `rainbow-bg` from `App.tsx` → test passes
+- B-2: Test asserts `index.css` does not contain the string `rainbow-bg` or `rainbow-shift` (fails while rules exist) → delete those rules from `index.css` and update `--background` to sky-blue → test passes
+**Open questions:** none
