@@ -1,0 +1,10 @@
+# Overlay on ../docker-compose.yml for the Playwright run: a throwaway DB (tmpfs, recreated
+# on every `up --force-recreate`) and its own port, so e2e never touches the dev stack's data.
+services:
+  backend:
+    volumes: !reset []
+    tmpfs:
+      - /data
+  frontend:
+    ports: !override
+      - "8091:80"
