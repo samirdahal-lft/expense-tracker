@@ -1,11 +1,12 @@
-## Task T-expense-84xvgl — <title>
-**Parent:** story S-0005.nn · feature 0005 (docs/features/0005-acceptance-expense/ — its TEST-PLAN.md + TEST-CASES.md)
-**Slice:** a complete observable behavior end-to-end + tests (full vertical — a disconnected layer = smell)
-**Acceptance criteria:** (tag each `behavior`/`invariant`/`non-functional`/`e2e`; behavior ACs = observable outcome through an interface — NO "calls X / saves to table Y / uses lib Z")
-- [ ] AC-1 [behavior]: <observable outcome through interface>
-**End-to-end AC:** AC-<n> [e2e] — reachable through the running app (required: green component/unit ≠ reachable)
-**Tests:** AC-1  ← ordered; first = tracer bullet
-<!-- exception: Tests: N/A — reason: config | scaffolding | spike | tooling | integration.  Tests: refactor — <what stays green> for behaviour-preserving work (lane proves pass→pass) -->
-**Test scope:** tests/T-expense-84xvgl/   ← documentation: where this task's OWN tests live. Scope is NOT configured — red/green scope to the changed test files and `verify` derives it from the RED commits (ADR-0002); `review` runs the FULL suite. This line is a human pointer only.
-<!-- approval: written by `lane approve` as frontmatter (approved_by/at/sha256) after a human confirms — never hand-edit -->
-**Done =** reviewable PR, all tests pass, links to chain. One PR per task (default).
+---
+approved_by: "Samir dahal"
+approved_at: "2026-10-06"
+approved_sha256: "e8208847f0a1cda927280ce1543fc2f79a81a46ccf03bfc2ca04ad34980f596d"
+---
+## Task T-expense-84xvgl — TC-06: Full edit round trip — list updates live without page reload
+**Parent:** story S-0005.01 · feature 0005 (docs/features/0005-acceptance-expense/)
+**Test case:** TC-06 in TEST-CASES.md · Covers S-0002.01 AC-6
+**Acceptance criteria:**
+- [ ] AC-1 [e2e]: A user viewing the expense list opens an expense, changes its amount and category, saves, and sees the updated values in the list — without a page reload.
+**Tests:** acceptance
+**Done =** Playwright test committed; passes on integration tip; verification report stamped.
