@@ -1,11 +1,16 @@
-## Task T-expense-vules8 — <title>
-**Parent:** story S-0005.nn · feature 0005 (docs/features/0005-acceptance-expense/ — its TEST-PLAN.md + TEST-CASES.md)
-**Slice:** a complete observable behavior end-to-end + tests (full vertical — a disconnected layer = smell)
-**Acceptance criteria:** (tag each `behavior`/`invariant`/`non-functional`/`e2e`; behavior ACs = observable outcome through an interface — NO "calls X / saves to table Y / uses lib Z")
-- [ ] AC-1 [behavior]: <observable outcome through interface>
-**End-to-end AC:** AC-<n> [e2e] — reachable through the running app (required: green component/unit ≠ reachable)
-**Tests:** AC-1  ← ordered; first = tracer bullet
-<!-- exception: Tests: N/A — reason: config | scaffolding | spike | tooling | integration.  Tests: refactor — <what stays green> for behaviour-preserving work (lane proves pass→pass) -->
-**Test scope:** tests/T-expense-vules8/   ← documentation: where this task's OWN tests live. Scope is NOT configured — red/green scope to the changed test files and `verify` derives it from the RED commits (ADR-0002); `review` runs the FULL suite. This line is a human pointer only.
-<!-- approval: written by `lane approve` as frontmatter (approved_by/at/sha256) after a human confirms — never hand-edit -->
-**Done =** reviewable PR, all tests pass, links to chain. One PR per task (default).
+---
+approved_by: "Samir dahal"
+approved_at: "2026-10-06"
+approved_sha256: "7c99ff92bf5d19715022ff7f746ca751dfb3cd9c3b017e828c21a4ecfb68a531"
+---
+## Task T-expense-vules8 — TC-07: Invalid amount types rejected with a message (UI and API)
+**Parent:** story S-0005.01 · feature 0005 (docs/features/0005-acceptance-expense/)
+**Test case:** TC-07 in TEST-CASES.md · Covers S-0002.01 AC-3
+**Acceptance criteria:**
+- [ ] AC-1 [e2e]: Submitting the edit form with amount=0 shows a rejection message naming the problem; the stored expense is unchanged.
+- [ ] AC-2 [e2e]: Submitting with a negative amount (e.g. -50) shows a rejection message; the stored expense is unchanged.
+- [ ] AC-3 [e2e]: Submitting with a fractional amount (e.g. 12.50) shows a rejection message; the stored expense is unchanged.
+- [ ] AC-4 [e2e]: Submitting with a non-numeric amount (e.g. "abc") shows a rejection message; the stored expense is unchanged.
+- [ ] AC-5 [invariant]: A direct API PATCH with each of the above invalid amounts returns a 4xx status (rejection is not UI-only).
+**Tests:** acceptance
+**Done =** Playwright test committed; passes on integration tip; verification report stamped.
