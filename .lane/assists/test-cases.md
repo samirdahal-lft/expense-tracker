@@ -16,6 +16,12 @@ S-<FEAT>.02 — TC-02, …); never give two cases one id — `lane approve` refu
 - **Automation:** `playwright` unless a human genuinely has to look (visual judgement, a
   physical device). A `manual` case becomes a `Tests: N/A — manual test case` card.
 - Black-box only: do NOT read the source code or the unit tests.
+- The same holds when the tests are written and fixed: you may read the PRD, the test case,
+  `e2e/` and `e2e/test-results/` — never `frontend/` or `backend/`. When a test fails, find out
+  why ONLY from `e2e/test-results/<test>/` (`error-context.md` — the page as text — and the
+  screenshot). After a failure change only how the test finds things (locators: role, label,
+  text), never what it checks; if the check itself is wrong, amend this document and get it
+  re-approved.
 
 Ask me each gap as a direct question and wait for my answer. Update THIS file in place.
 

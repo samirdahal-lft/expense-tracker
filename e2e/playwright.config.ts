@@ -12,7 +12,10 @@ export default defineConfig({
 
   use: {
     baseURL: "http://localhost:5173",
-    trace: "on-first-retry",
+    // Keep evidence of every failure: e2e/test-results/<test>/ gets a screenshot, a trace and
+    // error-context.md (the page as text). QA diagnoses failures from these, never the source.
+    screenshot: "only-on-failure",
+    trace: "retain-on-failure",
   },
 
   projects: [
