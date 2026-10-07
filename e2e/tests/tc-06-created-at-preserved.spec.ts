@@ -54,12 +54,10 @@ test.describe("TC-06: expense created_at is preserved after an edit", () => {
     // The edit button's aria-label encodes category and formatted amount: "Edit Food expense of Rs 300"
     await page.getByRole("button", { name: "Edit Food expense of Rs 300" }).click();
 
-    // The edit form appears. Fill the amount field.
-    const amountField = page.getByLabel("Amount (NPR)");
-    await amountField.fill("450");
-
-    // Submit the form.
-    await page.getByRole("button", { name: "Save changes" }).click();
+    // The edit form appears alongside the add form — scope to it by its aria-label.
+    const editForm = page.getByRole("form", { name: "Edit expense" });
+    await editForm.getByLabel("Amount (NPR)").fill("450");
+    await editForm.getByRole("button", { name: "Save changes" }).click();
 
     // Wait for the list to reflect the updated amount — the edit button's label changes.
     await expect(
