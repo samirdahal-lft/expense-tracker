@@ -50,31 +50,23 @@ test.describe("TC-06: expense created_at is preserved after an edit", () => {
     // Navigate to the expense list.
     await page.goto("/");
 
-    // Locate the edit control for our test expense.
-    // The expense row should be identifiable by its amount (300) or note.
-    const expenseRow = page
-      .getByRole("row")
-      .filter({ hasText: "300" })
-      .filter({ hasText: "Food" })
-      .first();
-    await expect(expenseRow).toBeVisible();
+    // Click the Edit button for our test expense.
+    // The edit button's aria-label encodes category and formatted amount: "Edit Food expense of Rs 300"
+    await page.getByRole("button", { name: "Edit Food expense of Rs 300" }).click();
 
-    // Open the edit form.
-    await expenseRow.getByRole("button", { name: /edit/i }).click();
-
-    // Change the amount field.
-    const amountField = page.getByRole("spinbutton", { name: /amount/i }).or(
-      page.getByLabel(/amount/i)
-    );
+    // The edit form appears. Fill the amount field.
+    const amountField = page.getByLabel("Amount (NPR)");
     await amountField.fill("450");
 
     // Submit the form.
-    await page.getByRole("button", { name: /save|update|submit/i }).click();
+    await page.getByRole("button", { name: "Save changes" }).click();
 
-    // Wait for the list to reflect the update.
-    await expect(page.getByRole("row").filter({ hasText: "450" }).first()).toBeVisible();
+    // Wait for the list to reflect the updated amount — the edit button's label changes.
+    await expect(
+      page.getByRole("button", { name: "Edit Food expense of Rs 450" })
+    ).toBeVisible();
 
-    // Fetch the expense from the API and assert created_at is unchanged.
+    // Fetch all expenses from the API and locate our expense by id.
     const res = await request.get(`${BASE_URL}/api/expenses`);
     expect(res.ok()).toBeTruthy();
     const expenses: Expense[] = await res.json();
