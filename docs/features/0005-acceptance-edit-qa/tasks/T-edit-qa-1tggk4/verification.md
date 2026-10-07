@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-10-07"
-approved_sha256: "82670c5cef7ff895909662414c49ec873b485b2866a5f2b1112d14a27117feed"
+approved_sha256: "bdcee9c5392d2dc0112be777d187d1d43730218eca06c5fc6ba8c1694d965030"
 ---
 ## Verification — Task T-edit-qa-1tggk4 — 2026-10-07
 > QA task (ADR-0031). The reviewer reads the TEST against its frozen test case (`snapshot-TSD.md`),
@@ -11,10 +11,11 @@ approved_sha256: "82670c5cef7ff895909662414c49ec873b485b2866a5f2b1112d14a27117fe
 
 ✅ **Conformant:** each step and expected result of the test case, and where the test asserts it
 - `beforeEach` creates an expense via `POST /api/expenses` and captures `created_at` from the response — matches "creation timestamp is captured immediately after creation via the public API"
-- Test navigates to `/` and locates the row by amount (300) and category (Food) — satisfies "Given the test expense exists"
-- Opens the edit form via the row's Edit button, fills amount 450, submits — satisfies "When the user edits the amount and saves"
-- Waits for the updated row (450) to appear, then calls `GET /api/expenses`, finds the expense by ID, and asserts `created_at === originalCreatedAt` — satisfies "Then the expense's created_at returned by the API equals the value captured at creation"
-- `afterEach` deletes the expense via the API — test is self-cleaning
+- Test navigates to `/` and clicks `getByRole('button', { name: 'Edit Food expense of Rs 300' })` — selects the specific expense by its rendered aria-label; satisfies "Given the test expense exists"
+- Fills `getByLabel('Amount (NPR)')` with 450 and clicks `getByRole('button', { name: 'Save changes' })` — satisfies "When the user edits the amount and saves"
+- Waits for `getByRole('button', { name: 'Edit Food expense of Rs 450' })` to be visible (list updated) — confirms the edit took effect in the UI
+- Calls `GET /api/expenses`, finds the expense by ID, asserts `created_at === originalCreatedAt` — satisfies "Then the expense's created_at returned by the API equals the value captured at creation"
+- `afterEach` deletes via `DELETE /api/expenses/{id}` — hermetic teardown
 
 ⚠️ **Divergent:** the test asserts something other than the case says + severity (shallow/deep)
 - None
@@ -22,18 +23,18 @@ approved_sha256: "82670c5cef7ff895909662414c49ec873b485b2866a5f2b1112d14a27117fe
 ❌ **Missing:** a step or expected result of the case the test does not assert
 - None — all steps and the expected result are encoded
 
-**Notes (no flags, informational only):**
-- Row selector uses `filter({ hasText: "300" }).filter({ hasText: "Food" })` without also filtering on the note "tc-06 test". With `workers: 1` and cleanup in `afterEach`, collision with other tests is negligible in practice. If isolation requirements tighten, adding `.filter({ hasText: "tc-06 test" })` is the safe fix.
-- `GET /api/expenses` (list all) is used to fetch the updated expense rather than a direct `GET /api/expenses/{id}`. The spec says "GET /expenses or equivalent" — both are acceptable; the list approach is slightly heavier but correctly exercises the public API.
+**Notes (informational, no flags):**
+- Previous RED used `getByRole('row')` which doesn't match the list's `<li>` structure. This re-RED uses the aria-label on the Edit button (`"Edit Food expense of Rs 300"`) — a semantic, user-facing selector that won't break on class rename.
+- `GET /api/expenses` (list) is used per "GET /expenses or equivalent" in the case.
 
-**Proof:** RED fails on the PRD's baseline (lane red recorded the commit) · GREEN passes the unchanged test on the integration tip (lane green records it — after this stamp)
+**Proof:** RED fails on the PRD's baseline (lane red recorded the re-anchored commit) · GREEN passes the unchanged test on the integration tip (lane green records it — after this stamp)
 
-**Reviewer checklist:** (checkboxes — `done` only enforces checkboxes; resolve each)
+**Reviewer checklist:**
 - [x] Every expected result of the case is asserted — observable through the UI or the public API only
 - [x] The test sets up its own data (no reliance on hand-made state or another test's leftovers)
 - [x] No product code changed — test files, page objects, fixtures and harness config only
-- [x] No fixed sleeps; selectors are user-facing (role, label, text) — not brittle CSS/XPath
-- [x] A manual case: the steps were run by hand and the outcome is written above — N/A: this case is fully automated (Playwright); no hand-run required
+- [x] No fixed sleeps; selectors are user-facing (role, label, aria-label text) — not brittle CSS/XPath
+- [x] A manual case: the steps were run by hand and the outcome is written above — N/A: fully automated (Playwright)
 
-**Human verdict:** Conformant. Test faithfully encodes the frozen test case. No flags to resolve. Ready for the human approval stamp.
+**Human verdict:** Conformant. Refined selectors correctly target the UI's semantic attributes. No flags. Ready for approval stamp.
 **Outcome:** clean → GREEN when the feature lands
