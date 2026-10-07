@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "lane": {
+    "source": {
+      "feature": "0002-enhancement-edit",
+      "file": "PRD.md",
+      "sha256": "6f0e2518249f1540cdac9588c045453194e248251f36d46e5b30f84824f19890",
+      "pinnedAt": "8aba801b24b1d82cff36b869ed0299610ce98966",
+      "baseline": "0f53c3d729e6d2f199b2b21ad383e556eef65b15"
+    }
+  },
+  "ext": {}
+}
