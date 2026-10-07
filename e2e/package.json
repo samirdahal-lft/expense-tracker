@@ -1,0 +1,12 @@
+{
+  "name": "expense-tracker-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "playwright test --retries=0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.47.0",
+    "@types/node": "22.7.5"
+  }
+}
