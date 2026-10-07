@@ -3,7 +3,7 @@ task_id: T-edit-qa-1tggk4
 # task_id is a collision-proof random token with no inherent order; seq is what the board sorts
 # by, so humans see a stable 1,2,3 cadence. Not an identity — never gated on.
 seq: 6
-status: queued
+status: in_progress
 parent: 0005-acceptance-edit-qa
 # story — S-NNNN.nn: anchors the Critic's TSD snapshot (machine-read; the card's
 # prose Parent line is only a legacy fallback). lane start DIES if this is set but
@@ -19,4 +19,7 @@ depends_on: []
 #   refactor  : characterisation ledger (`Tests: refactor — <what stays green>`); lane red
 #               commits a PASSING anchor, lane verify replays pass→pass and requires a
 #               source change at GREEN.
-tests_mode: red-green
+tests_mode: acceptance
+base_ref: qa/flow-simple
+mode: worktree
+worktree_path: /home/leapfrog/expense-tracker.wt/T-edit-qa-1tggk4
