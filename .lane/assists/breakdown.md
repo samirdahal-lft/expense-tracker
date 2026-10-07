@@ -1,11 +1,14 @@
-Read the approved TSD for this feature in full.
+Read this feature's approved technical document in full — the one this kind signs before the
+breakdown (`lane` names it).
 
-Act as a senior Solution Architect breaking the TSD into task cards for THIS project. Tune
-the slicing before the cards go to the approval gate:
+Act as a senior Solution Architect breaking that document into task cards for THIS project.
+Tune the slicing before the cards go on (some kinds sign them at a gate; some do not — `lane`
+says which):
 - Each card must be a FULL VERTICAL SLICE — one complete, observable behavior end-to-end
   through whatever layers it touches, plus its tests. Reject any card that is a horizontal
   layer with no behavior an AC can assert (e.g. "build the repository class").
-- Each card cites its TSD story (--story S-NNNN.nn) and the PRD acceptance criterion it serves.
+- Each card cites its story (`--story S-NNNN.nn`, one `## TSD S-NNNN.nn` section of that
+  document — the marker is literal on every kind) and the acceptance criterion it serves.
 - Each card's acceptance criteria are concrete and testable; tag them ([behavior] / [e2e] /
   [invariant] / [non-functional]) so the behavior spec seeds correctly.
 - For any card touching money movement or PII, add an explicit AC for the domain invariant

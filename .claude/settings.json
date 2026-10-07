@@ -16,7 +16,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "lane guard"
+            "command": "lane guard",
+            "timeout": 900
           }
         ]
       }

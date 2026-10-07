@@ -2,12 +2,12 @@
 approved_by: ""
 approved_at: ""
 ---
-# PRD <FEAT> — <feature title>
+# PRD <FEAT> — <title>
 > User stories + acceptance criteria + success metrics. Signed off by PM + SA + DS.
 > Feature-scoped (LANE §8): one PRD per feature/milestone, under docs/features/<FEAT>-<slug>/.
 
-**Source:** roadmap milestone <M> | real-usage feedback | Briefing <FEAT>   ← why this feature exists (audit chain, §4; trace ↑ to BRIEFING.md)
-**Parent:** <NNNN of the master/umbrella PRD this rolls up to, if any — optional, prose only>   ← for a `master` iteration leave blank; it IS the umbrella
+**Source:** roadmap milestone <M> | real-usage feedback | the discovery document <FEAT>   ← why this feature exists (audit chain, §4; trace ↑ to whatever document this kind places before this one, if it has one)
+**Parent:** <NNNN of the umbrella PRD this rolls up to, if any — optional, prose only>   ← blank when this feature IS the umbrella
 
 ---
 

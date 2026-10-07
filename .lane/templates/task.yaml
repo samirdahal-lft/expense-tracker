@@ -1,7 +1,7 @@
 task_id: <T-ID>
 # seq — display-only creation order within the feature (lane new card stamps max+1). The
-# task_id is a collision-proof random token with no inherent order; seq is what lane ready /
-# lane status sort by, so humans see a stable 1,2,3 cadence. Not an identity — never gated on.
+# task_id is a collision-proof random token with no inherent order; seq is what the board sorts
+# by, so humans see a stable 1,2,3 cadence. Not an identity — never gated on.
 seq: <SEQ>
 status: queued
 parent: <FEAT>
@@ -16,4 +16,7 @@ depends_on: []
 #               Card must have `Tests: N/A — <reason>` to trigger this.
 #               Use `lane red --regression` inside red-green to commit a passing
 #               test outside the ledger (non-ledger guard, verify ignores it).
+#   refactor  : characterisation ledger (`Tests: refactor — <what stays green>`); lane red
+#               commits a PASSING anchor, lane verify replays pass→pass and requires a
+#               source change at GREEN.
 tests_mode: red-green

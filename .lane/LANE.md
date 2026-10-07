@@ -6,9 +6,9 @@ what it tells you. There is no procedure to memorize here.
 
 ## If you are an AI agent
 
-Run the `/lane` slash command to orient yourself. It runs `lane philosophy`
-(why the rules exist) and `lane playbook` (what they are), then points you at
-your next concrete action. Everything you need is surfaced by the binary.
+Run the `/lane` slash command to orient yourself. It runs `lane` (your state and
+next action) and points you at `lane playbook why` (the mental model) for a
+first visit. Everything you need is surfaced by the binary.
 
 In Claude Code, a `SessionStart` hook auto-orients you each session (it runs
 `lane orient`), and a `Stop` hook (`lane guard`) keeps you on-task to each gate —
@@ -19,9 +19,11 @@ gate: human approvals and the TDD ledger are unchanged.
 
 Run these in your terminal:
 
-- `lane philosophy` — the reasoning behind every hard rule (read this first)
-- `lane playbook` — the full framework reference: phases, artifacts, gates, CLI
 - `lane` — current state and your next action
+- `lane playbook why` — the reasoning behind every hard rule; `lane playbook` for the rest
+- `lane philosophy` — the long form of that reasoning
+- `lane dashboard` — the live web view: state, documents, review and approvals
+- `lane help` — every command
 
 That's it. The binary is the source of truth; it is versioned with the code and
 cannot drift the way a static document does.

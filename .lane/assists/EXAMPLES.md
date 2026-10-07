@@ -2,9 +2,8 @@
 
 > **lane never loads this file.** It is a catalog of ideas so you can see how each assist
 > can be leveraged. To USE one: copy an idea into a real assist file (e.g. `.lane/assists/tsd.md`)
-> or set the value inline, then point the matching key in `.lane/lane.config` at it — and make
-> sure its `_enabled` flag is `true`. To pause an assist later, flip `_enabled` to `false`
-> (no need to delete anything).
+> or set the value inline, then point the matching key in `.lane/lane.config` at it. To pause an
+> assist later, set its value to `none` (the file can stay).
 
 An assist value is either an **inline prompt** or a **file path** (starting with `.` or `/`).
 The session applies it WHILE drafting the artifact; it may invoke skills or subagents.

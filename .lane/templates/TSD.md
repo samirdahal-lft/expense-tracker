@@ -2,13 +2,13 @@
 approved_by: ""
 approved_at: ""
 ---
-# TSD <FEAT> — <feature title>
+# TSD <FEAT> — <title>
 > Behavior + contracts ONLY. Never name the library/method/pattern (over-spec = defeats spec-first).
 > One section per PRD story. Critic anchors to this as the external executable spec.
 > Story IDs are S-<FEAT>.nn — the <FEAT> prefix is what resolves this folder (docs/features/<FEAT>-*/),
 > so the `## TSD S-<FEAT>.nn` header below must match the story ID exactly.
 
-<!-- Domain-neutral default rows — tailor `.lane/templates/TSD.md` to your stack
+<!-- Domain-neutral default rows — tailor this template in `.lane/templates/` to your stack
      (web: DB / API / Frontend · pipeline: sources / transforms / sinks ·
       CLI: commands / flags / output · library: public API / invariants). -->
 ## TSD S-<FEAT>.01 — <title>  (PRD §S-<FEAT>.01)

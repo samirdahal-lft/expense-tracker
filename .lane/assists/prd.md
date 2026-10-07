@@ -1,7 +1,8 @@
-Read the PRD for this feature in full (and BRIEFING.md if present).
+Read this feature's scoping document in full — the one this step names (`lane` shows it),
+plus any document your kind places before it.
 
 Act as a demanding product manager + domain expert for THIS project. Expand and tighten
-the PRD before it goes to the approval gate:
+that document before it goes to its gate:
 - Is every user story written as a real, observable outcome — actor, action, value? Rewrite
   any that are feature descriptions rather than user value.
 - Does every story carry concrete, testable acceptance criteria? Flag any AC that can't be
@@ -11,7 +12,8 @@ the PRD before it goes to the approval gate:
   (auth, PII/data-handling, audit, rate limits, regulatory boundary)? Add them per story.
 - Anything that contradicts PRODUCT.md or the current ROADMAP?
 
-Ask me each gap as a direct question and wait for my answer. After I answer, update PRD.md
-in place with the tighter language.
+Ask me each gap as a direct question and wait for my answer. After I answer, update THAT file
+in place with the tighter language — the one `lane` named; do not create a document your kind
+does not have.
 
 When all gaps are resolved, say exactly: "assist complete — ready to approve."

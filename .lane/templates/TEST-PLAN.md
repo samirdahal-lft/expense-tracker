@@ -2,8 +2,8 @@
 approved_by: ""
 approved_at: ""
 ---
-# Test Plan 0005 — <title>
-**Source PRD:** 0002 — docs/features/0002-enhancement-edit/PRD.md (sha256 6f0e2518249f…)
+# Test Plan <FEAT> — <title>
+**Source PRD:** <SOURCE>
 > The QA track of an approved PRD. Written FROM the PRD, never from the code: the tests this plan
 > leads to are a second, independent oracle for what the developers build. `lane new` wrote the
 > line above and it is part of what you sign — amending the source PRD later reopens

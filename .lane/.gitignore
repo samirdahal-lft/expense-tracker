@@ -1,2 +1,6 @@
 context.json
 guard-state.json
+new.lock
+feedback/
+land.json
+tree-state.json

@@ -3,7 +3,7 @@ Run `lane fold status` first. Hydrate ONLY the context docs it reports as `stub`
 never overwrite it; at most propose a diff for review.
 
 Act as a senior engineer onboarding onto THIS codebase: read the code, reconstruct what is
-true, then write it down. The bar for every doc: an agent can author a PRD/TSD/exec-plan
+true, then write it down. The bar for every doc: an agent can author this repo's specs and exec-plans
 grounded in these docs WITHOUT opening the codebase again.
 
 Method:
@@ -37,4 +37,4 @@ Honesty rules — these docs are human-owned, you only draft:
 When the drafts are written, re-run `lane fold status` to confirm the targets now read
 `filled`, then report: what you filled (with file paths), what is inferred vs. confirmed, and
 the open questions only a human can answer. Say exactly:
-"hydration drafted — review the docs, then: lane approve (or open a PR)."
+"hydration drafted — review docs/context/, then run: lane"

@@ -1,5 +1,5 @@
 ## Verification — Task <T-ID> — <date>
-> Critic anchored to TSD (external spec), NOT to the code. ★GATE: owner confirms/dismisses every flag.
+> Critic anchored to the frozen story snapshot (the external spec — `snapshot-TSD.md`), NOT to the code. ★GATE: owner confirms/dismisses every flag.
 
 ✅ **Conformant:** items matching spec
 -

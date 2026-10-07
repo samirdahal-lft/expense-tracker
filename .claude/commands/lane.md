@@ -5,22 +5,16 @@ description: Activate LANE — AI-native SDLC workflow for this project
 Run these commands now, in order. Read every line of output before proceeding.
 
 ```
-lane philosophy
-lane status
-lane ready
 lane
-lane map
 lane fold status
 ```
 
 **What each gives you:**
-- `lane philosophy` — WHY the rules exist. Read this before anything else and internalize it. This is not optional orientation — it is the mental model that makes every other command meaningful. Read it as a binding constraint on how you interpret every subsequent `lane` output, not something to skim.
-- `lane playbook` — WHAT the rules are: CLI reference, phases, artifacts, gates. **Do not load the whole manual now.** It is reference, not orientation — pull it on demand. Run `lane playbook sections` to list the slices, then read only the one you need (`lane playbook flow` when planning, `lane playbook tdd` before writing tests, `lane playbook cli` to look up a command). The `lane` commands print your next step as you go, so you rarely need the full manual. Read all of it (`lane playbook`) only the first time you work in a LANE repo, or when a framework term is unfamiliar.
-- `lane status` — every task and its current status (cross-project view, not context-scoped).
-- `lane ready` — tasks that are queued and whose upstream work is complete on this branch — these are the ones you can start right now.
+- `lane playbook why` — the mental model: why every hard rule exists. Read it fully the FIRST time you work in a LANE repo and let it constrain how you read every later `lane` output. The rest of the playbook is reference, pulled on demand: `lane playbook sections` lists the slices (`flow` when planning, `tdd` before writing tests); `lane help` lists the commands; `lane philosophy` is the long form of the why. The `lane` commands print your next step as you go, so you rarely need more.
 - `lane` — current state + your next concrete action. This is the oracle for what to do next.
-- `lane map` — visual pipeline diagram showing exactly where you are and what is left.
 - `lane fold status` — whether the architecture snapshot doc is stale. If stale: run `lane fold`, apply its output in a standalone PR before touching any feature work.
+
+If `LANE_SCOPE` is set in your environment, your scope is fixed and `lane` already answers for it.
 
 ---
 
@@ -64,13 +58,18 @@ pick the recommended option, note why, and proceed.
 
 **If a `lane` hint names an assist, run it before drafting/approving.**
 When the "Next:" output shows an `assist:` line, the operator has configured a project-tuned
-prompt for this authoring step (PRD, TSD, breakdown, plan, briefing). Apply it before you finish
+prompt for this authoring step. Apply it before you finish
 the artifact — it may tell you to invoke a skill or spawn a subagent. It is advisory, not a gate:
 a `⚠ … not found` assist line is a skip, not a blocker, and the human approval stamp is still the
 only thing that closes the gate. Never treat running an assist as approval.
 
-**No code before the execution plan is approved.**
-For every task: `lane plan <T-ID>` scaffolds the plan, then the human reviews and approves it (`lane approve <T-ID>`), then code begins. Producing implementation before `lane approve` succeeds violates the pipeline — nothing written before that point is trustworthy.
+**No code before every gate this kind has is passed — and `lane` is what names them.**
+For every task: `lane plan <T-ID>` scaffolds the plan. Whether it is SIGNED depends on the kind.
+Read the binary, never this file: when `lane` shows an `approve-*` step, that gate is real — the
+human reviews and approves (`lane approve <T-ID>`), and producing implementation before it
+succeeds violates the pipeline. When `lane` says `no plan gate on <kind>`, there is NO plan approval and none will ever arrive: fill the plan and
+proceed to the step `lane` names. Do not wait for a stamp the kind does not collect, and never
+invent one — the gates a kind keeps are its definition's, in `.lane/kinds/<kind>.json`.
 
 **TDD cycle: failing test first, always.**
 For each behavior in the execution plan:
@@ -79,12 +78,25 @@ For each behavior in the execution plan:
 3. Optionally clean up — commit with `lane refactor <T-ID>`.
 Never write implementation before the failing test is committed. Never skip a behavior.
 
+**The anchored review: check who performs it before you review anything.**
+`lane review <T-ID>` prints who the reviewer is, because `lane.config` declares it (`critic_mode`).
+- `human` — **you do not review the diff, and you do not spawn a Critic.** Run `lane review`, then
+  stop and hand over: the human reads the frozen `snapshot-TSD.md` against `git diff <base>...<T-ID>`,
+  fills `verification.md`, and resolves its flags (in `lane dashboard` or their editor). Reviewing it
+  yourself burns the tokens the declaration exists to save, and adds no external signal.
+- `subagent` — the ONE mode that asks for a Critic: spawn it with FRESH context, giving it ONLY
+  the frozen snapshot and the diff, never your build reasoning. Then fill the report from its findings.
+- undeclared — **do not spawn a Critic on your own.** lane has not been told who reviews, so it
+  asks for nobody: run `lane review`, follow the handoff it prints, and if the choice is yours to
+  make, raise it with the human (declaring `critic_mode` once ends the ambiguity).
+In every mode the report is signed by a human running `lane approve <T-ID>` — never by you.
+
 **Context docs are read-only during active feature work.**
 `docs/context/PRODUCT.md`, `BLUEPRINT.md`, and `CONSTITUTION.md` describe the product and architecture. Never edit them mid-feature. If `lane fold status` reports stale, fold and update in a standalone PR — then resume the feature.
 
 **Ground every spec in the context docs.**
-Unless `lane fold status` reports `Context grounding: OFF`, the context docs are binding constraints on every spec you draft or edit (BRIEFING, PRD, TSD, cards, exec-plan). Read all three before drafting, and keep the draft consistent with them:
+Unless `lane fold status` reports `Context grounding: OFF`, the context docs are binding constraints on every document you draft or edit — every artifact your kind names, plus cards and exec-plans. Read all three before drafting, and keep the draft consistent with them:
 - `docs/context/CONSTITUTION.md` — stack + conventions. Match them; reuse the existing patterns and types, don't invent parallel ones.
 - `docs/context/BLUEPRINT.md` — architecture, containers, boundary rules. Stay inside them.
 - `docs/context/PRODUCT.md` — what the product is and is not. Stay in scope.
-A doc that `lane fold status` marks `stub` or `absent` carries no constraints yet — that is NOT a licence to invent. Don't fabricate constraints from a scaffold. For PRD/Briefing, note it is worth filling and proceed (a greenfield repo's first PRD is what defines the product). For the **TSD it is a hard gate** (ADR-0020): `lane approve` refuses a TSD while any context doc is `stub`/`absent`, because a TSD invents architecture and must ground in real constraints. Run `lane hydrate` to draft the docs from the codebase, have a human review them, then approve. Any change that needs to break a stated convention or boundary is an open question for the human or a candidate ADR — never a silent divergence. When `lane fold status` reports grounding is OFF, the operator handles this (e.g. via assists) — follow those instead.
+A doc that `lane fold status` marks `stub` or `absent` carries no constraints yet — that is NOT a licence to invent. Don't fabricate constraints from a scaffold. For the documents your kind places BEFORE its grounded one, note it is worth filling and proceed (a greenfield repo's first scoping document is what defines the product). For **the document your kind marks `grounded` it is a hard gate** (ADR-0020) — run `lane` and read the step name, it is whatever that kind calls it: `lane approve` refuses that document while any context doc is `stub`/`absent`, because it invents architecture and must ground in real constraints. Run `lane hydrate` — it PRINTS the method for drafting the docs (it writes nothing); follow it or hand it to a subagent, have a human review the result, then approve. Any change that needs to break a stated convention or boundary is an open question for the human or a candidate ADR — never a silent divergence. When `lane fold status` reports grounding is OFF, the operator handles this (e.g. via assists) — follow those instead.
