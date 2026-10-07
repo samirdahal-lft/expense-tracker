@@ -1,7 +1,7 @@
 ---
 approved_by: "Samir dahal"
 approved_at: "2026-10-07"
-approved_sha256: "bdcee9c5392d2dc0112be777d187d1d43730218eca06c5fc6ba8c1694d965030"
+approved_sha256: "7596980bd45db17c19d5b6bceaa9ce842cc7744a2ad005693b26f98b57010ce5"
 ---
 ## Verification — Task T-edit-qa-1tggk4 — 2026-10-07
 > QA task (ADR-0031). The reviewer reads the TEST against its frozen test case (`snapshot-TSD.md`),
@@ -12,7 +12,7 @@ approved_sha256: "bdcee9c5392d2dc0112be777d187d1d43730218eca06c5fc6ba8c1694d9650
 ✅ **Conformant:** each step and expected result of the test case, and where the test asserts it
 - `beforeEach` creates an expense via `POST /api/expenses` and captures `created_at` from the response — matches "creation timestamp is captured immediately after creation via the public API"
 - Test navigates to `/` and clicks `getByRole('button', { name: 'Edit Food expense of Rs 300' })` — selects the specific expense by its rendered aria-label; satisfies "Given the test expense exists"
-- Fills `getByLabel('Amount (NPR)')` with 450 and clicks `getByRole('button', { name: 'Save changes' })` — satisfies "When the user edits the amount and saves"
+- Scopes to `getByRole('form', { name: 'Edit expense' })` (both the add form and edit form share the "Amount (NPR)" label); fills the edit form's amount field with 450 and clicks "Save changes" — satisfies "When the user edits the amount and saves"
 - Waits for `getByRole('button', { name: 'Edit Food expense of Rs 450' })` to be visible (list updated) — confirms the edit took effect in the UI
 - Calls `GET /api/expenses`, finds the expense by ID, asserts `created_at === originalCreatedAt` — satisfies "Then the expense's created_at returned by the API equals the value captured at creation"
 - `afterEach` deletes via `DELETE /api/expenses/{id}` — hermetic teardown
@@ -24,7 +24,7 @@ approved_sha256: "bdcee9c5392d2dc0112be777d187d1d43730218eca06c5fc6ba8c1694d9650
 - None — all steps and the expected result are encoded
 
 **Notes (informational, no flags):**
-- Previous RED used `getByRole('row')` which doesn't match the list's `<li>` structure. This re-RED uses the aria-label on the Edit button (`"Edit Food expense of Rs 300"`) — a semantic, user-facing selector that won't break on class rename.
+- First RED used `getByRole('row')` (no table); second RED used `getByLabel('Amount (NPR)')` which matched both the add form and the edit form. This re-RED scopes to `getByRole('form', { name: 'Edit expense' })` before filling the field — strict-mode compliant and semantically correct.
 - `GET /api/expenses` (list) is used per "GET /expenses or equivalent" in the case.
 
 **Proof:** RED fails on the PRD's baseline (lane red recorded the re-anchored commit) · GREEN passes the unchanged test on the integration tip (lane green records it — after this stamp)
