@@ -3,7 +3,7 @@ task_id: T-qa-edit-71bn5s
 # task_id is a collision-proof random token with no inherent order; seq is what the board sorts
 # by, so humans see a stable 1,2,3 cadence. Not an identity — never gated on.
 seq: 1
-status: in_progress
+status: done
 parent: 0005-acceptance-qa-edit
 # story — S-NNNN.nn: anchors the Critic's TSD snapshot (machine-read; the card's
 # prose Parent line is only a legacy fallback). lane start DIES if this is set but
@@ -24,3 +24,4 @@ base_ref: qa/flow-simple
 mode: worktree
 worktree_path: /home/leapfrog/expense-tracker.wt/T-qa-edit-71bn5s
 explore_at: 81971f80c4b3981d2d420aeec41af5df85c57e28
+green_attempt: pass 81971f80c4b3981d2d420aeec41af5df85c57e28
