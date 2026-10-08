@@ -16,5 +16,5 @@ approved_at: ""
 | Priority | <P1 / P2 / P3> |
 | Automation | <playwright / manual> |
 | Preconditions / Test data | <state the test sets up for itself> |
-| Steps (Given / When / Then) | <Given … / When … / Then …> |
+| Steps (Given / When / Then) | <Given … / When … / Then … — each clause becomes one step of the exploration storyboard> |
 | Expected result | <observable through the UI or API only> |

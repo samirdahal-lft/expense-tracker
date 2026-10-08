@@ -11,10 +11,11 @@
 ❌ **Missing:** a step or expected result of the case the test does not assert
 -
 
-**Proof:** RED fails on the PRD's baseline (lane red recorded the commit) · GREEN passes the unchanged test on the integration tip (lane green records it — after this stamp)
+**Proof:** (explored kinds: QA stamped the storyboard PASS first) · RED fails on the PRD's baseline (lane red recorded the commit) · GREEN passes the unchanged test on the integration tip (lane green records it — after this stamp)
 
 **Reviewer checklist:** (checkboxes — `done` only enforces checkboxes; resolve each)
 - [ ] Every expected result of the case is asserted — observable through the UI or the public API only
+- [ ] Explored kinds (ADR-0032): the test walks the QA-stamped storyboard's steps (exploration.md), and every asserted value comes from the CASE's expected result — never from a storyboard "Saw" line
 - [ ] The test sets up its own data (no reliance on hand-made state or another test's leftovers)
 - [ ] No product code changed — test files, page objects, fixtures and harness config only
 - [ ] No fixed sleeps; selectors are user-facing (role, label, text) — not brittle CSS/XPath
