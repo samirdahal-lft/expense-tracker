@@ -6,11 +6,8 @@ import { test, expect, Page } from "@playwright/test";
 const API = "http://localhost:8000/api/expenses";
 const NOTE = "tc01-lunch";
 
-const expenseRow = (page: Page) =>
-  page
-    .locator("li, tr, article, [role=listitem], [role=row]")
-    .filter({ hasText: NOTE })
-    .last();
+// The expense list renders each expense as an <li>; it is picked out by its note text.
+const expenseRows = (page: Page) => page.locator("li").filter({ hasText: NOTE });
 
 test("TC-01: change amount and category, list updates without a reload", async ({
   page,
@@ -24,8 +21,9 @@ test("TC-01: change amount and category, list updates without a reload", async (
 
   await test.step('Given the expense list is open and shows the "tc01-lunch" expense with amount 500 and category Food', async () => {
     await page.goto("/");
-    const row = expenseRow(page);
-    await expect(row).toBeVisible();
+    const rows = expenseRows(page);
+    await expect(rows).toHaveCount(1);
+    const row = rows.first();
     await expect(row).toContainText("500");
     await expect(row).toContainText("Food");
   });
@@ -35,19 +33,21 @@ test("TC-01: change amount and category, list updates without a reload", async (
     await page.evaluate(() => {
       (window as any).__noReloadMarker = "set-before-save";
     });
-    await expenseRow(page).getByRole("button", { name: /edit/i }).click();
-    const form = page
-      .locator("form")
-      .filter({ has: page.getByRole("button", { name: /save/i }) });
+    await expenseRows(page).first().getByRole("button", { name: /edit/i }).click();
+    const form = page.getByRole("form", { name: /edit expense/i });
     await form.getByLabel(/amount/i).fill("750");
     await form.getByLabel(/category/i).selectOption("Transport");
     await form.getByRole("button", { name: /save/i }).click();
   });
 
   await test.step('Then the "tc01-lunch" row in the list shows amount 750 and category Transport, and the page was not reloaded', async () => {
-    const row = expenseRow(page);
+    // The same expense was updated in place: still exactly one "tc01-lunch" row.
+    const rows = expenseRows(page);
+    await expect(rows).toHaveCount(1);
+    const row = rows.first();
     await expect(row).toContainText("750");
     await expect(row).toContainText("Transport");
+    await expect(row).not.toContainText("Food");
     const marker = await page.evaluate(() => (window as any).__noReloadMarker);
     expect(marker).toBe("set-before-save");
   });
