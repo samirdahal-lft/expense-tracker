@@ -1,6 +1,7 @@
 ---
-approved_by: ""
-approved_at: ""
+approved_by: "Samir dahal"
+approved_at: "2026-10-08"
+approved_sha256: "4f8724123db90055fa7c24490c15940487da6235d131b5b3750bad3d7a388fe8"
 ---
 # Exploration — Task T-qa-edit-71bn5s — TC-01: Change amount and category, list updates without a reload
 > The story of one test case walked on the landed build — QA stamps it before any e2e is written.
