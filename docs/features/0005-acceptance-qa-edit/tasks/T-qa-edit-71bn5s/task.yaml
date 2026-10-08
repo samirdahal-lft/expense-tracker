@@ -23,3 +23,4 @@ tests_mode: acceptance
 base_ref: qa/flow-simple
 mode: worktree
 worktree_path: /home/leapfrog/expense-tracker.wt/T-qa-edit-71bn5s
+explore_at: 81971f80c4b3981d2d420aeec41af5df85c57e28

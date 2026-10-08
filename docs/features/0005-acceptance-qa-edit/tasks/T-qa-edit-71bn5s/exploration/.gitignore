@@ -1,0 +1,4 @@
+# lane explore (ADR-0032): heavy evidence is recorded by sha256 in exploration.md, never committed
+*.zip
+*.webm
+*.mp4
